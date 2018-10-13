@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2043
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AD469CC2-106D-4740-8D82-AF22E171924C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CD063E03-AB28-474A-B4BF-0072ECA929E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elan.Web", "src\Elan.Web\Elan.Web.csproj", "{1A412513-E2C3-46F4-9C71-4E4AA983B2C0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A412513-E2C3-46F4-9C71-4E4AA983B2C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A412513-E2C3-46F4-9C71-4E4AA983B2C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A412513-E2C3-46F4-9C71-4E4AA983B2C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A412513-E2C3-46F4-9C71-4E4AA983B2C0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1A412513-E2C3-46F4-9C71-4E4AA983B2C0} = {AD469CC2-106D-4740-8D82-AF22E171924C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CA74AEDB-D0A3-4E7B-8FD3-144995AE5141}
+	EndGlobalSection
+EndGlobal
