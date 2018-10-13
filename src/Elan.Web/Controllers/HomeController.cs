@@ -11,7 +11,7 @@ namespace Elan.Web.Controllers
 
         public ActionResult Index()
         {
-            var testModel = new HomeModel {Title = "testing title"};
+            var testModel = new HomeModel {Title = "This will be a very nice social platform."};
             return View("Index", testModel);
         }
     }
