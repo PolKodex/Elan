@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AD469CC2-106
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CD063E03-AB28-474A-B4BF-0072ECA929E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elan.Web", "src\Elan.Web\Elan.Web.csproj", "{1A412513-E2C3-46F4-9C71-4E4AA983B2C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elan.Web", "src\Elan.Web\Elan.Web.csproj", "{1A412513-E2C3-46F4-9C71-4E4AA983B2C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
