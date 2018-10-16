@@ -4,6 +4,6 @@
     Layout = "_Layout";
 }
 
-<h3>@Model.Title</h3>
-<div id="content"></div>
-<script src="@Url.Content("~/js/Site.jsx")"></script>
+<div id="content">
+    @Html.React("CommentBox", new { data = Model })
+</div>
