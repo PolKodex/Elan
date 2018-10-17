@@ -1,6 +1,4 @@
-﻿@using React.AspNet
-@model Elan.Web.Models.HomeModel
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title>Elan - strona główna</title>
@@ -27,11 +25,11 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="~/Home/Index"><i class="fas fa-home"></i> Strona główna <span class="sr-only">(current)</span></a>
-                        </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="~/Home/Account"><i class="fas fa-address-card"></i> Profil</a>
+                            <a class="nav-link" href="~/Home/Index"><i class="fas fa-home"></i> Strona główna</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="~/Home/Account"><i class="fas fa-address-card"></i> Profil <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#"><i class="fas fa-users"></i> Grupy</a>
@@ -47,10 +45,6 @@
                 </div>
             </div>
         </nav>
-
-        <div id="content">
-            @Html.React("CommentBox", new { data = Model })
-        </div>
 
         <div class="offset-md-6 col-md-4 hidden-sm-down chat">
             <div class="chat-friends">
@@ -122,10 +116,127 @@
         </div>
     </div>
 
+
     <div class="container">
         <div class="row">
             <div class="col-12 col-sm-12 col-md-6">
                 <!-- content (RenderBody) -->
+
+                <div class="account-introduction">
+                    <div class="media avatar">
+                        <img class="align-self-start mr-3" src="~/images/default_avatar.jpg" />
+                        <div class="media-body">
+                            <h3> Maciej Owerczuk</h3>
+                            <p class="lead">Jakaś mądra sentencja, cytat życiowy albo coś takiego</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- znajomi -->
+                <div class="card account-box">
+                    <div class="card-header card-sm">
+                        <a href="#">Znajomi (13)</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" data-toggle="tooltip" data-placement="bottom" title="Marc  in Korwek" />
+                                </a>
+                            </div>
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" data-toggle="tooltip" data-placement="bottom" title="Gabriel Mackiewicz" />
+                                </a>
+                            </div>
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" data-toggle="tooltip" data-placement="bottom" title="Karol Nowicki" />
+                                </a>
+                            </div>
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" data-toggle="tooltip" data-placement="bottom" title="Kamil Kuryś" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" data-toggle="tooltip" data-placement="bottom" title="Beata Hryniewicka" />
+                                </a>
+                            </div>
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" data-toggle="tooltip" data-placement="bottom" title="Jan Nowak" />
+                                </a>
+                            </div>
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" data-toggle="tooltip" data-placement="bottom" title="Tadeusz Kowalski" />
+                                </a>
+                            </div>
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" data-toggle="tooltip" data-placement="bottom" title="Jędrzej Jędrzejczyk" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- foteczki -->
+                <div class="card account-box">
+                    <div class="card-header card-sm">
+                        <a href="#">Zdjęcia (33)</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" />
+                                </a>
+                            </div>
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" />
+                                </a>
+                            </div>
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" />
+                                </a>
+                            </div>
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" />
+                                </a>
+                            </div>
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" />
+                                </a>
+                            </div>
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" />
+                                </a>
+                            </div>
+                            <div class="col-md image-box">
+                                <a href="#">
+                                    <img src="~/images/no-photo.png" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="post">
                     <div class="card">
@@ -149,76 +260,8 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="post">
-                    <div class="card">
-                        <div class="card-header card-sm">
-                            <div class="user-info">
-                                <div class="avatar-post">
-                                    <img src="~/images/default_avatar.jpg" />
-                                </div>
-                                <div class="user-post">
-                                    <a href="#"><strong>Gabriel Mackiewicz</strong></a> w <a href="#"><strong>Grupa programistów wyczepanych w kosmos</strong></a> <br>
-                                    <small class="text-muted">13 października o 22:52</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">Zaraz godzina 23 a ja wciąż kodzę xd</p>
-                        </div>
-                        <div class="card-footer text-muted card-sm">
-                            <a href="#"><i class="fas fa-beer"></i> Piwa (78)</a>
-                            <a href="#"><i class="fas fa-comments"></i> Komentarze (16)</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="post">
-                    <div class="card">
-                        <div class="card-header card-sm">
-                            <div class="user-info">
-                                <div class="avatar-post">
-                                    <img src="~/images/default_avatar.jpg" />
-                                </div>
-                                <div class="user-post">
-                                    <a href="#"><strong>Marcin Korwek</strong></a> <br>
-                                    <small class="text-muted">9 września o 6:49</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body post-image">
-                            <img src="~/images/kogut.jpg" />
-                        </div>
-                        <div class="card-footer text-muted card-sm">
-                            <a href="#"><i class="fas fa-beer"></i> Piwa (1)</a>
-                            <a href="#"><i class="fas fa-comments"></i> Komentarze (0)</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="post">
-                    <div class="card">
-                        <div class="card-header card-sm">
-                            <div class="user-info">
-                                <div class="avatar-post">
-                                    <img src="~/images/default_avatar.jpg" />
-                                </div>
-                                <div class="user-post">
-                                    <a href="#"><strong>Marcin Korwek</strong></a> <br>
-                                    <small class="text-muted">9 września o 6:49</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body post-image">
-                            <img src="~/images/kogut.jpg" />
-                        </div>
-                        <div class="card-footer text-muted card-sm">
-                            <a href="#"><i class="fas fa-beer"></i> Piwa (1)</a>
-                            <a href="#"><i class="fas fa-comments"></i> Komentarze (0)</a>
-                        </div>
-                    </div>
-                </div>
             </div>
+
         </div>
     </div>
 
