@@ -74,6 +74,8 @@ namespace Elan.Web
             //    app.UseExceptionHandler("/Error");
             //    app.UseHsts();
             //}
+            UpdateDatabase(app);
+
             app.UseDeveloperExceptionPage();
 
             app.UseHttpsRedirection();
@@ -96,6 +98,18 @@ namespace Elan.Web
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+        }
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<ElanDbContext>())
+                {
+                    context.Database.Migrate();
+                }
+            }
         }
     }
 }
