@@ -26,6 +26,13 @@
     <ProjectReference Include="..\Elan.Data\Elan.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ClientApp\src\assets\" />
+    <Folder Include="ClientApp\src\api\" />
+    <Folder Include="ClientApp\src\components\" />
+    <Folder Include="ClientApp\src\containers\" />
+  </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
