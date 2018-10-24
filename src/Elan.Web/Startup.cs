@@ -2,6 +2,7 @@ using System;
 using Elan.Account;
 using Elan.Data;
 using Elan.Data.Models.Account;
+using Elan.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -60,6 +61,9 @@ namespace Elan.Web
             });
 
             services.RegisterAccountModule();
+
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUserSettingsService, UserSettingsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

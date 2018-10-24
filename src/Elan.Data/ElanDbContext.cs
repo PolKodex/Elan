@@ -10,5 +10,13 @@ namespace Elan.Data
         public ElanDbContext(DbContextOptions options) : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<ElanUserSetting>()
+                .HasKey(c => new { c.UserId, c.Setting });
+
+            base.OnModelCreating(builder);
+        }
     }
 }

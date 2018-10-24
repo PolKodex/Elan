@@ -5,16 +5,19 @@ using Elan.Data.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Threading.Tasks;
+using Elan.Service;
 
 namespace Elan.Account.Services
 {
-    public class AuthService: IAuthService
+    public class AuthService : IAuthService
     {
         private readonly UserManager<ElanUser> _userManager;
+        private readonly IUserSettingsService _userSettings;
 
-        public AuthService(UserManager<ElanUser> userManager)
+        public AuthService(UserManager<ElanUser> userManager, IUserSettingsService userSettings)
         {
             _userManager = userManager;
+            _userSettings = userSettings;
         }
 
         public async Task Register(RegisterViewModel model)
@@ -34,6 +37,8 @@ namespace Elan.Account.Services
                 throw new RegistrationFailedException(
                     $"An error occured while registering user: {result.Errors.Join()}");
             }
+
+            await _userSettings.AddSettings(newUser);
         }
 
         public Task SignIn(SignInViewModel model)

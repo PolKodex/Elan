@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="2.1.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Elan.Common\Elan.Common.csproj" />
+  </ItemGroup>
+
 </Project>
