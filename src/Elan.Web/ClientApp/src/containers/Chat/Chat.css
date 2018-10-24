@@ -10,4 +10,19 @@
     flex-grow: 1;
     display: flex;
     min-height: 100%;
+    flex-direction: column;
+}
+
+.chat-bottom {
+	display: flex;
+	padding: 10px;
+}
+
+.chat-messages {
+	flex-grow: 1;
+}
+
+.chat-bottom .btn-outline-success {
+	border-color: #28a745;
+	margin-left: 5px;
 }

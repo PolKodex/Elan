@@ -58,10 +58,6 @@ body > .container {
     z-index: 1000;
 }
 
-    .chat div {
-        z-index: 1000;
-    }
-
     .chat .chat-input {
         vertical-align: bottom;
         position: absolute;
