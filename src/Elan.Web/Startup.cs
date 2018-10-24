@@ -107,7 +107,7 @@ namespace Elan.Web
             {
                 using (var context = serviceScope.ServiceProvider.GetService<ElanDbContext>())
                 {
-                    context.Database.Migrate();
+                    //context.Database.Migrate();
                 }
             }
         }

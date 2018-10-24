@@ -1,6 +1,191 @@
-@media (max-width: 767px) {
-    /* On small screens, the nav menu spans the full width of the screen. Leave a space for it. */
-    body {
-        padding-top: 50px;
+body {
+    background-color: #fdfff7;
+}
+
+body > .container {
+    margin-top: 56px;
+    padding-bottom: 30px;
+}
+
+.navbar {
+    z-index: 2000 !important;
+}
+
+.render-body {
+    z-index: 1100;
+}
+
+.tooltip {
+    z-index: 1100;
+}
+
+.post {
+    margin-top: 25px;
+}
+
+.post-image {
+    text-align: center;
+}
+
+.card-sm {
+    padding: .35rem 0.85rem;
+}
+
+.avatar-post img {
+    height: 3rem;
+    float: left;
+    margin-right: 15px;
+}
+
+.user-info {
+    min-height: 3rem;
+}
+
+.card-header a {
+    color: #212529;
+}
+
+.card-body img {
+    max-height: 250px;
+}
+
+.chat {
+    border-left: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    background-color: #f7f7f7;
+    position: relative;
+    min-height: calc(100vh - 56px);
+    z-index: 1000;
+}
+
+    .chat div {
+        z-index: 1000;
     }
+
+    .chat .chat-input {
+        vertical-align: bottom;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        margin: 10px 0px;
+    }
+
+        .chat .chat-input input {
+            width: calc(100% - 104px);
+            margin-right: 10px;
+        }
+
+.card-footer a {
+    color: #6c757d;
+    margin-right: 20px;
+}
+
+.brand-color {
+    color: #28a745;
+}
+
+.message {
+    width: 60%;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    padding: 5px 10px;
+}
+
+.message-interlocutor {
+    background-color: #cfcfcf;
+}
+
+.message-me {
+    background-color: #afdbb5;
+    margin-left: 35%;
+}
+
+.chat-friends {
+    border-bottom: 1px solid #6c757d;
+}
+
+.friends-list {
+    padding-top: 15px;
+    margin-bottom: 5px;
+}
+
+    .friends-list .dropdown .dropdown-menu,
+    .friends-list .dropdown button {
+        width: 100%;
+    }
+
+        .friends-list .dropdown .dropdown-menu input {
+            margin: .25rem 1rem .8rem 1rem;
+            width: calc(100% - 2rem);
+        }
+
+    .friends-list .dropdown .dropdown-item {
+        border-bottom: 2px solid #afdbb5;
+        border-top: 2px solid #eeeeee;
+        margin: .5rem 1rem;
+        width: calc(100% - 2rem);
+        border-radius: 3px;
+        background-color: #f7f7f7;
+    }
+
+
+.login-form .card .card-header {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+.login-form .card .card-body {
+    background-color: #f7f7f7;
+}
+
+.outer-vertical-center {
+    display: table;
+    position: absolute;
+    height: 100%;
+}
+
+.register-welcome ul li{
+    font-weight: 300;
+    font-size: 15px;
+}
+
+.register-welcome .lead {
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.register-welcome .list-group-item {
+    background-color: transparent;
+}
+
+.login-main {
+    margin-top: 15%;
+}
+
+.account-introduction {
+    margin-top: 15px;
+}
+
+    .account-introduction .avatar img {
+        max-height: 150px;
+        border: 4px solid #e7e7e7;
+        border-radius: 5px;
+    }
+
+.account-box {
+    margin-top: 25px;
+}
+
+.account-box .image-box img{
+    max-width: 100%;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+}
+
+.account-box .card-body .row {
+    margin-bottom: 25px;
+}
+
+.account-box .card-body .row:last-child {
+    margin-bottom: 0px;
 }

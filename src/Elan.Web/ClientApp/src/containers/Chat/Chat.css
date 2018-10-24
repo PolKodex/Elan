@@ -1,0 +1,13 @@
+.chat-wrapper {
+	padding: 5px;
+	min-height: 100%;
+	display: flex;
+}
+
+.chat {
+	border: 1px solid #cccccc;
+    background-color: #f7f7f7;
+    flex-grow: 1;
+    display: flex;
+    min-height: 100%;
+}

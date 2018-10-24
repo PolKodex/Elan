@@ -1,0 +1,32 @@
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+#root {
+	width: 100%;
+  	height: 100%;
+}
+
+.app {
+   width: 100%;
+   min-height: 100%;
+   display: flex;
+   flex-direction: column;
+   flex-grow: 1;
+}
+
+.app-view {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	flex-grow: 1;
+}
+
+.page {
+	flex-grow: 1;
+}
+
+.chat-container {
+	flex-grow: 1;
+}
