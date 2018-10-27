@@ -1,28 +1,38 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router';
 import TopBar from '../../components/TopBar/TopBar';
 import Chat from '../Chat/Chat';
 import Wall from '../Wall/Wall';
+import { withRouter, Route, Router } from "react-router-dom";
+import { createHashHistory } from 'history';
 import './App.css';
 
-export default class App extends Component {
+class App extends Component {
   constructor(props){
     super(props);
   }
 
   render() {
     return (
-      <div className="app">
-        <TopBar />
-        <div className="app-view">
-          <div className="page">
-              <Wall />
-          </div>
-          <div className="chat-container">
-            <Chat />
+        <div className="app-wrapper">
+          <TopBar />
+          <div className="app">
+            <div className="app-view">
+              <div className="page">
+                  <div className="page-content">
+                    <Route exact path="/app" render={() => <Wall />}/>
+                    <Route exact path="/app/account" render={() => (<p>Account page</p>)}/>
+                    <Route exact path="/app/groups" render={() => (<p>Groups page</p>)}/>
+                    <Route exact path="/app/settings" render={() => (<p>settings page</p>)}/>
+                  </div>
+              </div>
+              <div className="chat-container">
+                <Chat />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
     );
   }
 }
+
+export default withRouter(App);
