@@ -1,25 +1,41 @@
-﻿using Elan.Account.Contracts;
+﻿using System;
+using System.Security.Claims;
+using System.Text;
+using Elan.Account.Contracts;
 using Elan.Account.Models;
 using Elan.Common.Exceptions;
 using Elan.Data.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Elan.Account.Services
 {
     public class AuthService: IAuthService
     {
         private readonly UserManager<ElanUser> _userManager;
+        private readonly SignInManager<ElanUser> _signInManager;
+        private readonly IAuthValidationService _authValidationService;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(UserManager<ElanUser> userManager)
+        public AuthService(
+            UserManager<ElanUser> userManager,
+            SignInManager<ElanUser> signInManager,
+            IAuthValidationService authValidationService,
+            IConfiguration configuration)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
+            _authValidationService = authValidationService;
+            _configuration = configuration;
         }
 
-        public async Task Register(RegisterViewModel model)
+        public async Task<string> Register(RegisterViewModel model)
         {
-            ValidateRegistrationModel(model);
+            _authValidationService.ValidateRegisterViewModel(model);
 
             var newUser = new ElanUser
             {
@@ -34,32 +50,49 @@ namespace Elan.Account.Services
                 throw new RegistrationFailedException(
                     $"An error occured while registering user: {result.Errors.Join()}");
             }
+
+            await _signInManager.SignInAsync(newUser, false);
+            return GetToken(newUser);
         }
 
-        public Task SignIn(SignInViewModel model)
+        public async Task<string> SignIn(SignInViewModel model)
         {
-            return Task.CompletedTask;
+            _authValidationService.ValidateSignInViewModel(model);
+
+            var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
+
+            if (!result.Succeeded)
+            {
+                throw new SignInFailedException(
+                    $"An error occured while signing in user: {model.UserName}");
+            }
+
+            var user = await _userManager.FindByNameAsync(model.UserName);
+            return GetToken(user);
         }
 
-        private void ValidateRegistrationModel(RegisterViewModel model)
+        private string GetToken(ElanUser user)
         {
-            if (string.IsNullOrEmpty(model.Email))
-            {
-                throw new RegistrationFailedException(
-                    $"Registration error: Email cannot be null!");
-            }
+            var utcNow = DateTime.UtcNow;
 
-            if (string.IsNullOrEmpty(model.Password))
+            var claims = new Claim[]
             {
-                throw new RegistrationFailedException(
-                    $"Registration error: Password cannot be null!");
-            }
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, utcNow.ToString())
+            };
 
-            if (string.IsNullOrEmpty(model.UserName))
-            {
-                throw new RegistrationFailedException(
-                    $"Registration error: UserName cannot be null!");
-            }
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Tokens:Key")));
+            var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+
+            var jwt = new JwtSecurityToken(
+                signingCredentials: signingCredentials,
+                claims: claims,
+                notBefore: utcNow,
+                expires: utcNow.AddSeconds(_configuration.GetValue<int>("Tokens:Lifetime"))
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
     }
 }
