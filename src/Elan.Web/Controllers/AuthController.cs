@@ -52,6 +52,7 @@ namespace Elan.Web.Controllers
                 return Json(ex.Message);
             }
         }
+
         [HttpGet]
         [Authorize]
         public JsonResult Get()

@@ -70,6 +70,7 @@ namespace Elan.Account.Services
             var user = await _userManager.FindByNameAsync(model.UserName);
             return GetToken(user);
         }
+
         private string GetToken(ElanUser user)
         {
             var utcNow = DateTime.UtcNow;
