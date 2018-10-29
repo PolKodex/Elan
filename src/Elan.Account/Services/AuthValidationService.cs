@@ -31,13 +31,13 @@ namespace Elan.Account.Services
         {
             if (string.IsNullOrEmpty(model.Password))
             {
-                throw new RegistrationFailedException(
+                throw new SignInFailedException(
                     $"Registration error: Password cannot be null!");
             }
 
             if (string.IsNullOrEmpty(model.UserName))
             {
-                throw new RegistrationFailedException(
+                throw new SignInFailedException(
                     $"Registration error: UserName cannot be null!");
             }
         }

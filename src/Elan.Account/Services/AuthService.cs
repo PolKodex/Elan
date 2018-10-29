@@ -63,7 +63,8 @@ namespace Elan.Account.Services
 
             if (!result.Succeeded)
             {
-                return null;
+                throw new SignInFailedException(
+                    $"An error occured while signing in user: {model.UserName}");
             }
 
             var user = await _userManager.FindByNameAsync(model.UserName);
