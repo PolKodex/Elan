@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Elan.Account.Contracts;
 using Elan.Account.Models;
 using Elan.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Elan.Web.Controllers
@@ -21,12 +22,18 @@ namespace Elan.Web.Controllers
         }
 
         [HttpPost]
-        public async Task Register([FromBody] RegisterViewModel model)
+        public async Task<JsonResult> Register([FromBody] RegisterViewModel model)
         {
-            await _authService.Register(model);
+            return Json(await _authService.Register(model));
         }
 
+        [HttpPost]
+        public async Task<JsonResult> Login([FromBody] SignInViewModel model)
+        {
+            return Json(await _authService.SignIn(model));
+        }
         [HttpGet]
+        [Authorize]
         public JsonResult Get()
         {
             return Json(_db.Users.Select(x => x.UserName).ToList());

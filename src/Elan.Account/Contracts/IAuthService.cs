@@ -5,7 +5,7 @@ namespace Elan.Account.Contracts
 {
     public interface IAuthService
     {
-        Task Register(RegisterViewModel model);
-        Task SignIn(SignInViewModel model);
+        Task<string> Register(RegisterViewModel model);
+        Task<string> SignIn(SignInViewModel model);
     }
 }
