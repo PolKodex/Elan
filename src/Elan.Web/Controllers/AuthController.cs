@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Elan.Account.Contracts;
 using Elan.Account.Models;
+using Elan.Common.Exceptions;
 using Elan.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,13 +26,31 @@ namespace Elan.Web.Controllers
         [HttpPost]
         public async Task<JsonResult> Register([FromBody] RegisterViewModel model)
         {
-            return Json(await _authService.Register(model));
+            try
+            {
+                var token = await _authService.Register(model);
+                return Json(token);
+            }
+            catch (RegistrationFailedException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(ex.Message);
+            }
         }
 
         [HttpPost]
         public async Task<JsonResult> Login([FromBody] SignInViewModel model)
         {
-            return Json(await _authService.SignIn(model));
+            try
+            {
+                var token = await _authService.SignIn(model);
+                return Json(token);
+            }
+            catch (SignInFailedException ex)
+            {
+                Response.StatusCode = (int) HttpStatusCode.BadRequest;
+                return Json(ex.Message);
+            }
         }
         [HttpGet]
         [Authorize]
