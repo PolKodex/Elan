@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Elan.Web.Controllers
 {
     [Route("api/[controller]/[action]")]
-    public class AuthController: Controller
+    public class AuthController : Controller
     {
         private readonly IAuthService _authService;
         private readonly ElanDbContext _db;
@@ -48,7 +48,7 @@ namespace Elan.Web.Controllers
             }
             catch (SignInFailedException ex)
             {
-                Response.StatusCode = (int) HttpStatusCode.BadRequest;
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(ex.Message);
             }
         }
