@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import ChatTopBar from '../../components/ChatTopBar/ChatTopBar';
 import ChatMessage from '../../components/ChatMessage/ChatMessage';
 import './Chat.css';
+import * as signalR from '@aspnet/signalr';
 
 export default class Chat extends Component {
   constructor(props){
-    super(props);
+      super(props);
+      this.state = {
+          message: ""
+      };
   }
 
   render() {
@@ -26,11 +30,53 @@ export default class Chat extends Component {
             {messages}
           </div>
           <div className="chat-bottom">
-            <input type="text" className="form-control" />
-            <button className="btn btn-outline-success">Wyślij</button>
+            <input type="text" className="form-control" value={this.state.message} onChange={this.updateInputValue.bind(this)}/>
+            <button className="btn btn-outline-success" onClick={this.sendMessage.bind(this)}>Wyślij</button>
           </div>
         </div>
       </div>
     );
-  }
+    }
+    componentDidMount() {
+
+        const options = {
+            logMessageContent: true,
+            logger: signalR.LogLevel.Trace,
+          //  accessTokenFactory: () => this.props.accessToken,
+        };
+
+        // create the connection instance
+        this.connection = new signalR.HubConnectionBuilder()
+            .withHubProtocol(new signalR.JsonHubProtocol())
+            .withUrl("https://localhost:44354/chathub", options)
+            .build();
+
+        const startSignalRConnection = connection => connection.start()
+            .then(() => console.info('Websocket Connection Established'))
+            .catch(err => console.error('SignalR Connection Error: ', err));
+
+        this.connection.start()
+            .then(() => console.info('SignalR Connected'))
+            .catch(err => console.error('SignalR Connection Error: ', err));
+
+        this.connection.on('ReceiveMessage', this.onMessageReceived);
+        this.connection.onclose(() => setTimeout(startSignalRConnection(this.connection), 5000));
+
+    }
+    onMessageReceived(message) {
+        console.log(message);
+    }
+    sendMessage() {
+        this.connection.invoke('Test');
+       // this.connection.invoke("SendMessage", "test", "test2", "Test content").catch(err => console.error(err.toString()));;
+        this.setState({
+            message: ""
+        });
+    }
+
+    updateInputValue(event) {
+        this.setState({
+            message: event.target.value
+        });
+    }
 }

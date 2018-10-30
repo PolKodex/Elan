@@ -1,4 +1,5 @@
-﻿using Elan.Account.Contracts;
+﻿using System;
+using Elan.Account.Contracts;
 using Elan.Chat.Contracts;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
@@ -17,8 +18,13 @@ namespace Elan.Web.Chat
             _chatService = chatService;
         }
 
+        public void Test()
+        {
+            Console.WriteLine("lol");
+        }
         public async Task SendMessage(string fromUserId, string toUserId, string message)
         {
+            await Clients.All.SendAsync("ReceiveMessage", message);
             var userFrom = await _userService.GetUser(fromUserId);
             var userTo = await _userService.GetUser(toUserId);
             
@@ -31,6 +37,7 @@ namespace Elan.Web.Chat
             catch
             {
                 await Clients.Caller.SendAsync("ReceiveMessage", "We failed to deliver your message. Sorry :(");
+                throw;
             }
            
         }

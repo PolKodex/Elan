@@ -92,10 +92,24 @@ namespace Elan.Web
                     }
                 };
             });
-            // In production, the React files will be served from this directory
+
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+                builder =>
+                {
+                    builder.AllowAnyMethod().AllowAnyHeader()
+                        .AllowAnyOrigin()
+                        .AllowCredentials();
+                }));
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
+            });
+
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+                options.HandshakeTimeout = TimeSpan.MaxValue;
             });
 
             services.RegisterAccountModule();
@@ -118,6 +132,7 @@ namespace Elan.Web
             UpdateDatabase(app);
 
             app.UseAuthentication();
+            app.UseCors("CorsPolicy");
 
             app.UseDeveloperExceptionPage();
 
