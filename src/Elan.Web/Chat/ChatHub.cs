@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
-using Elan.Account.Contracts;
+﻿using Elan.Account.Contracts;
 using Elan.Chat.Contracts;
-using Elan.Data.Models.Chat;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace Elan.Web.Chat
 {
@@ -25,7 +24,7 @@ namespace Elan.Web.Chat
             
             try
             {
-                var chatMessage = _chatService.SaveMessage(userFrom, userTo, message);
+                var chatMessage = await _chatService.SaveMessage(userFrom, userTo, message);
 
                 await Clients.User(toUserId).SendAsync("ReceiveMessage", JsonConvert.SerializeObject(chatMessage));
             }

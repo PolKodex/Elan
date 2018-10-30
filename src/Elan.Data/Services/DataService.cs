@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using Elan.Data.Contracts;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-using Elan.Data.Contracts;
 
 namespace Elan.Data.Services
 {
@@ -13,7 +13,7 @@ namespace Elan.Data.Services
             _dbContext = dbContext;
         }
 
-        public IQueryable<T> GetSet<T>() where T: class
+        public DbSet<T> GetSet<T>() where T: class
         {
             return _dbContext.Set<T>();
         }
