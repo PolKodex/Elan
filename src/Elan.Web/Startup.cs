@@ -1,8 +1,11 @@
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using Elan.Account;
+using Elan.Chat;
 using Elan.Data;
 using Elan.Data.Models.Account;
+using Elan.Web.Chat;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -73,6 +76,21 @@ namespace Elan.Web
                     ValidateIssuer = false,
                     ValidateIssuerSigningKey = true
                 };
+                config.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/chathub")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -81,6 +99,7 @@ namespace Elan.Web
             });
 
             services.RegisterAccountModule();
+            services.RegisterChatModule();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -104,6 +123,10 @@ namespace Elan.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chathub");
+            });
 
             app.UseMvc(routes =>
             {
