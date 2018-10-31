@@ -3,8 +3,14 @@ import ChatTopBar from '../../components/ChatTopBar/ChatTopBar';
 import ChatMessage from '../../components/ChatMessage/ChatMessage';
 import './Chat.css';
 
+import * as jwtUtils from '../../utils/JwtUtils';
+
 import * as signalR from '@aspnet/signalr';
+
 import * as chatApi from '../../api/ChatApi';
+import * as friendsApi from '../../api/FriendsApi';
+
+
 
 export default class Chat extends Component {
     constructor(props) {
@@ -13,8 +19,24 @@ export default class Chat extends Component {
             activeUser: null,
             messages: {},
             visibleMessages: [],
-            message: ""
+            message: "",
+            users: []
         };
+        const decodedToken = jwtUtils.decodeJwt(localStorage.getItem('token'));
+        friendsApi
+            .getFriends(decodedToken.jti)
+            .then(function (response) {
+                var users = this.state.users;
+
+                response.data.map(f => {
+                    return {
+                        id: f.id,
+                        name: f.userName
+                    };
+                }).forEach(u => users.push(u));
+
+                this.setState({ users });
+            }.bind(this));
     }
     componentDidMount() {
         const options = {
@@ -40,16 +62,9 @@ export default class Chat extends Component {
         this.connection.onclose(() => setTimeout(startSignalRConnection(this.connection), 5000));
     }
 
-    decodeJwt() {
-        var token = localStorage.getItem('token');
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace('-', '+').replace('_', '/');
-        return JSON.parse(window.atob(base64));
-    }
-
     onMessageReceived(message) {
         message = JSON.parse(message);
-        var decodedToken = this.decodeJwt();
+        var decodedToken = jwtUtils.decodeJwt();
         var messages = this.state.messages;
 
         if (message.ToUserId === decodedToken.jti) {
@@ -126,18 +141,12 @@ export default class Chat extends Component {
     }
 
     render() {
-        let users = [{ id: "fc5c017d-5a2f-4e2c-5cdf-08d63f5e546f", name: "test3" },
-        { id: "14246c63-c356-46e8-33fd-08d639229835", name: "test2" },
-        { id: "1", name: "Karol Nowicki" },
-        { id: "1", name: "Gabriel Mackiewicz" },
-        { id: "1", name: "Beata Hryniewicka" }];
-
         let messages = this.state.visibleMessages.map((msg, index) => <ChatMessage isToMe={msg.isToMe} content={msg.content} key={index} />);
 
         return (
             <div className="chat-wrapper">
                 <div className="chat">
-                    <ChatTopBar users={users} activeUser={this.state.activeUser} activeUserChanged={this.onUserChange} />
+                    <ChatTopBar users={this.state.users} activeUser={this.state.activeUser} activeUserChanged={this.onUserChange} />
                     <div className="chat-messages">
                         {messages}
                     </div>

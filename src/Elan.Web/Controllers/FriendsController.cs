@@ -20,6 +20,7 @@ namespace Elan.Web.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
         public async Task<JsonResult> GetFriends(string userId)
         {
             var user = await _userService.GetUserById(userId);
