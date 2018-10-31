@@ -1,8 +1,10 @@
-using System;
-using System.Text;
 using Elan.Account;
+using Elan.Chat;
 using Elan.Data;
 using Elan.Data.Models.Account;
+using Elan.Friends;
+using Elan.Users;
+using Elan.Web.Chat;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +15,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Elan.Web
 {
@@ -73,14 +78,47 @@ namespace Elan.Web
                     ValidateIssuer = false,
                     ValidateIssuerSigningKey = true
                 };
+                config.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/chathub")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
-            // In production, the React files will be served from this directory
+
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+                builder =>
+                {
+                    builder.AllowAnyMethod().AllowAnyHeader()
+                        .AllowAnyOrigin()
+                        .AllowCredentials();
+                }));
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
             });
 
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+                options.HandshakeTimeout = TimeSpan.MaxValue;
+            });
+
             services.RegisterAccountModule();
+            services.RegisterChatModule();
+            services.RegisterDataModule();
+            services.RegisterFriendsModule();
+            services.RegisterUsersModule();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -98,12 +136,17 @@ namespace Elan.Web
             UpdateDatabase(app);
 
             app.UseAuthentication();
+            app.UseCors("CorsPolicy");
 
             app.UseDeveloperExceptionPage();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chathub");
+            });
 
             app.UseMvc(routes =>
             {

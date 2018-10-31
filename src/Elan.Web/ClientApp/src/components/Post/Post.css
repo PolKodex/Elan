@@ -3,3 +3,7 @@
 	min-width: 90%;
 	margin: 10px 0 10px 0;
 }
+
+.card-text img {
+	max-width: 100%;
+}

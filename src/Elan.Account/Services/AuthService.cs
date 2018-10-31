@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 using Elan.Account.Contracts;
@@ -75,11 +76,11 @@ namespace Elan.Account.Services
         {
             var utcNow = DateTime.UtcNow;
 
-            var claims = new Claim[]
+            var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, utcNow.ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, utcNow.ToString(CultureInfo.InvariantCulture))
             };
 
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Tokens:Key")));

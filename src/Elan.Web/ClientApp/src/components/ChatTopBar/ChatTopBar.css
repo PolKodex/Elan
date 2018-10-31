@@ -8,3 +8,7 @@
 .friends-list {
 	flex-grow: 1;
 }
+
+.dropdown-menu {
+	padding: 2px;
+}
