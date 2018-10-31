@@ -1,11 +1,11 @@
-﻿using System;
-using Elan.Account.Contracts;
-using Elan.Chat.Contracts;
+﻿using Elan.Chat.Contracts;
+using Elan.Users.Contracts;
+using Elan.Web.ViewModels.Chat;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Elan.Web.ViewModels.Chat;
 
 namespace Elan.Web.Chat
 {

@@ -1,10 +1,9 @@
-﻿using Elan.Account.Contracts;
-using Elan.Data.Models.Account;
-using System;
-using System.Threading.Tasks;
+﻿using Elan.Data.Models.Account;
+using Elan.Users.Contracts;
 using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
-namespace Elan.Account.Services
+namespace Elan.Users.Services
 {
     public class UserService: IUserService
     {

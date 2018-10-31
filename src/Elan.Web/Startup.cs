@@ -2,6 +2,8 @@ using Elan.Account;
 using Elan.Chat;
 using Elan.Data;
 using Elan.Data.Models.Account;
+using Elan.Friends;
+using Elan.Users;
 using Elan.Web.Chat;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -115,6 +117,8 @@ namespace Elan.Web
             services.RegisterAccountModule();
             services.RegisterChatModule();
             services.RegisterDataModule();
+            services.RegisterFriendsModule();
+            services.RegisterUsersModule();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Elan.Data.Models.Account;
 
-namespace Elan.Account.Contracts
+namespace Elan.Users.Contracts
 {
     public interface IUserService
     {
