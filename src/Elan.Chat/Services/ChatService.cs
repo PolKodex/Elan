@@ -3,7 +3,10 @@ using Elan.Data.Contracts;
 using Elan.Data.Models.Account;
 using Elan.Data.Models.Chat;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Elan.Chat.Services
 {
@@ -30,6 +33,24 @@ namespace Elan.Chat.Services
             await _dataService.SaveDbAsync();
 
             return chatMessage;
+        }
+
+        public async Task<List<ChatMessage>> GetMessagesAsync(ElanUser user1, ElanUser user2, int skip = 0, int take = 10)
+        {
+            var messages = 
+                await _dataService
+                    .GetSet<ChatMessage>()
+                    .Include(m => m.UserFrom)
+                    .Include(m => m.UserTo)
+                    .Where(m => (m.UserFrom.Id == user1.Id && m.UserTo.Id == user2.Id)
+                                || m.UserFrom.Id == user2.Id && m.UserTo.Id == user1.Id)
+                    .OrderByDescending(m => m.SentOn)
+                    .Skip(skip)
+                    .Take(take)
+                    .OrderBy(m => m.SentOn)
+                    .ToListAsync();
+
+            return messages;
         }
     }
 }

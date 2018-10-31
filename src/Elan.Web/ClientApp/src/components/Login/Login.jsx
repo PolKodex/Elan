@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import * as auth from '../../api/AuthService';
+import * as auth from '../../api/AuthApi';
 import './Login.css';
-import { Redirect } from 'react-router'
+import { Redirect } from 'react-router';
 
 export default class Login extends Component {
     constructor(props) {
@@ -23,9 +23,6 @@ export default class Login extends Component {
     }
 
     handleSubmit = () => {
-        console.log(this.state.login);
-        console.log(this.state.password);
-
         auth.signIn(this.state.login, this.state.password)
             .then(function(token) {
                 localStorage.setItem('token', token);

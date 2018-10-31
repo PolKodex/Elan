@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import ChatTopBar from '../../components/ChatTopBar/ChatTopBar';
 import ChatMessage from '../../components/ChatMessage/ChatMessage';
 import './Chat.css';
+
 import * as signalR from '@aspnet/signalr';
+import * as chatApi from '../../api/ChatApi';
 
 export default class Chat extends Component {
     constructor(props) {
@@ -23,7 +25,7 @@ export default class Chat extends Component {
 
         this.connection = new signalR.HubConnectionBuilder()
             .withHubProtocol(new signalR.JsonHubProtocol())
-            .withUrl("http://localhost:59549/chathub", options)
+            .withUrl("/chathub", options)
             .build();
 
         const startSignalRConnection = connection => connection.start()
@@ -37,41 +39,54 @@ export default class Chat extends Component {
         this.connection.on('ReceiveMessage', this.onMessageReceived.bind(this));
         this.connection.onclose(() => setTimeout(startSignalRConnection(this.connection), 5000));
     }
+
     decodeJwt() {
         var token = localStorage.getItem('token');
         var base64Url = token.split('.')[1];
         var base64 = base64Url.replace('-', '+').replace('_', '/');
         return JSON.parse(window.atob(base64));
     }
+
     onMessageReceived(message) {
         message = JSON.parse(message);
         var decodedToken = this.decodeJwt();
         var messages = this.state.messages;
 
-        if (message.ToUserId == decodedToken.jti) {
+        if (message.ToUserId === decodedToken.jti) {
             if (!messages[message.FromUserId]) {
-                messages[message.FromUserId] = [];
+                messages[message.FromUserId] = chatApi.getMessages(message.FromUserId).map(m => {
+                    return {
+                        isToMe: m.IsToMe,
+                        content: m.Content
+                    };
+                });
+            } else {
+                messages[message.FromUserId].push({
+                    isToMe: true,
+                    content: message.Content
+                });
             }
 
-            messages[message.FromUserId].push({
-                isToMe: true,
-                content: message.Content
-            });
         } else {
             if (!messages[message.ToUserId]) {
-                messages[message.ToUserId] = [];
+                messages[message.ToUserId] = chatApi.getMessages(message.ToUserId).map(m => {
+                    return {
+                        isToMe: m.IsToMe,
+                        content: m.Content
+                    };
+                });
+            } else {
+                messages[message.ToUserId].push({
+                    isToMe: false,
+                    content: message.Content
+                });
             }
-
-            messages[message.ToUserId].push({
-                isToMe: false,
-                content: message.Content
-            });
+            this.setState({ messages });
         }
-        this.setState({ messages });
     }
 
     sendMessage() {
-        this.connection.invoke("SendMessage", this.state.activeUser.id, this.state.message).catch(err => console.error(err.toString()));;
+        this.connection.invoke("SendMessage", this.state.activeUser.id, this.state.message).catch(err => console.error(err.toString()));
         this.setState({
             message: ""
         });
@@ -82,18 +97,34 @@ export default class Chat extends Component {
             message: event.target.value
         });
     }
+
     onUserChange = (user) => {
-        console.log(user);
         const messages = this.state.messages;
         if (!messages[user.id]) {
-            messages[user.id] = [];
+            chatApi.getMessages(user.id)
+                .then(function (data) {
+                    messages[user.id] = data.map(m => {
+                        return {
+                            isToMe: m.isToMe,
+                            content: m.content
+                        };
+                    });
+                    this.setState({
+                        messages,
+                        visibleMessages: messages[user.id],
+                        activeUser: user
+                    });
+                }.bind(this));
+        } else {
+            this.setState({
+                messages,
+                visibleMessages: messages[user.id],
+                activeUser: user
+            });
         }
-        this.setState({
-            messages,
-            visibleMessages: messages[user.id],
-            activeUser: user
-        });
+
     }
+
     render() {
         let users = [{ id: "fc5c017d-5a2f-4e2c-5cdf-08d63f5e546f", name: "test3" },
         { id: "14246c63-c356-46e8-33fd-08d639229835", name: "test2" },

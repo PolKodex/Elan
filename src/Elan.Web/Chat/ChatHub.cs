@@ -33,9 +33,14 @@ namespace Elan.Web.Chat
             {
                 var chatMessage = await _chatService.SaveMessage(userFrom, userTo, message);
 
-                var chatMessageViewModel = new ChatMessageViewModel(chatMessage); 
+                var chatMessageViewModel = new ChatMessageViewModel(chatMessage);
 
-                await Clients.Client(_connections[userTo.UserName]).SendAsync("ReceiveMessage", JsonConvert.SerializeObject(chatMessageViewModel));
+                if (_connections.ContainsKey(userTo.UserName))
+                {
+                    await Clients.Client(_connections[userTo.UserName]).SendAsync("ReceiveMessage", JsonConvert.SerializeObject(chatMessageViewModel));
+
+                }
+
                 await Clients.Caller.SendAsync("ReceiveMessage", JsonConvert.SerializeObject(chatMessageViewModel));
             }
             catch

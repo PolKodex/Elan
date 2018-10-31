@@ -15,7 +15,7 @@ export default class ChatTopBar extends Component {
 
 
   filterUsers = (value) => {
-    let users = this.users.filter((user) => user.name.indexOf(value) != -1);
+    let users = this.users.filter((user) => user.name.indexOf(value) !== -1);
     this.setState({filterUsers: users});
     console.log("CHANGE!");
   }

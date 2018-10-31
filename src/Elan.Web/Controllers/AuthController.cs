@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Elan.Account.Contracts;
+﻿using Elan.Account.Contracts;
 using Elan.Account.Models;
 using Elan.Common.Exceptions;
 using Elan.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Elan.Web.Controllers
 {
