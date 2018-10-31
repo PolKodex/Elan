@@ -5,6 +5,7 @@ namespace Elan.Account.Contracts
 {
     public interface IUserService
     {
-        Task<ElanUser> GetUser(string userId);
+        Task<ElanUser> GetUserById(string userId);
+        Task<ElanUser> GetUserByName(string userName);
     }
 }

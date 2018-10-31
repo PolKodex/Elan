@@ -18,15 +18,12 @@ namespace Elan.Web.Chat
             _chatService = chatService;
         }
 
-        public void Test()
-        {
-            Console.WriteLine("lol");
-        }
-        public async Task SendMessage(string fromUserId, string toUserId, string message)
+        public async Task SendMessage(string toUserId, string message)
         {
             await Clients.All.SendAsync("ReceiveMessage", message);
-            var userFrom = await _userService.GetUser(fromUserId);
-            var userTo = await _userService.GetUser(toUserId);
+
+            var userFrom = await _userService.GetUserByName(Context.User.Identity.Name);
+            var userTo = await _userService.GetUserById(toUserId);
             
             try
             {

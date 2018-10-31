@@ -32,7 +32,6 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\src\assets\" />
-    <Folder Include="ClientApp\src\api\" />
     <Folder Include="ClientApp\src\components\" />
     <Folder Include="ClientApp\src\containers\" />
   </ItemGroup>

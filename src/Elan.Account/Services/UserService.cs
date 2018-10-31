@@ -15,9 +15,14 @@ namespace Elan.Account.Services
             _userManager = userManager;
         }
 
-        public async Task<ElanUser> GetUser(string userId)
+        public async Task<ElanUser> GetUserById(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
+            return user;
+        }
+        public async Task<ElanUser> GetUserByName(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
             return user;
         }
     }
