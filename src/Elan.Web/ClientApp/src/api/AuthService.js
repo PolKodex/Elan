@@ -1,9 +1,9 @@
 ﻿const axios = require('axios');
 
 export const signIn = async (username, password) => {
-    var host = "http://localhost:59549/api/Auth/Login";
+    var api = "/api/Auth/Login";
 
-    return axios.post(host,
+    return axios.post(api,
         {
             UserName: username,
             Password: password

@@ -3,7 +3,9 @@ using Elan.Account.Contracts;
 using Elan.Chat.Contracts;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Elan.Web.ViewModels.Chat;
 
 namespace Elan.Web.Chat
 {
@@ -11,6 +13,10 @@ namespace Elan.Web.Chat
     {
         private readonly IUserService _userService;
         private readonly IChatService _chatService;
+
+        private readonly object _lock = new object();
+
+        private static readonly Dictionary<string, string> _connections = new Dictionary<string, string>();
 
         public ChatHub(IUserService userService, IChatService chatService)
         {
@@ -20,8 +26,6 @@ namespace Elan.Web.Chat
 
         public async Task SendMessage(string toUserId, string message)
         {
-            await Clients.All.SendAsync("ReceiveMessage", message);
-
             var userFrom = await _userService.GetUserByName(Context.User.Identity.Name);
             var userTo = await _userService.GetUserById(toUserId);
             
@@ -29,14 +33,44 @@ namespace Elan.Web.Chat
             {
                 var chatMessage = await _chatService.SaveMessage(userFrom, userTo, message);
 
-                await Clients.User(toUserId).SendAsync("ReceiveMessage", JsonConvert.SerializeObject(chatMessage));
+                var chatMessageViewModel = new ChatMessageViewModel(chatMessage); 
+
+                await Clients.Client(_connections[userTo.UserName]).SendAsync("ReceiveMessage", JsonConvert.SerializeObject(chatMessageViewModel));
+                await Clients.Caller.SendAsync("ReceiveMessage", JsonConvert.SerializeObject(chatMessageViewModel));
             }
             catch
             {
                 await Clients.Caller.SendAsync("ReceiveMessage", "We failed to deliver your message. Sorry :(");
                 throw;
+            }   
+        }
+        public override Task OnConnectedAsync()
+        {
+            var userName = Context.User.Identity.Name;
+
+            lock (_lock)
+            {
+                if (!_connections.ContainsKey(userName))
+                {
+                    _connections.Add(userName, Context.ConnectionId);
+                }
             }
-           
+            return base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            var userName = Context.User.Identity.Name;
+
+            lock (_lock)
+            {
+                if (_connections.ContainsKey(userName))
+                {
+                    _connections.Remove(userName);
+                }
+            }
+
+            return base.OnDisconnectedAsync(exception);
         }
     }
 }

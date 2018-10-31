@@ -3,24 +3,24 @@ import ChatTopBar from '../../components/ChatTopBar/ChatTopBar';
 import ChatMessage from '../../components/ChatMessage/ChatMessage';
 import './Chat.css';
 import * as signalR from '@aspnet/signalr';
-import * as auth from '../../api/AuthService';
 
 export default class Chat extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            activeUser: null,
+            messages: {},
+            visibleMessages: [],
             message: ""
         };
     }
     componentDidMount() {
-        let token = Promise.resolve(auth.signIn("test2", "Haslo123."));
         const options = {
             logMessageContent: true,
             logger: signalR.LogLevel.Trace,
-            accessTokenFactory: () => token
+            accessTokenFactory: () => localStorage.getItem('token')
         };
 
-        // create the connection instance
         this.connection = new signalR.HubConnectionBuilder()
             .withHubProtocol(new signalR.JsonHubProtocol())
             .withUrl("http://localhost:59549/chathub", options)
@@ -34,14 +34,44 @@ export default class Chat extends Component {
             .then(() => console.info('SignalR Connected'))
             .catch(err => console.error('SignalR Connection Error: ', err));
 
-        this.connection.on('ReceiveMessage', this.onMessageReceived);
+        this.connection.on('ReceiveMessage', this.onMessageReceived.bind(this));
         this.connection.onclose(() => setTimeout(startSignalRConnection(this.connection), 5000));
     }
-    onMessageReceived(message) {
-        console.log(message);
+    decodeJwt() {
+        var token = localStorage.getItem('token');
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
     }
+    onMessageReceived(message) {
+        message = JSON.parse(message);
+        var decodedToken = this.decodeJwt();
+        var messages = this.state.messages;
+
+        if (message.ToUserId == decodedToken.jti) {
+            if (!messages[message.FromUserId]) {
+                messages[message.FromUserId] = [];
+            }
+
+            messages[message.FromUserId].push({
+                isToMe: true,
+                content: message.Content
+            });
+        } else {
+            if (!messages[message.ToUserId]) {
+                messages[message.ToUserId] = [];
+            }
+
+            messages[message.ToUserId].push({
+                isToMe: false,
+                content: message.Content
+            });
+        }
+        this.setState({ messages });
+    }
+
     sendMessage() {
-        this.connection.invoke("SendMessage", "test", "test2", "Test content").catch(err => console.error(err.toString()));;
+        this.connection.invoke("SendMessage", this.state.activeUser.id, this.state.message).catch(err => console.error(err.toString()));;
         this.setState({
             message: ""
         });
@@ -52,19 +82,31 @@ export default class Chat extends Component {
             message: event.target.value
         });
     }
+    onUserChange = (user) => {
+        console.log(user);
+        const messages = this.state.messages;
+        if (!messages[user.id]) {
+            messages[user.id] = [];
+        }
+        this.setState({
+            messages,
+            visibleMessages: messages[user.id],
+            activeUser: user
+        });
+    }
     render() {
-        let data = [{ isToMe: true, content: "Message1" },
-        { isToMe: false, content: "Message2" },
-        { isToMe: true, content: "Message3" },
-        { isToMe: false, content: "Message4" },
-        { isToMe: true, content: "Message5" }];
+        let users = [{ id: "fc5c017d-5a2f-4e2c-5cdf-08d63f5e546f", name: "test3" },
+        { id: "14246c63-c356-46e8-33fd-08d639229835", name: "test2" },
+        { id: "1", name: "Karol Nowicki" },
+        { id: "1", name: "Gabriel Mackiewicz" },
+        { id: "1", name: "Beata Hryniewicka" }];
 
-        let messages = data.map((msg, index) => <ChatMessage isToMe={msg.isToMe} content={msg.content} key={index} />);
+        let messages = this.state.visibleMessages.map((msg, index) => <ChatMessage isToMe={msg.isToMe} content={msg.content} key={index} />);
 
         return (
             <div className="chat-wrapper">
                 <div className="chat">
-                    <ChatTopBar />
+                    <ChatTopBar users={users} activeUser={this.state.activeUser} activeUserChanged={this.onUserChange} />
                     <div className="chat-messages">
                         {messages}
                     </div>

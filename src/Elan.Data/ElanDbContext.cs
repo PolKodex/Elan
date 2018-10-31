@@ -12,6 +12,8 @@ namespace Elan.Data
 
         public ElanDbContext(DbContextOptions options) : base(options)
         {
+            Ref = this;
         }
+        public static ElanDbContext Ref { get; set; }
     }
 }

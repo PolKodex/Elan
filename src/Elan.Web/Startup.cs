@@ -1,6 +1,3 @@
-using System;
-using System.Text;
-using System.Threading.Tasks;
 using Elan.Account;
 using Elan.Chat;
 using Elan.Data;
@@ -16,6 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Elan.Web
 {

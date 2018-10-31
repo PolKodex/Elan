@@ -6,13 +6,28 @@ import './ChatTopBar.css';
 export default class ChatTopBar extends Component {
   constructor(props){
     super(props);
+    this.state = {
+      filterUsers: props.users
+    };
+    
+    this.users = props.users; 
   }
 
-  render() {
-    //test
-    let names = ["Kamil Kuryś", "Maciej Owerczuk", "Karol Nowicki", "Gabriel Mackiewicz", "Beata Hryniewicka"];
 
-    let searchResult = names.map((name, index) => (<ChatSearchRow name={name} key={index}/>))
+  filterUsers = (value) => {
+    let users = this.users.filter((user) => user.name.indexOf(value) != -1);
+    this.setState({filterUsers: users});
+    console.log("CHANGE!");
+  }
+
+  onFilterChanged = (e) => {
+    this.filterUsers(e.target.value);
+  }
+
+
+  render() {
+
+    let searchResult = this.state.filterUsers.map((user, index) => (<ChatSearchRow user={user} key={index} onSelect={this.props.activeUserChanged}/>))
 
     return (
         <div className="chat-top-bar">
@@ -23,11 +38,11 @@ export default class ChatTopBar extends Component {
                             <img src={require("../../assets/default_avatar.jpg")} />
                         </div>
                         <div className="user-post">
-                            <strong>Marcin Korwek</strong><br/>
+                            <strong>{this.props.activeUser ? this.props.activeUser.name : 'User not selected'}</strong><br/>
                         </div>
                     </button>
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <input type="text" placeholder="Szukaj znajomych" className="form-control" />
+                        <input type="text" placeholder="Szukaj znajomych" className="form-control" onChange={this.onFilterChanged}/>
                         {searchResult}
                     </div>
                 </div>
