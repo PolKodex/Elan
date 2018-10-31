@@ -64,7 +64,7 @@ export default class Chat extends Component {
 
     onMessageReceived(message) {
         message = JSON.parse(message);
-        var decodedToken = jwtUtils.decodeJwt();
+        var decodedToken = jwtUtils.decodeJwt(localStorage.getItem('token'));
         var messages = this.state.messages;
 
         if (message.ToUserId === decodedToken.jti) {
