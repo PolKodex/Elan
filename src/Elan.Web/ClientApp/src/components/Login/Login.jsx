@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import * as auth from '../../api/AuthApi';
+import { withRouter, Link } from "react-router-dom";
 import './Login.css';
 import { Redirect } from 'react-router';
 
