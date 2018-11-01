@@ -1,4 +1,4 @@
-using Elan.Account;
+﻿using Elan.Account;
 using Elan.Chat;
 using Elan.Data;
 using Elan.Data.Models.Account;
@@ -62,46 +62,51 @@ namespace Elan.Web
             });
 
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]));
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(config =>
-            {
-                config.RequireHttpsMetadata = false;
-                config.SaveToken = true;
-                config.TokenValidationParameters = new TokenValidationParameters()
+            services
+                .AddAuthentication(options =>
                 {
-                    IssuerSigningKey = signingKey,
-                    ValidateLifetime = true,
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    ValidateIssuerSigningKey = true
-                };
-                config.Events = new JwtBearerEvents
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(config =>
                 {
-                    OnMessageReceived = context =>
+                    config.RequireHttpsMetadata = false;
+                    config.SaveToken = true;
+                    config.TokenValidationParameters = new TokenValidationParameters
                     {
-                        var accessToken = context.Request.Query["access_token"];
-                        var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken) &&
-                            (path.StartsWithSegments("/chathub")))
+                        IssuerSigningKey = signingKey,
+                        ValidateLifetime = true,
+                        ValidateAudience = false,
+                        ValidateIssuer = false,
+                        ValidateIssuerSigningKey = true
+                    };
+                    config.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
                         {
-                            // Read the token out of the query string
-                            context.Token = accessToken;
-                        }
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) &&
+                                (path.StartsWithSegments("/chathub")))
+                            {
+                                // Read the token out of the query string
+                                context.Token = accessToken;
+                            }
 
-            services.AddCors(options => options.AddPolicy("CorsPolicy",
-                builder =>
-                {
-                    builder.AllowAnyMethod().AllowAnyHeader()
-                        .AllowAnyOrigin()
-                        .AllowCredentials();
-                }));
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+
+            services.AddCors(options => options
+                .AddPolicy("CorsPolicy",
+                    builder =>
+                    {
+                        builder.AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowAnyOrigin()
+                            .AllowCredentials();
+                    }));
 
             services.AddSpaStaticFiles(configuration =>
             {
@@ -165,6 +170,7 @@ namespace Elan.Web
                 }
             });
         }
+
         private static void UpdateDatabase(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices

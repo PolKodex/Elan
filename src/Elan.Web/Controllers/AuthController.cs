@@ -1,25 +1,19 @@
-﻿using Elan.Account.Contracts;
+﻿using System.Net;
+using System.Threading.Tasks;
+using Elan.Account.Contracts;
 using Elan.Account.Models;
 using Elan.Common.Exceptions;
-using Elan.Data;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace Elan.Web.Controllers
 {
-    [Route("api/[controller]/[action]")]
-    public class AuthController : Controller
+    public class AuthController : ElanBaseController
     {
         private readonly IAuthService _authService;
-        private readonly ElanDbContext _db;
 
-        public AuthController(IAuthService authService, ElanDbContext db)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
-            _db = db;
         }
 
         [HttpPost]
@@ -50,13 +44,6 @@ namespace Elan.Web.Controllers
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(ex.Message);
             }
-        }
-
-        [HttpGet]
-        [Authorize]
-        public JsonResult Get()
-        {
-            return Json(_db.Users.Select(x => x.UserName).ToList());
         }
     }
 }

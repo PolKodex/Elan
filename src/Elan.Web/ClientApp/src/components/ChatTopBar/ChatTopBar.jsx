@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import ChatSearchRow from '../ChatSearchRow/ChatSearchRow';
 import './ChatTopBar.css';
 

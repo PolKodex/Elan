@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import './ChatMessage.css';
 
 export default class ChatMessage extends Component {
