@@ -11,6 +11,7 @@ export default class Login extends Component {
         this.state = {
             login: '',
             password: '',
+            message: '',
             redirect: false
         }
     }
@@ -28,15 +29,24 @@ export default class Login extends Component {
             .then(function(token) {
                 localStorage.setItem('token', token);
                 this.setState({ redirect: true });
-            }.bind(this));
+            }.bind(this))
+            .catch((response) => {
+                this.setState({ 
+                    message: 'Login lub hasło nie są poprawne'
+                });
+            });
+    }
+    
+    renderRedirect = () => {
+        if (this.state.redirect) {
+            return <Redirect to='/app' />
+        }
     }
 
     render() {
-        if (this.state.redirect) {
-            return (<Redirect to='/app'/>);
-        }
         return (
             <div className="container login-page">
+                { this.renderRedirect() }
                 <div className="row login-logo">
                     <div className="">
 
@@ -72,6 +82,8 @@ export default class Login extends Component {
                                             value={ this.state.password } 
                                             onChange={ this.passwordChange }  />
                                     </div>
+
+                                    <small className="form-text text-danger">{ this.state.message }</small>
 
                                     <a href="#" className="text-muted">Zapomniałem hasła</a>
                                     <input type="submit" className="btn btn-success float-right" value="Zaloguj się" />

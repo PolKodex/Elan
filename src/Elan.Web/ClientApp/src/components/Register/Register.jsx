@@ -140,15 +140,14 @@ export default class Register extends Component {
 
     renderRedirect = () => {
         if (this.state.redirect) {
-          return <Redirect to='/app' />
+            return <Redirect to='/app' />
         }
-      }
+    }
 
     render() {
         return (
             <div className="container login-page">
                 { this.renderRedirect() }
-
                 <div className="row login-logo">
                     <div className="">
 
