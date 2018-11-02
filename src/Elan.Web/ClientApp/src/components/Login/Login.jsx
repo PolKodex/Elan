@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import * as auth from '../../api/AuthApi';
+import { withRouter, Link } from "react-router-dom";
 import './Login.css';
 import { Redirect } from 'react-router';
 
@@ -51,7 +52,7 @@ export default class Login extends Component {
                             <div className="card-body">
                                 <form onSubmit={ this.handleSubmit }>
                                     <div className="form-group">
-                                        <label htmlFor="login-email">Email</label>
+                                        <label htmlFor="login-email">Login</label>
                                         <input 
                                             type="text" 
                                             placeholder="Email" 

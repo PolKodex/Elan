@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TopBar from '../../components/TopBar/TopBar';
 import Login from '../../components/Login/Login';
+import Register from '../../components/Register/Register';
 import Chat from '../Chat/Chat';
 import App from '../App/App';
 import { withRouter, Route, Router } from "react-router-dom";
@@ -19,7 +20,7 @@ export default class MainView extends Component {
         <div className="main-view">
             <Route exact path="/" render={() => (<p>Login. App in /#/app url</p>)}/>
             <Route exact path="/login" render={() => <Login /> }/>
-            <Route exact path="/register" render={() => (<p>Register</p>)}/>
+            <Route exact path="/register" render={() => <Register />}/>
             <Route path="/app" render={() => <App /> }/>
         </div>
       </Router>
