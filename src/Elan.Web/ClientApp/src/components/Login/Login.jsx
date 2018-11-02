@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import * as auth from '../../api/AuthApi';
 import './Login.css';
 import { Redirect } from 'react-router';
@@ -32,7 +32,7 @@ export default class Login extends Component {
 
     render() {
         if (this.state.redirect) {
-            return (<Redirect to='/app' />)
+            return (<Redirect to='/app'/>);
         }
         return (
             <div className="container login-page">
@@ -51,7 +51,7 @@ export default class Login extends Component {
                             <div className="card-body">
                                 <form onSubmit={ this.handleSubmit }>
                                     <div className="form-group">
-                                        <label for="login-email">Email</label>
+                                        <label htmlFor="login-email">Email</label>
                                         <input 
                                             type="text" 
                                             placeholder="Email" 
@@ -62,7 +62,7 @@ export default class Login extends Component {
                                     </div>
 
                                     <div className="form-group">
-                                        <label for="login-password">Hasło</label>
+                                        <label htmlFor="login-password">Hasło</label>
                                         <input 
                                             type="password" 
                                             placeholder="Hasło" 
@@ -86,7 +86,7 @@ export default class Login extends Component {
                         </div>
 
                         <p className="lead">
-                            Korzyści z zarejestrowania się w naszym poratlu społecznościowym jest wiele, oto zaledwie kilka z nich:
+                            Korzyści z zarejestrowania się w naszym portalu społecznościowym jest wiele, oto zaledwie kilka z nich:
                         </p>
                         <ul className="list-group list-group-flush">
                             <li className="list-group-item">

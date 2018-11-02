@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import './ChatSearchRow.css';
 
 export default class ChatSearchRow extends Component {

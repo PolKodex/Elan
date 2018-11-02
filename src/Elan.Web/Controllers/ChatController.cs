@@ -1,19 +1,20 @@
-﻿using Elan.Chat.Contracts;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Elan.Chat.Contracts;
 using Elan.Users.Contracts;
 using Elan.Web.ViewModels.Chat;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Elan.Web.Controllers
 {
     [Authorize]
     [Route("api/[controller]/[action]")]
-    public class ChatController: Controller
+    public class ChatController : Controller
     {
         private readonly IChatService _chatService;
         private readonly IUserService _userService;
+
         public ChatController(IChatService chatService, IUserService userService)
         {
             _chatService = chatService;

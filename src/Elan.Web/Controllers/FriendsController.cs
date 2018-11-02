@@ -1,19 +1,19 @@
-﻿using Elan.Friends.Contracts;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Elan.Friends.Contracts;
 using Elan.Users.Contracts;
 using Elan.Web.ViewModels.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Elan.Web.Controllers
 {
     [Authorize]
-    [Route("api/[controller]/[action]")]
-    public class FriendsController : Controller
+    public class FriendsController : ElanBaseController
     {
         private readonly IFriendsService _friendsService;
         private readonly IUserService _userService;
+
         public FriendsController(IFriendsService friendsService, IUserService userService)
         {
             _friendsService = friendsService;
