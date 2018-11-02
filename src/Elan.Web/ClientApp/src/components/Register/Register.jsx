@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import * as auth from '../../api/AuthApi';
 import { withRouter, Link } from "react-router-dom";
 import './Register.css';
+import { Redirect } from 'react-router';
 
 export default class Register extends Component {
     constructor(props) {
@@ -8,11 +10,17 @@ export default class Register extends Component {
 
         this.state = {
             login: '',
+            loginMessage: '',
             password: '',
+            passwordMessage: '',
             confirmPassword: '',
+            confirmPasswordMessage: '',
             email: '',
+            emailMessage: '',
             firstName: '',
-            lastName: ''
+            lastName: '',
+            message: '',
+            redirect: false
         }
     }
 
@@ -21,10 +29,21 @@ export default class Register extends Component {
     }
     
     passwordChange = (event) => {
+        if (event.target.value !== this.state.confirmPassword) {
+            this.setState({ confirmPasswordMessage: "Hasła nie są takie same" });
+        } else {
+            this.setState({ confirmPasswordMessage: "" });
+        }
+
         this.setState({ password: event.target.value });
     }
 
     confirmPasswordChange = (event) => {
+        if (event.target.value !== this.state.password) {
+            this.setState({ confirmPasswordMessage: "Hasła nie są takie same" });
+        } else {
+            this.setState({ confirmPasswordMessage: "" });
+        }
         this.setState({ confirmPassword: event.target.value });
     }
 
@@ -41,19 +60,89 @@ export default class Register extends Component {
     }
 
     handleSubmit = () => {
-        console.log(this.state.login);
-        console.log(this.state.password);
-        console.log(this.state.confirmPassword);
-        console.log(this.state.email);
-        console.log(this.state.firstName);
-        console.log(this.state.lastName);
-        
-        //do some crazy register things
+        auth.register(
+                this.state.login, 
+                this.state.password, 
+                this.state.email, 
+                this.state.firstName, 
+                this.state.lastName)
+            .then(function(token) {
+                localStorage.setItem('token', token);
+                this.setState({ redirect: true });
+            }.bind(this))
+            .catch((response) => {
+                this.handleErrors(response);
+            });
     }
+
+    trimError(value) {
+        return value.replace(/^\s/, '');
+    }
+
+    clearErrors() {
+        this.setState({ 
+            loginMessage: '',
+            passwordMessage: '',
+            confirmPasswordMessage: '',
+            emailMessage: '',
+            message: ''
+        });
+    }
+
+    displayError(value) {
+        value = this.trimError(value);
+
+        if (value.startsWith("User")) {
+            this.setState({ 
+                loginMessage: this.state.loginMessage += value + '\n'
+            });
+        }
+        else if (value.startsWith("Password")) {
+            this.setState({ 
+                passwordMessage: this.state.passwordMessage += value + '\n'
+            });
+        } 
+        else if (value.startsWith("Email")) {
+            this.setState({ 
+                emailMessage: this.state.emailMessage += value + '\n'
+            });
+        }
+        else {
+            this.setState({ 
+                message: this.state.message += value + '\n'
+            });
+        }
+    }
+
+    handleErrors = (response) => {
+        this.clearErrors();
+        var parts = response.response.data.split(":");
+
+        if (parts.length === 2) {
+            var errors = parts[1].split(",");
+
+            errors.forEach((value) => {
+                this.displayError(value);
+            });
+        }
+        else {
+            this.setState({ 
+                message: response.response.data
+            });
+        }
+    }
+
+    renderRedirect = () => {
+        if (this.state.redirect) {
+          return <Redirect to='/app' />
+        }
+      }
 
     render() {
         return (
             <div className="container login-page">
+                { this.renderRedirect() }
+
                 <div className="row login-logo">
                     <div className="">
 
@@ -77,6 +166,7 @@ export default class Register extends Component {
                                             className="form-control" 
                                             value={ this.state.login } 
                                             onChange={ this.loginChange } />
+                                        <div className="text-danger">{ this.state.loginMessage }</div>
                                     </div>
 
                                     <div className="form-group">
@@ -88,6 +178,7 @@ export default class Register extends Component {
                                             className="form-control" 
                                             value={ this.state.password } 
                                             onChange={ this.passwordChange }  />
+                                        <div className="text-danger">{ this.state.passwordMessage }</div>
                                     </div>
 
                                     <div className="form-group">
@@ -99,6 +190,7 @@ export default class Register extends Component {
                                             className="form-control" 
                                             value={ this.state.confirmPassword } 
                                             onChange={ this.confirmPasswordChange }  />
+                                        <div className="text-danger">{ this.state.confirmPasswordMessage }</div>
                                     </div>
 
                                     <div className="form-group">
@@ -110,6 +202,7 @@ export default class Register extends Component {
                                             className="form-control" 
                                             value={ this.state.email } 
                                             onChange={ this.emailChange } />
+                                        <div className="text-danger">{ this.state.emailMessage }</div>
                                     </div>
 
                                     <div className="form-group">
@@ -133,6 +226,8 @@ export default class Register extends Component {
                                             value={ this.state.lastName } 
                                             onChange={ this.lastNameChange } />
                                     </div>
+
+                                    <div className="text-danger">{ this.state.message }</div>
 
                                     <input type="submit" className="btn btn-success float-right" value="Zarejestruj się" />
                                 </form>
