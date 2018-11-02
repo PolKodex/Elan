@@ -1,6 +1,5 @@
 ﻿import React, { Component } from 'react';
 import * as auth from '../../api/AuthApi';
-import { withRouter, Link } from "react-router-dom";
 import './Login.css';
 import { Redirect } from 'react-router';
 
@@ -30,7 +29,7 @@ export default class Login extends Component {
                 localStorage.setItem('token', token);
                 this.setState({ redirect: true });
             }.bind(this))
-            .catch((response) => {
+            .catch(() => {
                 this.setState({ 
                     message: 'Login lub hasło nie są poprawne'
                 });

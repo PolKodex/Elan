@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import * as auth from '../../api/AuthApi';
-import { withRouter, Link } from "react-router-dom";
 import './Register.css';
 import { Redirect } from 'react-router';
 
@@ -100,22 +99,22 @@ export default class Register extends Component {
 
         if (value.startsWith("User")) {
             this.setState({ 
-                loginMessage: this.state.loginMessage += value + '\n'
+                loginMessage: this.state.loginMessage + value + '\n'
             });
         }
         else if (value.startsWith("Password")) {
             this.setState({ 
-                passwordMessage: this.state.passwordMessage += value + '\n'
+                passwordMessage: this.state.passwordMessage + value + '\n'
             });
         } 
         else if (value.startsWith("Email")) {
             this.setState({ 
-                emailMessage: this.state.emailMessage += value + '\n'
+                emailMessage: this.state.emailMessage + value + '\n'
             });
         }
         else {
             this.setState({ 
-                message: this.state.message += value + '\n'
+                message: this.state.message + value + '\n'
             });
         }
     }

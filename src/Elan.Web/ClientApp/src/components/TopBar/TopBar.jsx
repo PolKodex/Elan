@@ -3,10 +3,6 @@ import { withRouter, Link } from "react-router-dom";
 import './TopBar.css';
 
 class TopBar extends Component {
-  constructor(props){
-    super(props);
-  }
-
   render() {
     return (
         <div className="top-bar-wrapper">

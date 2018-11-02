@@ -2,10 +2,6 @@
 import './Post.css';
 
 export default class Post extends Component {
-  constructor(props){
-    super(props);
-  }
-
   render() {
     return (
       <div className="post">
@@ -13,7 +9,7 @@ export default class Post extends Component {
               <div className="card-header card-sm">
                   <div className="user-info">
                       <div className="avatar-post">
-                          <img src={require("../../assets/default_avatar.jpg")} />
+                          <img src={require("../../assets/default_avatar.jpg")} alt="" />
                       </div>
                       <div className="user-post">
                           <a href="#"><strong>{this.props.author.name}</strong></a> 
