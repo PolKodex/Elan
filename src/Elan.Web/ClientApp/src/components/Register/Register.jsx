@@ -25,6 +25,9 @@ export default class Register extends Component {
     }
 
     loginChange = (event) => {
+        if (!event.target.value.trim()) {
+            this.setState({ loginMessage: "Login jest wymagany" });
+        }
         this.setState({ login: event.target.value });
     }
     
@@ -48,6 +51,9 @@ export default class Register extends Component {
     }
 
     emailChange = (event) => {
+        if (!event.target.value.trim()) {
+            this.setState({ emailMessage: "Login jest wymagany" });
+        }
         this.setState({ email: event.target.value });
     }
 
@@ -166,7 +172,7 @@ export default class Register extends Component {
                                             className="form-control" 
                                             value={ this.state.login } 
                                             onChange={ this.loginChange } />
-                                        <div className="text-danger">{ this.state.loginMessage }</div>
+                                        <small className="form-text text-danger">{ this.state.loginMessage }</small>
                                     </div>
 
                                     <div className="form-group">
@@ -178,7 +184,7 @@ export default class Register extends Component {
                                             className="form-control" 
                                             value={ this.state.password } 
                                             onChange={ this.passwordChange }  />
-                                        <div className="text-danger">{ this.state.passwordMessage }</div>
+                                        <small className="form-text text-danger">{ this.state.passwordMessage }</small>
                                     </div>
 
                                     <div className="form-group">
@@ -190,19 +196,19 @@ export default class Register extends Component {
                                             className="form-control" 
                                             value={ this.state.confirmPassword } 
                                             onChange={ this.confirmPasswordChange }  />
-                                        <div className="text-danger">{ this.state.confirmPasswordMessage }</div>
+                                        <small className="form-text text-danger">{ this.state.confirmPasswordMessage }</small>
                                     </div>
 
                                     <div className="form-group">
                                         <label htmlFor="register-email">Adres email</label>
                                         <input 
-                                            type="text" 
+                                            type="email" 
                                             placeholder="Adres email" 
                                             id="register-email" 
                                             className="form-control" 
                                             value={ this.state.email } 
                                             onChange={ this.emailChange } />
-                                        <div className="text-danger">{ this.state.emailMessage }</div>
+                                        <small className="form-text text-danger">{ this.state.emailMessage }</small>
                                     </div>
 
                                     <div className="form-group">
@@ -227,7 +233,7 @@ export default class Register extends Component {
                                             onChange={ this.lastNameChange } />
                                     </div>
 
-                                    <div className="text-danger">{ this.state.message }</div>
+                                    <small className="form-text text-danger">{ this.state.message }</small>
 
                                     <input type="submit" className="btn btn-success float-right" value="Zarejestruj się" />
                                 </form>
