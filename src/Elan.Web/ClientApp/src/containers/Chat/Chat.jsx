@@ -96,8 +96,8 @@ export default class Chat extends Component {
                     content: message.Content
                 });
             }
-            this.setState({ messages });
         }
+        this.setState({ messages });
     }
 
     sendMessage() {
