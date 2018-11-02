@@ -1,4 +1,7 @@
-﻿using Elan.Account;
+﻿using System;
+using System.Text;
+using System.Threading.Tasks;
+using Elan.Account;
 using Elan.Chat;
 using Elan.Data;
 using Elan.Data.Models.Account;
@@ -15,22 +18,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Elan.Web
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -39,6 +38,36 @@ namespace Elan.Web
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     o => o.MigrationsAssembly("Elan.Data")));
 
+            ConfigureIdentity(services);
+
+            ConfigureAuthentication(services);
+
+            services.AddCors(options => options
+                .AddPolicy("CorsPolicy",
+                    builder =>
+                    {
+                        builder.AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowAnyOrigin()
+                            .AllowCredentials();
+                    }));
+
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/build";
+            });
+
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+                options.HandshakeTimeout = TimeSpan.MaxValue;
+            });
+
+            ConfigureElanModules(services);
+        }
+
+        private static void ConfigureIdentity(IServiceCollection services)
+        {
             services.AddIdentity<ElanUser, ElanRole>()
                 .AddEntityFrameworkStores<ElanDbContext>()
                 .AddDefaultTokenProviders();
@@ -60,7 +89,10 @@ namespace Elan.Web
                     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = false;
             });
+        }
 
+        private void ConfigureAuthentication(IServiceCollection services)
+        {
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]));
             services
                 .AddAuthentication(options =>
@@ -86,10 +118,8 @@ namespace Elan.Web
                         {
                             var accessToken = context.Request.Query["access_token"];
                             var path = context.HttpContext.Request.Path;
-                            if (!string.IsNullOrEmpty(accessToken) &&
-                                (path.StartsWithSegments("/chathub")))
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chathub"))
                             {
-                                // Read the token out of the query string
                                 context.Token = accessToken;
                             }
 
@@ -97,36 +127,17 @@ namespace Elan.Web
                         }
                     };
                 });
+        }
 
-            services.AddCors(options => options
-                .AddPolicy("CorsPolicy",
-                    builder =>
-                    {
-                        builder.AllowAnyMethod()
-                            .AllowAnyHeader()
-                            .AllowAnyOrigin()
-                            .AllowCredentials();
-                    }));
-
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
-
-            services.AddSignalR(options =>
-            {
-                options.EnableDetailedErrors = true;
-                options.HandshakeTimeout = TimeSpan.MaxValue;
-            });
-
+        private static void ConfigureElanModules(IServiceCollection services)
+        {
             services.RegisterAccountModule();
             services.RegisterChatModule();
             services.RegisterDataModule();
             services.RegisterFriendsModule();
             services.RegisterUsersModule();
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             //if (env.IsDevelopment())
@@ -138,6 +149,7 @@ namespace Elan.Web
             //    app.UseExceptionHandler("/Error");
             //    app.UseHsts();
             //}
+
             UpdateDatabase(app);
 
             app.UseAuthentication();
