@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import TopBar from '../../components/TopBar/TopBar';
 import Login from '../../components/Login/Login';
 import Register from '../../components/Register/Register';
-import Chat from '../Chat/Chat';
 import App from '../App/App';
-import { withRouter, Route, Router } from "react-router-dom";
+import { Route, Router } from "react-router-dom";
 import { createHashHistory } from 'history';
 import './MainView.css';
 

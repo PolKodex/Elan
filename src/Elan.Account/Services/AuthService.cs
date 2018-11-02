@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 
 namespace Elan.Account.Services
 {
@@ -49,7 +50,7 @@ namespace Elan.Account.Services
             if (!result.Succeeded)
             {
                 throw new RegistrationFailedException(
-                    $"An error occured while registering user: {result.Errors.Join()}");
+                    $"An error occured while registering user: {result.Errors.Select(e => e.Description).Join(", ")}");
             }
 
             await _signInManager.SignInAsync(newUser, false);

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withRouter, Link } from "react-router-dom";
 import Post from "../Post/Post";
 import './Account.css';
 
@@ -48,7 +47,7 @@ export default class Account extends Component {
             <div>
                 <div className="account-introduction">
                     <div className="media avatar">
-                        <img className="align-self-start mr-3" src={ this.state.user.profilePictureSource } />
+                        <img className="align-self-start mr-3" src={ this.state.user.profilePictureSource } alt="" />
                         <div className="media-body">
                             <h3>{ this.state.user.fullName }</h3>
                             <p className="lead">{ this.state.user.description }</p>
@@ -95,7 +94,7 @@ class PictureThumbnail extends Component {
         return (
             <div className="col-md image-box">
                 <a href={ this.props.targetUrl }>
-                    <img src={ this.props.pictureSource } data-toggle="tooltip" data-placement="bottom" title={ this.props.title } />
+                    <img src={ this.props.pictureSource } data-toggle="tooltip" data-placement="bottom" title={ this.props.title } alt="" />
                 </a>
             </div>
         );

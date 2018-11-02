@@ -2,10 +2,6 @@
 import './ChatMessage.css';
 
 export default class ChatMessage extends Component {
-  constructor(props){
-    super(props);
-  }
-
   render() {
     return (
       <div className={this.props.isToMe ? "msg-container-to-me" : "msg-container-from-me"}>

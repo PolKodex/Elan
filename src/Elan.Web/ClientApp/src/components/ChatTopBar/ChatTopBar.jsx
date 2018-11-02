@@ -35,7 +35,7 @@ export default class ChatTopBar extends Component {
                     <div className="dropdown">
                         <button className="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <div className="avatar-post">
-                                <img src={require("../../assets/default_avatar.jpg")} />
+                                <img src={require("../../assets/default_avatar.jpg")} alt="" />
                             </div>
                             <div className="user-post">
                                 <strong>{this.props.activeUser ? this.props.activeUser.name : 'User not selected'}</strong><br />

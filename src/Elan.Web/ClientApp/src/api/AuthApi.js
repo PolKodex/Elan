@@ -12,3 +12,17 @@ export const signIn = async (username, password) => {
             return response.data;
         });
 };
+
+export const register = async (userName, password, email, firstName, lastName) => {
+    var api = "/api/Auth/Register";
+
+    return axios.post(api,
+        {
+            Email: email,
+            Password: password,
+            UserName: userName
+        })
+        .then ((response) => {
+            return response.data;
+        })
+}

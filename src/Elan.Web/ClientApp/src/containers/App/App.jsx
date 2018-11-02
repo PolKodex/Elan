@@ -3,15 +3,10 @@ import TopBar from '../../components/TopBar/TopBar';
 import Account from '../../components/Account/Account';
 import Chat from '../Chat/Chat';
 import Wall from '../Wall/Wall';
-import { withRouter, Route, Router } from "react-router-dom";
-import { createHashHistory } from 'history';
+import { withRouter, Route } from "react-router-dom";
 import './App.css';
 
 class App extends Component {
-  constructor(props){
-    super(props);
-  }
-
   render() {
     return (
         <div className="app-wrapper">
