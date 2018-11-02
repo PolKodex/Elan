@@ -60,7 +60,7 @@ namespace Elan.Web
             services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors = true;
-                options.HandshakeTimeout = TimeSpan.MaxValue;
+                options.HandshakeTimeout = TimeSpan.FromMilliseconds(1000);
             });
 
             ConfigureElanModules(services);
