@@ -26,11 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Elan.Posts\Elan.Posts.csproj" />
     <ProjectReference Include="..\Elan.Account\Elan.Account.csproj" />
     <ProjectReference Include="..\Elan.Chat\Elan.Chat.csproj" />
     <ProjectReference Include="..\Elan.Data\Elan.Data.csproj" />
     <ProjectReference Include="..\Elan.Friends\Elan.Friends.csproj" />
+    <ProjectReference Include="..\Elan.Posts\Elan.Posts.csproj" />
     <ProjectReference Include="..\Elan.Users\Elan.Users.csproj" />
   </ItemGroup>
 

@@ -137,7 +137,7 @@ namespace Elan.Web
             services.RegisterDataModule();
             services.RegisterFriendsModule();
             services.RegisterUsersModule();
-            services.PostModule();
+            services.RegisterPostsModule();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

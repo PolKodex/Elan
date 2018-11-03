@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elan.Friends", "src\Elan.Fr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elan.Users", "src\Elan.Users\Elan.Users.csproj", "{93315DD0-DD7D-4401-8CEE-A72ABDB4BB7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elan.Posts", "Elan.Posts\Elan.Posts.csproj", "{B93D3199-A026-4C24-A125-03923131E306}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elan.Posts", "src\Elan.Posts\Elan.Posts.csproj", "{B93D3199-A026-4C24-A125-03923131E306}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

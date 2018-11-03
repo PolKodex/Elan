@@ -6,7 +6,7 @@ namespace Elan.Posts
 {
     public static class ServiceConfigurator
     {
-        public static void PostModule(this IServiceCollection services)
+        public static void RegisterPostsModule(this IServiceCollection services)
         {
             services.AddScoped<IPostService, PostService>();
         }
