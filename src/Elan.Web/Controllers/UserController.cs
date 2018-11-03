@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Elan.Common.Dtos;
-using Elan.Service;
+using Elan.Account.Contracts;
+using Elan.Account.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Elan.Web.Controllers
@@ -17,17 +18,29 @@ namespace Elan.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<UserSettingsDto> GetSettings()
+        public async Task<List<UserSettingViewModel>> GetSettings()
         {
-            var userId = new Guid();
+            var userId = new Guid("104D8337-1565-4F2C-A8E3-08D639BC745F");
             var result = await _userSettingsService.GetSettingsForUser(userId);
             return result;
         }
 
-        [HttpPut]
-        public async Task ChangeSetting([FromBody]UserSettingDto setting)
+        [HttpGet]
+        public IActionResult GetUserSettingsDict()
         {
-            var userId = new Guid();
+            return Ok(_userSettingsService.GetUserSettingsDict());
+        }
+
+        [HttpGet]
+        public IActionResult GetPrivacySettingsDict()
+        {
+            return Ok(_userSettingsService.GetPrivacySettingsDict());
+        }
+
+        [HttpPut]
+        public async Task ChangeSetting([FromBody]UserSettingViewModel setting)
+        {
+            var userId = new Guid("104D8337-1565-4F2C-A8E3-08D639BC745F");
             await _userSettingsService.ChangeSetting(userId, setting);
         }
     }

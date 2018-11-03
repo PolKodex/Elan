@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Elan.Service\Elan.Service.csproj" />
     <ProjectReference Include="..\Elan.Account\Elan.Account.csproj" />
     <ProjectReference Include="..\Elan.Data\Elan.Data.csproj" />
   </ItemGroup>

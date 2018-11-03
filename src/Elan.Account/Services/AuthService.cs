@@ -5,7 +5,6 @@ using Elan.Data.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Threading.Tasks;
-using Elan.Service;
 
 namespace Elan.Account.Services
 {

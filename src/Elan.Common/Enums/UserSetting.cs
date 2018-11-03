@@ -1,6 +1,6 @@
 ﻿namespace Elan.Common.Enums
 {
-    public enum Setting
+    public enum UserSetting
     {
         ShowInSearchResult = 0,
         Content = 1

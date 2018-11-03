@@ -7,7 +7,7 @@ namespace Elan.Data.Models.Account
     {
         public virtual ElanUser User { get; set; }
         public Guid UserId { get; set; }
-        public Setting Setting { get; set; }
+        public UserSetting Setting { get; set; }
         public PrivacySetting PrivacySetting { get; set; }
     }
 }
