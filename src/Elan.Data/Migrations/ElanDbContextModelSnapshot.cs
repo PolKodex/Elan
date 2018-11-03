@@ -107,6 +107,28 @@ namespace Elan.Data.Migrations
                     b.ToTable("ElanUserSetting");
                 });
 
+            modelBuilder.Entity("Elan.Data.Models.Chat.ChatMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Content");
+
+                    b.Property<DateTime>("SentOn");
+
+                    b.Property<Guid?>("UserFromId");
+
+                    b.Property<Guid?>("UserToId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserFromId");
+
+                    b.HasIndex("UserToId");
+
+                    b.ToTable("ChatMessages");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
@@ -196,6 +218,17 @@ namespace Elan.Data.Migrations
                         .WithMany("Settings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Elan.Data.Models.Chat.ChatMessage", b =>
+                {
+                    b.HasOne("Elan.Data.Models.Account.ElanUser", "UserFrom")
+                        .WithMany()
+                        .HasForeignKey("UserFromId");
+
+                    b.HasOne("Elan.Data.Models.Account.ElanUser", "UserTo")
+                        .WithMany()
+                        .HasForeignKey("UserToId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

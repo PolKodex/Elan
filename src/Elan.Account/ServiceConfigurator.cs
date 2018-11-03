@@ -9,6 +9,7 @@ namespace Elan.Account
         public static void RegisterAccountModule(this IServiceCollection services)
         {
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAuthValidationService, AuthValidationService>();
             services.AddScoped<IUserSettingsService, UserSettingsService>();
         }
     }

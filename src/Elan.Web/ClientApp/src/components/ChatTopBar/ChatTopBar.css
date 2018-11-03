@@ -1,0 +1,14 @@
+.chat-top-bar {
+ display: flex;
+ width: 100%;
+ padding: 10px;
+ border-bottom: 1px solid #6c757d;
+}
+
+.friends-list {
+	flex-grow: 1;
+}
+
+.dropdown-menu {
+	padding: 2px;
+}

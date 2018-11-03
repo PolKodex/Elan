@@ -1,7 +1,14 @@
-using System;
+﻿using System;
+using System.Text;
+using System.Threading.Tasks;
 using Elan.Account;
+using Elan.Chat;
 using Elan.Data;
 using Elan.Data.Models.Account;
+using Elan.Friends;
+using Elan.Users;
+using Elan.Web.Chat;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -10,19 +17,19 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Elan.Web
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -31,6 +38,36 @@ namespace Elan.Web
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     o => o.MigrationsAssembly("Elan.Data")));
 
+            ConfigureIdentity(services);
+
+            ConfigureAuthentication(services);
+
+            services.AddCors(options => options
+                .AddPolicy("CorsPolicy",
+                    builder =>
+                    {
+                        builder.AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowAnyOrigin()
+                            .AllowCredentials();
+                    }));
+
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/build";
+            });
+
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+                options.HandshakeTimeout = TimeSpan.FromMilliseconds(1000);
+            });
+
+            ConfigureElanModules(services);
+        }
+
+        private static void ConfigureIdentity(IServiceCollection services)
+        {
             services.AddIdentity<ElanUser, ElanRole>()
                 .AddEntityFrameworkStores<ElanDbContext>()
                 .AddDefaultTokenProviders();
@@ -52,17 +89,55 @@ namespace Elan.Web
                     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = false;
             });
-
-            // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
-
-            services.RegisterAccountModule();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        private void ConfigureAuthentication(IServiceCollection services)
+        {
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]));
+            services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(config =>
+                {
+                    config.RequireHttpsMetadata = false;
+                    config.SaveToken = true;
+                    config.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        IssuerSigningKey = signingKey,
+                        ValidateLifetime = true,
+                        ValidateAudience = false,
+                        ValidateIssuer = false,
+                        ValidateIssuerSigningKey = true
+                    };
+                    config.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chathub"))
+                            {
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+        }
+
+        private static void ConfigureElanModules(IServiceCollection services)
+        {
+            services.RegisterAccountModule();
+            services.RegisterChatModule();
+            services.RegisterDataModule();
+            services.RegisterFriendsModule();
+            services.RegisterUsersModule();
+        }
+        
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             //if (env.IsDevelopment())
@@ -74,13 +149,21 @@ namespace Elan.Web
             //    app.UseExceptionHandler("/Error");
             //    app.UseHsts();
             //}
+
             UpdateDatabase(app);
+
+            app.UseAuthentication();
+            app.UseCors("CorsPolicy");
 
             app.UseDeveloperExceptionPage();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chathub");
+            });
 
             app.UseMvc(routes =>
             {
@@ -99,6 +182,7 @@ namespace Elan.Web
                 }
             });
         }
+
         private static void UpdateDatabase(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices
