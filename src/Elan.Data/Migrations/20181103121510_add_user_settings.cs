@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Elan.Data.Migrations
 {
-    public partial class AddUserSettings : Migration
+    public partial class add_user_settings : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ElanUserSetting",
+                name: "ElanUserSettings",
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(nullable: false),
@@ -17,9 +17,9 @@ namespace Elan.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ElanUserSetting", x => new { x.UserId, x.Setting });
+                    table.PrimaryKey("PK_ElanUserSettings", x => new { x.UserId, x.Setting });
                     table.ForeignKey(
-                        name: "FK_ElanUserSetting_AspNetUsers_UserId",
+                        name: "FK_ElanUserSettings_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -30,7 +30,7 @@ namespace Elan.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ElanUserSetting");
+                name: "ElanUserSettings");
         }
     }
 }

@@ -104,7 +104,7 @@ namespace Elan.Data.Migrations
 
                     b.HasKey("UserId", "Setting");
 
-                    b.ToTable("ElanUserSetting");
+                    b.ToTable("ElanUserSettings");
                 });
 
             modelBuilder.Entity("Elan.Data.Models.Chat.ChatMessage", b =>

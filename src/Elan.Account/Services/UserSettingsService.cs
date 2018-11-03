@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Elan.Account.Contracts;
 using Elan.Common.Enums;
@@ -12,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Elan.Account.Services
 {
-
     public class UserSettingsService : IUserSettingsService
     {
         private readonly IDataService _dataService;
@@ -25,11 +23,20 @@ namespace Elan.Account.Services
         public async Task<List<UserSettingViewModel>> GetSettingsForUser(ElanUser user)
         {
             var userSettings =
-                await _dataService.GetSet<ElanUserSetting>().Where(x => x.UserId == user.Id).ToListAsync();
+                await _dataService
+                    .GetSet<ElanUserSetting>()
+                    .Where(x => x.UserId == user.Id)
+                    .ToListAsync();
 
             var result = new List<UserSettingViewModel>();
-            userSettings.ForEach(x =>
-                result.Add(new UserSettingViewModel {Setting = x.Setting, PrivacySetting = x.PrivacySetting}));
+            userSettings
+                .ForEach(x =>
+                    result.Add(new UserSettingViewModel
+                    {
+                        Setting = x.Setting,
+                        PrivacySetting = x.PrivacySetting
+                    }));
+
             return result;
         }
 
@@ -37,6 +44,7 @@ namespace Elan.Account.Services
         {
             return EnumHelper.GetEnumDictionary<UserSetting>();
         }
+
         public Dictionary<int, string> GetPrivacySettingsDict()
         {
             return EnumHelper.GetEnumDictionary<PrivacySetting>();
@@ -44,7 +52,7 @@ namespace Elan.Account.Services
 
         public async Task AddSettings(ElanUser newUser)
         {
-            var searchSetting = new ElanUserSetting()
+            var searchSetting = new ElanUserSetting
             {
                 UserId = newUser.Id,
                 Setting = UserSetting.ShowInSearchResult,
@@ -52,7 +60,7 @@ namespace Elan.Account.Services
             };
             _dataService.GetSet<ElanUserSetting>().Add(searchSetting);
 
-            var contentSetting = new ElanUserSetting()
+            var contentSetting = new ElanUserSetting
             {
                 UserId = newUser.Id,
                 Setting = UserSetting.Content,
@@ -65,7 +73,7 @@ namespace Elan.Account.Services
 
         public async Task ChangeSetting(ElanUser user, UserSettingViewModel setting)
         {
-            var userSetting = new ElanUserSetting()
+            var userSetting = new ElanUserSetting
             {
                 UserId = user.Id,
                 Setting = setting.Setting,

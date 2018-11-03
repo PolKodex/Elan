@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Elan.Data.Migrations
 {
     [DbContext(typeof(ElanDbContext))]
-    [Migration("20181024134620_AddUserSettings")]
-    partial class AddUserSettings
+    [Migration("20181103121510_add_user_settings")]
+    partial class add_user_settings
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -106,7 +106,29 @@ namespace Elan.Data.Migrations
 
                     b.HasKey("UserId", "Setting");
 
-                    b.ToTable("ElanUserSetting");
+                    b.ToTable("ElanUserSettings");
+                });
+
+            modelBuilder.Entity("Elan.Data.Models.Chat.ChatMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Content");
+
+                    b.Property<DateTime>("SentOn");
+
+                    b.Property<Guid?>("UserFromId");
+
+                    b.Property<Guid?>("UserToId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserFromId");
+
+                    b.HasIndex("UserToId");
+
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -198,6 +220,17 @@ namespace Elan.Data.Migrations
                         .WithMany("Settings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Elan.Data.Models.Chat.ChatMessage", b =>
+                {
+                    b.HasOne("Elan.Data.Models.Account.ElanUser", "UserFrom")
+                        .WithMany()
+                        .HasForeignKey("UserFromId");
+
+                    b.HasOne("Elan.Data.Models.Account.ElanUser", "UserTo")
+                        .WithMany()
+                        .HasForeignKey("UserToId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
