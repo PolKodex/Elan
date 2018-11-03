@@ -16,20 +16,23 @@ using System.Linq;
 
 namespace Elan.Account.Services
 {
-    public class AuthService: IAuthService
+    public class AuthService : IAuthService
     {
         private readonly UserManager<ElanUser> _userManager;
         private readonly SignInManager<ElanUser> _signInManager;
         private readonly IAuthValidationService _authValidationService;
         private readonly IConfiguration _configuration;
+        private readonly IUserSettingsService _userSettings;
 
         public AuthService(
             UserManager<ElanUser> userManager,
             SignInManager<ElanUser> signInManager,
             IAuthValidationService authValidationService,
+            IUserSettingsService userSettings,
             IConfiguration configuration)
         {
             _userManager = userManager;
+            _userSettings = userSettings;
             _signInManager = signInManager;
             _authValidationService = authValidationService;
             _configuration = configuration;
@@ -52,6 +55,8 @@ namespace Elan.Account.Services
                 throw new RegistrationFailedException(
                     $"An error occured while registering user: {result.Errors.Select(e => e.Description).Join(", ")}");
             }
+
+            await _userSettings.AddSettings(newUser);
 
             await _signInManager.SignInAsync(newUser, false);
             return GetToken(newUser);
