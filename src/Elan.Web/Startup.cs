@@ -6,6 +6,7 @@ using Elan.Chat;
 using Elan.Data;
 using Elan.Data.Models.Account;
 using Elan.Friends;
+using Elan.Posts;
 using Elan.Users;
 using Elan.Web.Chat;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -136,6 +137,7 @@ namespace Elan.Web
             services.RegisterDataModule();
             services.RegisterFriendsModule();
             services.RegisterUsersModule();
+            services.RegisterPostsModule();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

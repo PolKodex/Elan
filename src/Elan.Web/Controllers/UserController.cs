@@ -7,13 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Elan.Web.Controllers
 {
-    [Route("api/[controller]/[action]")]
-    public class UserController : Controller
+    public class UserController : ElanBaseController
     {
         private readonly IUserSettingsService _userSettingsService;
         private readonly IUserService _userService;
-
-
+        
         public UserController(IUserSettingsService userSettingsService, IUserService userService)
         {
             _userSettingsService = userSettingsService;
