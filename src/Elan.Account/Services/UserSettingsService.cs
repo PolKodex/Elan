@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Elan.Account.Contracts;
 using Elan.Common.Enums;
-using Elan.Data;
 using Elan.Data.Models.Account;
 using System.Linq;
 using Elan.Account.Models;
 using Elan.Common.Extensions;
+using Elan.Data.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Elan.Account.Services
@@ -15,16 +15,17 @@ namespace Elan.Account.Services
 
     public class UserSettingsService : IUserSettingsService
     {
-        private readonly ElanDbContext _db;
+        private readonly IDataService _dataService;
 
-        public UserSettingsService(ElanDbContext db)
+        public UserSettingsService(IDataService dataService)
         {
-            _db = db;
+            _dataService = dataService;
         }
 
         public async Task<List<UserSettingViewModel>> GetSettingsForUser(Guid userId)
         {
-            var userSettings = await _db.Set<ElanUserSetting>().Where(x => x.UserId == userId).ToListAsync();
+            var userSettings =
+                await _dataService.GetSet<ElanUserSetting>().Where(x => x.UserId == userId).ToListAsync();
             var result = new List<UserSettingViewModel>();
             userSettings.ForEach(x =>
                 result.Add(new UserSettingViewModel {Setting = x.Setting, PrivacySetting = x.PrivacySetting}));
@@ -48,7 +49,7 @@ namespace Elan.Account.Services
                 Setting = UserSetting.ShowInSearchResult,
                 PrivacySetting = PrivacySetting.Everyone
             };
-            _db.Set<ElanUserSetting>().Add(searchSetting);
+            _dataService.GetSet<ElanUserSetting>().Add(searchSetting);
 
             var contentSetting = new ElanUserSetting()
             {
@@ -56,9 +57,9 @@ namespace Elan.Account.Services
                 Setting = UserSetting.Content,
                 PrivacySetting = PrivacySetting.Everyone
             };
-            _db.Set<ElanUserSetting>().Add(contentSetting);
+            _dataService.GetSet<ElanUserSetting>().Add(contentSetting);
 
-            await _db.SaveChangesAsync();
+            await _dataService.SaveDbAsync();
         }
 
         public async Task ChangeSetting(Guid userId, UserSettingViewModel setting)
@@ -69,8 +70,8 @@ namespace Elan.Account.Services
                 Setting = setting.Setting,
                 PrivacySetting = setting.PrivacySetting
             };
-            _db.Update(userSetting);
-            await _db.SaveChangesAsync();
+            _dataService.GetSet<ElanUserSetting>().Update(userSetting);
+            await _dataService.SaveDbAsync();
         }
     }
 }
