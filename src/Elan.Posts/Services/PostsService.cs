@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Elan.Common.Enums;
 using Elan.Data.Contracts;
@@ -12,11 +11,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Elan.Posts.Services
 {
-    public class PostService : IPostService
+    public class PostsService : IPostsService
     {
         private readonly IDataService _dataService;
 
-        public PostService(IDataService dataService)
+        public PostsService(IDataService dataService)
         {
             _dataService = dataService;
         }
@@ -28,7 +27,7 @@ namespace Elan.Posts.Services
                 Content = content,
                 CreatedOn = DateTime.UtcNow,
                 CreatedBy = createdBy,
-                TargetUser = userTo
+                TargetUser = userTo ?? createdBy
             };
 
             await _dataService.GetSet<Post>().AddAsync(post);

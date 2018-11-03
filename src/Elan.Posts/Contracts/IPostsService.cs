@@ -5,7 +5,7 @@ using Elan.Data.Models.Posts;
 
 namespace Elan.Posts.Contracts
 {
-    public interface IPostService
+    public interface IPostsService
     {
         Task<Post> CreatePost(ElanUser createdBy, string content, ElanUser userTo = null);
         Task<List<Post>> GetLatestPostsAsync(ElanUser user, int skip = 0, int take = 10);

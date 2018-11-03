@@ -8,7 +8,7 @@ namespace Elan.Posts
     {
         public static void RegisterPostsModule(this IServiceCollection services)
         {
-            services.AddScoped<IPostService, PostService>();
+            services.AddScoped<IPostsService, PostsService>();
         }
     }
 }

@@ -9,8 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Elan.Web.Controllers
 {
     [Authorize]
-    [Route("api/[controller]/[action]")]
-    public class ChatController : Controller
+    public class ChatController : ElanBaseController
     {
         private readonly IChatService _chatService;
         private readonly IUserService _userService;
