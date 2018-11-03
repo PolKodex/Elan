@@ -22,10 +22,11 @@ namespace Elan.Account.Services
             _dataService = dataService;
         }
 
-        public async Task<List<UserSettingViewModel>> GetSettingsForUser(Guid userId)
+        public async Task<List<UserSettingViewModel>> GetSettingsForUser(ElanUser user)
         {
             var userSettings =
-                await _dataService.GetSet<ElanUserSetting>().Where(x => x.UserId == userId).ToListAsync();
+                await _dataService.GetSet<ElanUserSetting>().Where(x => x.UserId == user.Id).ToListAsync();
+
             var result = new List<UserSettingViewModel>();
             userSettings.ForEach(x =>
                 result.Add(new UserSettingViewModel {Setting = x.Setting, PrivacySetting = x.PrivacySetting}));
@@ -62,11 +63,11 @@ namespace Elan.Account.Services
             await _dataService.SaveDbAsync();
         }
 
-        public async Task ChangeSetting(Guid userId, UserSettingViewModel setting)
+        public async Task ChangeSetting(ElanUser user, UserSettingViewModel setting)
         {
             var userSetting = new ElanUserSetting()
             {
-                UserId = userId,
+                UserId = user.Id,
                 Setting = setting.Setting,
                 PrivacySetting = setting.PrivacySetting
             };

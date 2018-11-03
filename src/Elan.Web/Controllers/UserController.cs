@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Elan.Account.Contracts;
 using Elan.Account.Models;
+using Elan.Users.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Elan.Web.Controllers
@@ -11,17 +11,21 @@ namespace Elan.Web.Controllers
     public class UserController : Controller
     {
         private readonly IUserSettingsService _userSettingsService;
+        private readonly IUserService _userService;
 
-        public UserController(IUserSettingsService userSettingsService)
+
+        public UserController(IUserSettingsService userSettingsService, IUserService userService)
         {
             _userSettingsService = userSettingsService;
+            _userService = userService;
         }
 
         [HttpGet]
         public async Task<List<UserSettingViewModel>> GetSettings()
         {
-            var userId = new Guid("104D8337-1565-4F2C-A8E3-08D639BC745F");
-            var result = await _userSettingsService.GetSettingsForUser(userId);
+            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+
+            var result = await _userSettingsService.GetSettingsForUser(currentUser);
             return result;
         }
 
@@ -40,8 +44,8 @@ namespace Elan.Web.Controllers
         [HttpPut]
         public async Task ChangeSetting([FromBody]UserSettingViewModel setting)
         {
-            var userId = new Guid("104D8337-1565-4F2C-A8E3-08D639BC745F");
-            await _userSettingsService.ChangeSetting(userId, setting);
+            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+            await _userSettingsService.ChangeSetting(currentUser, setting);
         }
     }
 }
