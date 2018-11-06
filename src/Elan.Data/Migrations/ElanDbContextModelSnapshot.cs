@@ -129,21 +129,6 @@ namespace Elan.Data.Migrations
                     b.ToTable("ChatMessages");
                 });
 
-            modelBuilder.Entity("Elan.Data.Models.Friends.FriendsRelation", b =>
-                {
-                    b.Property<Guid>("FirstUserId");
-
-                    b.Property<Guid>("SecondUserId");
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.HasKey("FirstUserId", "SecondUserId");
-
-                    b.HasIndex("SecondUserId");
-
-                    b.ToTable("Friends");
-                });
-
             modelBuilder.Entity("Elan.Data.Models.Posts.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -267,19 +252,6 @@ namespace Elan.Data.Migrations
                     b.HasOne("Elan.Data.Models.Account.ElanUser", "UserTo")
                         .WithMany()
                         .HasForeignKey("UserToId");
-                });
-
-            modelBuilder.Entity("Elan.Data.Models.Friends.FriendsRelation", b =>
-                {
-                    b.HasOne("Elan.Data.Models.Account.ElanUser", "FirstUser")
-                        .WithMany()
-                        .HasForeignKey("FirstUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Elan.Data.Models.Account.ElanUser", "SecondUser")
-                        .WithMany()
-                        .HasForeignKey("SecondUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Elan.Data.Models.Posts.Post", b =>
