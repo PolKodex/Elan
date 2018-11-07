@@ -23,8 +23,26 @@ namespace Elan.Data
         {
             builder.Entity<ElanUserSetting>()
                 .HasKey(c => new { c.UserId, c.Setting });
-            builder.Entity<FriendsRelation>()
+
+            var friendsRelationBuilder = builder.Entity<FriendsRelation>();
+
+            friendsRelationBuilder
                 .HasKey(c => new { c.FirstUserId, c.SecondUserId });
+
+            friendsRelationBuilder
+                .HasOne(x => x.FirstUser)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            friendsRelationBuilder
+                .HasOne(x => x.FirstUser)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            friendsRelationBuilder
+                .HasOne(x => x.SecondUser)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);
         }

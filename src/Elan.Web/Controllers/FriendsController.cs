@@ -21,16 +21,28 @@ namespace Elan.Web.Controllers
         }
 
         [HttpPost]
-        public async Task CreateFriendsRelation(string userToId, string secondUserId)
+        public async Task CreateFriendsRelation([FromBody]string userId)
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
-            var userTo = await _userService.GetUserById(userToId);
+            var user = await _userService.GetUserById(userId);
 
-            await _friendsService.CreateRelation(currentUser, userTo);
+            await _friendsService.CreateRelation(currentUser, user);
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetFriends(string userId)
+        public async Task<JsonResult> GetCurrentUserFriends()
+        {
+            var user = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+
+            var friends = await _friendsService.GetFriendsForUser(user);
+
+            var result = friends.Select(f => new UserViewModel(f));
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetFriendsByUserId(string userId)
         {
             var user = await _userService.GetUserById(userId);
 

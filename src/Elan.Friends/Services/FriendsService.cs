@@ -19,14 +19,14 @@ namespace Elan.Friends.Services
             _dataService = dataService;
         }
 
-        public async Task<FriendsRelation> CreateRelation(ElanUser FirstUser, ElanUser SecondUser)
+        public async Task<FriendsRelation> CreateRelation(ElanUser firstUser, ElanUser secondUser)
         {
             var relation = new FriendsRelation
             {
-                FirstUserId = FirstUser.Id,
-                SecondUserId = SecondUser.Id,
-                FirstUser = FirstUser,
-                SecondUser = SecondUser,
+                FirstUserId = firstUser.Id,
+                SecondUserId = secondUser.Id,
+                FirstUser = firstUser,
+                SecondUser = secondUser,
                 CreatedDate = DateTime.UtcNow
             };
 
@@ -39,16 +39,22 @@ namespace Elan.Friends.Services
 
         public async Task<List<ElanUser>> GetFriendsForUser(ElanUser user)
         {
-            var relations = await _dataService.GetSet<FriendsRelation>()
+            var result = await _dataService.GetSet<FriendsRelation>()
                 .Include(u => u.FirstUser)
                 .Include(u => u.SecondUser)
                 .Where(u => u.FirstUser.Id == user.Id || u.SecondUser.Id == user.Id)
+                .Select(r => GetFriendUser(r, user))
                 .ToListAsync();
-
-            var result = relations.Where(r => r.FirstUser.Id == user.Id).Select(r => r.SecondUser).ToList();
-            result.AddRange(relations.Where(r => r.SecondUser.Id == user.Id).Select(r => r.FirstUser).ToList());
-
             return result;
+        }
+
+        private ElanUser GetFriendUser(FriendsRelation r, ElanUser user)
+        {
+            if (r.FirstUser.Id == user.Id)
+            {
+                return r.SecondUser;
+            }
+            return r.FirstUser;
         }
     }
 }
