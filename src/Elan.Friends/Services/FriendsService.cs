@@ -46,13 +46,13 @@ namespace Elan.Friends.Services
             return result;
         }
 
-        private ElanUser GetFriendUser(FriendsRelation r, ElanUser user)
+        private ElanUser GetFriendUser(FriendsRelation relation, ElanUser user)
         {
-            if (r.FirstUser.Id == user.Id)
+            if (relation.FirstUser.Id == user.Id)
             {
-                return r.SecondUser;
+                return relation.SecondUser;
             }
-            return r.FirstUser;
+            return relation.FirstUser;
         }
     }
 }
