@@ -32,10 +32,8 @@ namespace Elan.Friends.Services
 
             await _dataService.GetSet<FriendsRelation>().AddAsync(relation);
             await _dataService.SaveDbAsync();
-
             return relation;
         }
-
 
         public async Task<List<ElanUser>> GetFriendsForUser(ElanUser user)
         {

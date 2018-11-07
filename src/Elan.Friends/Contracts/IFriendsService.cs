@@ -7,7 +7,7 @@ namespace Elan.Friends.Contracts
 {
     public interface IFriendsService
     {
-        Task<FriendsRelation> CreateRelation(ElanUser FirstUser, ElanUser SecondUser);
+        Task<FriendsRelation> CreateRelation(ElanUser firstUser, ElanUser secondUser);
         Task<List<ElanUser>> GetFriendsForUser(ElanUser user);
     }
 }

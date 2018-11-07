@@ -35,11 +35,6 @@ namespace Elan.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             friendsRelationBuilder
-                .HasOne(x => x.FirstUser)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
-
-            friendsRelationBuilder
                 .HasOne(x => x.SecondUser)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
