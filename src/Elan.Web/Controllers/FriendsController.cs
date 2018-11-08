@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Elan.Friends.Contracts;
+﻿using Elan.Friends.Contracts;
 using Elan.Users.Contracts;
 using Elan.Web.ViewModels.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Elan.Web.Controllers
 {
@@ -20,8 +20,29 @@ namespace Elan.Web.Controllers
             _userService = userService;
         }
 
+        [HttpPost]
+        public async Task CreateFriendsRelation([FromBody]string userId)
+        {
+            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+            var user = await _userService.GetUserById(userId);
+
+            await _friendsService.CreateRelation(currentUser, user);
+        }
+
         [HttpGet]
-        public async Task<JsonResult> GetFriends(string userId)
+        public async Task<JsonResult> GetCurrentUserFriends()
+        {
+            var user = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+
+            var friends = await _friendsService.GetFriendsForUser(user);
+
+            var result = friends.Select(f => new UserViewModel(f));
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetFriendsByUserId(string userId)
         {
             var user = await _userService.GetUserById(userId);
 

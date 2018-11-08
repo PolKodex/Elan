@@ -1,9 +1,10 @@
-﻿using System;
-using Elan.Data.Models.Account;
+﻿using Elan.Data.Models.Account;
 using Elan.Data.Models.Chat;
+using Elan.Data.Models.Friends;
 using Elan.Data.Models.Posts;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Elan.Data
 {
@@ -11,7 +12,8 @@ namespace Elan.Data
     {
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<ElanUserSetting> ElanUserSettings { get; set; }
-        public DbSet<Post> Posts{ get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<FriendsRelation> Friends { get; set; }
 
         public ElanDbContext(DbContextOptions options) : base(options)
         {
@@ -21,6 +23,21 @@ namespace Elan.Data
         {
             builder.Entity<ElanUserSetting>()
                 .HasKey(c => new { c.UserId, c.Setting });
+
+            var friendsRelationBuilder = builder.Entity<FriendsRelation>();
+
+            friendsRelationBuilder
+                .HasKey(c => new { c.FirstUserId, c.SecondUserId });
+
+            friendsRelationBuilder
+                .HasOne(x => x.FirstUser)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            friendsRelationBuilder
+                .HasOne(x => x.SecondUser)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);
         }
