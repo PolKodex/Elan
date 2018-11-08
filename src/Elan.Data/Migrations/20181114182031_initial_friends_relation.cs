@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Elan.Data.Migrations
 {
-    public partial class FriendsRelation : Migration
+    public partial class initial_friends_relation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

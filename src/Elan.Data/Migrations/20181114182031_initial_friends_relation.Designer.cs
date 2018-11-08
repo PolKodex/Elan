@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Elan.Data.Migrations
 {
     [DbContext(typeof(ElanDbContext))]
-    [Migration("20181106135518_FriendsRelation")]
-    partial class FriendsRelation
+    [Migration("20181114182031_initial_friends_relation")]
+    partial class initial_friends_relation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -274,12 +274,12 @@ namespace Elan.Data.Migrations
             modelBuilder.Entity("Elan.Data.Models.Friends.FriendsRelation", b =>
                 {
                     b.HasOne("Elan.Data.Models.Account.ElanUser", "FirstUser")
-                        .WithMany()
+                        .WithMany("FirstUserFriends")
                         .HasForeignKey("FirstUserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Elan.Data.Models.Account.ElanUser", "SecondUser")
-                        .WithMany()
+                        .WithMany("SecondUserFriends")
                         .HasForeignKey("SecondUserId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });

@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20181105212816_FriendsRelation.cs" />
-    <Compile Remove="Migrations\20181106134255_FriendsRelation.cs" />
+    <Compile Remove="Migrations\20181114175947_initial_friends_relation.cs" />
   </ItemGroup>
 
   <ItemGroup>
