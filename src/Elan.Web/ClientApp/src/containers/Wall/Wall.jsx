@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import Post from '../../components/Post/Post';
+import { savePost } from '../../api/PostsApi';
 import './Wall.css';
 
 export default class Wall extends Component {
@@ -20,6 +21,11 @@ export default class Wall extends Component {
     
     //do some crazy register things 
   }
+
+  post = () => {
+    savePost(this.state.postContent)
+      .then( this.setState({postContent: ""}));
+  };
 
   render() {
     //test
@@ -46,9 +52,8 @@ export default class Wall extends Component {
                   </div>
               </div>
               <div className="card-body">
-                <form onSubmit={ this.handleSubmit }>
-                  <textarea class="form-control" rows="5" value={ this.state.postContent } onChange={ this.postContentChange }  ></textarea>
-                </form>
+                <textarea class="form-control" rows="5" value={ this.state.postContent } onChange={ this.postContentChange }  ></textarea>
+                <button onClick={this.post}>POST</button>
               </div>
           </div>
         </div>
