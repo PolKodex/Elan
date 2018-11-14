@@ -12,6 +12,7 @@ namespace Elan.Data
     {
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<ElanUserSetting> ElanUserSettings { get; set; }
+        public DbSet<ElanUserImage> ElanUserImages { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<FriendsRelation> Friends { get; set; }
 
@@ -21,9 +22,25 @@ namespace Elan.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            ConfigureElanUserSettingsModel(builder);
+
+            ConfigureFriendsModel(builder);
+
+            ConfigureElanUserImagesModel(builder);
+
+            ConfigurePostsModel(builder);
+
+            base.OnModelCreating(builder);
+        }
+
+        private void ConfigureElanUserSettingsModel(ModelBuilder builder)
+        {
             builder.Entity<ElanUserSetting>()
                 .HasKey(c => new { c.UserId, c.Setting });
+        }
 
+        private void ConfigureFriendsModel(ModelBuilder builder)
+        {
             var friendsRelationBuilder = builder.Entity<FriendsRelation>();
 
             friendsRelationBuilder
@@ -38,8 +55,28 @@ namespace Elan.Data
                 .HasOne(x => x.SecondUser)
                 .WithMany(x => x.SecondUserFriends)
                 .OnDelete(DeleteBehavior.Restrict);
+        }
 
-            base.OnModelCreating(builder);
+        private void ConfigureElanUserImagesModel(ModelBuilder builder)
+        {
+            builder.Entity<ElanUserImage>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.Images)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+        private void ConfigurePostsModel(ModelBuilder builder)
+        {
+            var postsBuilder = builder.Entity<Post>();
+
+            postsBuilder
+                .HasOne(x => x.CreatedBy)
+                .WithMany(x => x.PostedByUser)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            postsBuilder
+                .HasOne(x => x.TargetUser)
+                .WithMany(x => x.PostedToUser)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
