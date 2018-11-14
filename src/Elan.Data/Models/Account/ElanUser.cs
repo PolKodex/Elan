@@ -22,7 +22,6 @@ namespace Elan.Data.Models.Account
         public virtual ICollection<FriendsRelation> SecondUserFriends { get; set; }
         [NotMapped]
         public virtual ICollection<FriendsRelation> Friends => FirstUserFriends.Union(SecondUserFriends).ToList();
-
         public ElanUser()
         {
             Settings = new List<ElanUserSetting>();

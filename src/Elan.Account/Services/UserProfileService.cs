@@ -2,6 +2,8 @@
 using Elan.Account.Contracts;
 using Elan.Account.Models;
 using Elan.Data.Contracts;
+using Elan.Data.Models.Account;
+using Microsoft.EntityFrameworkCore;
 
 namespace Elan.Account.Services
 {
@@ -16,10 +18,12 @@ namespace Elan.Account.Services
 
         public async Task UpdateProfile(UserProfileViewModel model)
         {
-            model.User.Age = model.Age;
-            model.User.Description = model.Description;
-            model.User.FirstName = model.FirstName;
-            model.User.LastName = model.LastName;
+            var user = await _dataService.GetSet<ElanUser>().FirstOrDefaultAsync(x => x.Id.ToString() == model.Id);
+
+            user.Age = model.Age;
+            user.Description = model.Description;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
 
             await _dataService.SaveDbAsync();
         }
