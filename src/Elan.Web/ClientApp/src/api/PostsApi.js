@@ -13,3 +13,15 @@ export const savePost = async (content) => {
         }
         }).then((response) => response.data);
 };
+
+export const getLatestPosts = async () => {
+    var api = "/api/Posts/GetLatestsPosts";
+
+    return await axios.get(api,
+        {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }).then((response) => response.data);
+
+}
