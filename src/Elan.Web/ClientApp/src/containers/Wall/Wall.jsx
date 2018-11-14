@@ -70,7 +70,7 @@ export default class Wall extends Component {
                   </div>
               </div>
               <div className="card-body">
-                <textarea class="form-control" rows="5" value={ this.state.postContent } onChange={ this.postContentChange }  ></textarea>
+                <textarea className="form-control" rows="5" value={ this.state.postContent } onChange={ this.postContentChange }  ></textarea>
                 <button className="btn btn-sm btn-success my-2 my-sm-0" onClick={this.post}>POST</button>
               </div>
           </div>
