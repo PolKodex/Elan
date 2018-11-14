@@ -23,5 +23,15 @@ namespace Elan.Data.Models.Account
 
         [NotMapped]
         public virtual ICollection<FriendsRelation> Friends => FirstUserFriends.Union(SecondUserFriends).ToList();
+
+        public bool IsFriend(ElanUser user)
+        {
+            return FirstUserFriends.Any(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id) || SecondUserFriends.Any(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id);
+        }
+
+//        public bool IsConnected(ElanUser currentUser)
+//        {
+//            return Friends.Any(x => x.FirstUser.Friends.Any(y=>y.FirstUser.IsFriend(currentUser) || y.FirstUser.IsFriend(currentUser)) == user.Id || x.SecondUserId == user.Id);
+//        }
     }
 }

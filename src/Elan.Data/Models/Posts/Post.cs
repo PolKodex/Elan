@@ -3,7 +3,11 @@ using Elan.Data.Models.Account;
 
 namespace Elan.Data.Models.Posts
 {
-    public class Post
+    public abstract class PrivacyEntity
+    {
+        public ElanUser CreatedBy { get; set; }
+    }
+    public class Post : PrivacyEntity
     {
         public int Id { get; set; }
         public string Content { get; set; }
