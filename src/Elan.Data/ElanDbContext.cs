@@ -1,6 +1,7 @@
 ﻿using Elan.Data.Models.Account;
 using Elan.Data.Models.Chat;
 using Elan.Data.Models.Friends;
+using Elan.Data.Models.Notifications;
 using Elan.Data.Models.Posts;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,8 @@ namespace Elan.Data
         public DbSet<ElanUserSetting> ElanUserSettings { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<FriendsRelation> Friends { get; set; }
+        public DbSet<FriendsInvitation> FriendsInvitations { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         public ElanDbContext(DbContextOptions options) : base(options)
         {
@@ -23,6 +26,9 @@ namespace Elan.Data
         {
             builder.Entity<ElanUserSetting>()
                 .HasKey(c => new { c.UserId, c.Setting });
+
+            var friendsInvitationBuilder = builder.Entity<FriendsInvitation>()
+                .HasKey(c => new { c.UserFromId, c.UserToId });
 
             var friendsRelationBuilder = builder.Entity<FriendsRelation>();
 
