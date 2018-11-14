@@ -5,6 +5,7 @@ using Elan.Data.Models.Posts;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Elan.Common.Enums;
 
 namespace Elan.Data
 {
@@ -39,7 +40,18 @@ namespace Elan.Data
                 .WithMany(x => x.SecondUserFriends)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            ConfigurePostsModel(builder);
+
             base.OnModelCreating(builder);
+        }
+
+        private void ConfigurePostsModel(ModelBuilder builder)
+        {
+            var postsBuilder = builder.Entity<Post>();
+
+            postsBuilder
+                .Property(x => x.VisibilitySetting)
+                .HasDefaultValue(PrivacySetting.Friends);
         }
     }
 }

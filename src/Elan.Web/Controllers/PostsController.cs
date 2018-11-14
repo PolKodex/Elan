@@ -24,7 +24,7 @@ namespace Elan.Web.Controllers
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
             var userTo = await _userService.GetUserById(toUserId);
 
-            await _postsService.CreatePost(currentUser, content, userTo);
+            await _postsService.CreatePost(currentUser, content, null, userTo);
         }
 
         [HttpGet]

@@ -11,24 +11,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Elan.Posts.Services
 {
-    public static class PrivacyObjectRepository
-    {
-        public static IQueryable<T> HasPermissionWith<T>(
-            this IQueryable<T> query, ElanUser currentUser, UserSetting setting)
-            where T : PrivacyEntity
-        {
-            var result = query.Where(m => (m.CreatedBy.Settings
-                                              .FirstOrDefault(x => x.Setting == setting)
-                                              .PrivacySetting == PrivacySetting.Everyone)
-            || (m.CreatedBy.Settings.First(x => x.Setting == setting).PrivacySetting == PrivacySetting.Friends && m.CreatedBy.IsFriend(currentUser))
-//                                          ||
-//                                          (m.CreatedBy.Settings.First(x => x.Setting == setting)
-//                                               .PrivacySetting == PrivacySetting.Connections && (m.CreatedBy.IsFriend(currentUser) || m.CreatedBy.IsConnected(currentUser)))
-                                          );
+    //    public static class PrivacyObjectRepository
+    //    {
+    //        public static IQueryable<T> HasPermissionWith<T>(
+    //            this IQueryable<T> query, ElanUser currentUser, UserSetting setting)
+    //            where T : PrivacyEntity
+    //        {
+    //            var result = query.Where(m =>
+    //                    (
+    //                        m.CreatedBy
+    //                            .Settings
+    //                            .FirstOrDefault(x => x.Setting == setting)
+    //                            .PrivacySetting == PrivacySetting.Everyone
+    //                    ) ||
+    //                    (
+    //                        m.CreatedBy
+    //                            .Settings
+    //                            .First(x => x.Setting == setting)
+    //                            .PrivacySetting == PrivacySetting.Friends &&
+    //                        m.CreatedBy.IsFriend(currentUser)
+    //                    )
+    ////                                          ||
+    ////                                          (m.CreatedBy.Settings.First(x => x.Setting == setting)
+    ////                                               .PrivacySetting == PrivacySetting.Connections && (m.CreatedBy.IsFriend(currentUser) || m.CreatedBy.IsConnected(currentUser)))
+    //            );
 
-            return result;
-        }
-    }
+    //            return result;
+    //        }
+    //    }
+
     public class PostsService : IPostsService
     {
         private readonly IDataService _dataService;
@@ -38,14 +49,23 @@ namespace Elan.Posts.Services
             _dataService = dataService;
         }
 
-        public async Task<Post> CreatePost(ElanUser createdBy, string content, ElanUser userTo = null)
+        public async Task<Post> CreatePost(ElanUser createdBy, string content, PrivacySetting? postVisibility = null, ElanUser userTo = null)
         {
+            var visibility =
+                postVisibility ??
+                createdBy
+                    .Settings
+                    .FirstOrDefault(x => x.Setting == UserSetting.ViewPosts)?
+                    .PrivacySetting ??
+                PrivacySetting.Friends;
+
             var post = new Post
             {
                 Content = content,
                 CreatedOn = DateTime.UtcNow,
                 CreatedBy = createdBy,
-                TargetUser = userTo ?? createdBy
+                TargetUser = userTo ?? createdBy,
+                VisibilitySetting = visibility
             };
 
             await _dataService.GetSet<Post>().AddAsync(post);
@@ -65,26 +85,40 @@ namespace Elan.Posts.Services
                     .Include(m => m.CreatedBy.SecondUserFriends)
                     .Include(m => m.TargetUser)
                     .Include(m => m.TargetUser.Settings)
-                    .Where(
-                        m => m.CreatedBy.Id != user.Id)
-                    .HasPermissionWith(user, UserSetting.ViewPosts)
-//                     &&
-//                             m.CreatedBy.Settings
-//                                 .First(x => x.Setting == UserSetting.ViewPosts)
-//                                 .PrivacySetting == PrivacySetting.Everyone
-//                             || (m.TargetUser.Id == user.Id &&
-//                                 m.TargetUser.Settings.First(x => x.Setting == UserSetting.ViewPosts).PrivacySetting ==
-//                                 PrivacySetting.Everyone))
+                    .Where(m => m.CreatedBy.Id != user.Id)
+                    .Where(m =>
+                        //(
+                        //    m.CreatedBy
+                        //        .Settings
+                        //        .FirstOrDefault(x => x.Setting == setting)
+                        //        .PrivacySetting == PrivacySetting.Everyone
+                        //) ||
+                        (
+                            m.CreatedBy
+                                .Settings
+                                .First(x => x.Setting == UserSetting.ViewPosts)
+                                .PrivacySetting == PrivacySetting.Friends &&
+                            m.CreatedBy.IsFriend(user)
+                        )
+                    )
+                    //.HasPermissionWith(user, UserSetting.ViewPosts)
+                    //                     &&
+                    //                             m.CreatedBy.Settings
+                    //                                 .First(x => x.Setting == UserSetting.ViewPosts)
+                    //                                 .PrivacySetting == PrivacySetting.Everyone
+                    //                             || (m.TargetUser.Id == user.Id &&
+                    //                                 m.TargetUser.Settings.First(x => x.Setting == UserSetting.ViewPosts).PrivacySetting ==
+                    //                                 PrivacySetting.Everyone))
                     .OrderByDescending(m => m.CreatedOn)
                     .Skip(skip)
                     .Take(take)
                     .OrderBy(m => m.CreatedOn)
                     .ToListAsync();
-         //   var aaa = posts[2].CreatedBy.IsFriend(user);
-          //  var xxxx= posts[2].CreatedBy.Friends.Any(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id);
+            //   var aaa = posts[2].CreatedBy.IsFriend(user);
+            //  var xxxx= posts[2].CreatedBy.Friends.Any(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id);
             return posts;
         }
-        
+
         public async Task<List<Post>> GetPostsForUserAsync(ElanUser user, ElanUser currentUser, int skip, int take)
         {
             var posts =
