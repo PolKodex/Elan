@@ -6,6 +6,9 @@
 
   <ItemGroup>
     <Compile Remove="Migrations\20181114175947_initial_friends_relation.cs" />
+    <Compile Remove="Migrations\20181114190521_user-profile.cs" />
+    <Compile Remove="Migrations\20181114191656_user-profile-image.cs" />
+    <Compile Remove="Migrations\20181114192544_user_profile.cs" />
   </ItemGroup>
 
   <ItemGroup>
