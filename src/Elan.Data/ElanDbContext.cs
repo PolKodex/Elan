@@ -31,12 +31,12 @@ namespace Elan.Data
 
             friendsRelationBuilder
                 .HasOne(x => x.FirstUser)
-                .WithMany()
+                .WithMany(x => x.FirstUserFriends)
                 .OnDelete(DeleteBehavior.Restrict);
 
             friendsRelationBuilder
                 .HasOne(x => x.SecondUser)
-                .WithMany()
+                .WithMany(x => x.SecondUserFriends)
                 .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);

@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Elan.Account;
 using Elan.Chat;
+using Elan.Common;
 using Elan.Data;
 using Elan.Data.Models.Account;
 using Elan.Friends;
@@ -138,6 +139,7 @@ namespace Elan.Web
             services.RegisterFriendsModule();
             services.RegisterUsersModule();
             services.RegisterPostsModule();
+            services.RegisterCommonModule();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

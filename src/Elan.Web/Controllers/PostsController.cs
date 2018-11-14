@@ -28,7 +28,7 @@ namespace Elan.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetLatestsPosts(int skip = 0, int take = 10)
+        public async Task<JsonResult> GetLatestPosts(int skip = 0, int take = 10)
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
 

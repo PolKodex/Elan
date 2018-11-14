@@ -25,13 +25,12 @@ namespace Elan.Friends.Services
             {
                 FirstUserId = firstUser.Id,
                 SecondUserId = secondUser.Id,
-                FirstUser = firstUser,
-                SecondUser = secondUser,
                 CreatedDate = DateTime.UtcNow
             };
 
             await _dataService.GetSet<FriendsRelation>().AddAsync(relation);
             await _dataService.SaveDbAsync();
+
             return relation;
         }
 
@@ -43,6 +42,7 @@ namespace Elan.Friends.Services
                 .Where(u => u.FirstUser.Id == user.Id || u.SecondUser.Id == user.Id)
                 .Select(r => GetFriendUser(r, user))
                 .ToListAsync();
+
             return result;
         }
 
@@ -52,6 +52,7 @@ namespace Elan.Friends.Services
             {
                 return relation.SecondUser;
             }
+
             return relation.FirstUser;
         }
     }

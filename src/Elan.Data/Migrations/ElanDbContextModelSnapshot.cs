@@ -272,12 +272,12 @@ namespace Elan.Data.Migrations
             modelBuilder.Entity("Elan.Data.Models.Friends.FriendsRelation", b =>
                 {
                     b.HasOne("Elan.Data.Models.Account.ElanUser", "FirstUser")
-                        .WithMany()
+                        .WithMany("FirstUserFriends")
                         .HasForeignKey("FirstUserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Elan.Data.Models.Account.ElanUser", "SecondUser")
-                        .WithMany()
+                        .WithMany("SecondUserFriends")
                         .HasForeignKey("SecondUserId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
