@@ -1,21 +1,51 @@
 import React, { Component } from 'react';
 import Post from "../Post/Post";
+import * as accountApi from '../../api/AccountApi';
 import './Account.css';
 
 export default class Account extends Component {
     constructor(props) {
         super(props);
 
+        //after testing remove sample data in state in contructor
         this.state = {
             user: {
+                id: 'guid-12345678-abcdefgh',
                 profilePictureSource: '../../assets/default_avatar.jpg',
                 fullName: 'Maciej Owerczuk',
                 description: 'Maciek jest debeściak'
             },
             friendsList: [{key: 1, pictureSource: '../../assets/no-photo.png', targetUrl: '#', title: 'Marcin Korwek'}],
             picturesList: [{key: 1, pictureSource: '../../assets/no-photo.png', targetUrl: '#', title: 'IMG1234'}],
-            userPostsList: [{author: {id: 1, isGroup: false, name: "Maciej Owerczuk"}, to:{id: 2, isGroup: true, name: "Sportowe świry"}, date:"18 października o 14:34", content:"Siema ziomeczki, jak ktoś chce pograć dzisiaj w piłkę?"}]
+            userPostsList: [
+                {
+                    author: 
+                    {
+                        id: 1, 
+                        isGroup: false, 
+                        name: "Maciej Owerczuk"
+                    }, 
+                    to:
+                    {
+                        id: 2, 
+                        isGroup: true, 
+                        name: "Sportowe świry"
+                    }, 
+                    date: "18 października o 14:34", 
+                    content: "Siema ziomeczki, jak ktoś chce pograć dzisiaj w piłkę?"
+                }]
         }
+    }
+
+    componentDidMount()
+    {
+        this.setState({ user: accountApi.getUser() })
+        this.setState(
+            { 
+                friendsList: accountApi.getUserFriends(),
+                picturesList: accountApi.getUserPictures(),
+                userPostsList: accountApi.getUserPosts(this.state.user.id, 0, 10)
+            });
     }
 
     getPictureThumbnail(item, index) {
@@ -27,8 +57,8 @@ export default class Account extends Component {
     }
 
     render() {
-        //TO DO: receive user data (with all lists)
-
+        //TO DO: endless scroll
+        
         let friendThumbnailsFirstRow = this.state.friendsList.slice(0, 4).map((item, index) => this.getPictureThumbnail(item, index));
         let friendThumbnailsSecondRow = this.state.friendsList.slice(4, 8).map((item, index) => this.getPictureThumbnail(item, index));
 
