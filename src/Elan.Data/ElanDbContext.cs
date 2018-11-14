@@ -1,11 +1,11 @@
-﻿using Elan.Data.Models.Account;
+﻿using System;
+using Elan.Data.Models.Account;
 using Elan.Data.Models.Chat;
 using Elan.Data.Models.Friends;
 using Elan.Data.Models.Notifications;
 using Elan.Data.Models.Posts;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Elan.Data
 {
@@ -27,8 +27,20 @@ namespace Elan.Data
             builder.Entity<ElanUserSetting>()
                 .HasKey(c => new { c.UserId, c.Setting });
 
-            var friendsInvitationBuilder = builder.Entity<FriendsInvitation>()
+            var friendsInvitationBuilder = builder.Entity<FriendsInvitation>();
+
+            friendsInvitationBuilder
                 .HasKey(c => new { c.UserFromId, c.UserToId });
+
+            friendsInvitationBuilder
+                .HasOne(x => x.UserFrom)
+                .WithMany(x => x.SentFriendInvitations)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            friendsInvitationBuilder
+                .HasOne(x => x.UserTo)
+                .WithMany(x => x.ReceivedFriendInvitations)
+                .OnDelete(DeleteBehavior.Restrict);
 
             var friendsRelationBuilder = builder.Entity<FriendsRelation>();
 

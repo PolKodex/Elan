@@ -19,9 +19,14 @@ namespace Elan.Data.Models.Account
             Settings = new List<ElanUserSetting>();
             FirstUserFriends = new List<FriendsRelation>();
             SecondUserFriends = new List<FriendsRelation>();
+            SentFriendInvitations = new List<FriendsInvitation>();
+            ReceivedFriendInvitations = new List<FriendsInvitation>();
         }
 
         [NotMapped]
         public virtual ICollection<FriendsRelation> Friends => FirstUserFriends.Union(SecondUserFriends).ToList();
+
+        public virtual ICollection<FriendsInvitation> SentFriendInvitations { get; set; }
+        public virtual ICollection<FriendsInvitation> ReceivedFriendInvitations { get; set; }
     }
 }
