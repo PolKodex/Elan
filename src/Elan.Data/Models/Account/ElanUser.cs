@@ -12,8 +12,8 @@ namespace Elan.Data.Models.Account
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Description { get; set; }
         public int? Age { get; set; }
-        public string ProfileImage { get; set; }
         public virtual ICollection<ElanUserImage> Images { get; set; }
         public virtual ICollection<Post> PostedByUser { get; set; }
         public virtual ICollection<Post> PostedToUser { get; set; }

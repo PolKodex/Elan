@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Elan.Data.Migrations
 {
     [DbContext(typeof(ElanDbContext))]
-    [Migration("20181114190521_user-profile")]
-    partial class userprofile
+    [Migration("20181114192743_user_profile")]
+    partial class user_profile
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -57,6 +57,8 @@ namespace Elan.Data.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<string>("Description");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
@@ -82,8 +84,6 @@ namespace Elan.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
-                    b.Property<string>("ProfileImage");
-
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
@@ -108,6 +108,10 @@ namespace Elan.Data.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("IsMain");
+
+                    b.Property<DateTime?>("LastUpdateDate");
 
                     b.Property<string>("RawValue");
 

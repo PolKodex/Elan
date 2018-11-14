@@ -3,12 +3,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Elan.Data.Migrations
 {
-    public partial class userprofile : Migration
+    public partial class user_profile : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
                 name: "Age",
+                table: "AspNetUsers",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Description",
                 table: "AspNetUsers",
                 nullable: true);
 
@@ -22,11 +27,6 @@ namespace Elan.Data.Migrations
                 table: "AspNetUsers",
                 nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "ProfileImage",
-                table: "AspNetUsers",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "ElanUserImages",
                 columns: table => new
@@ -34,7 +34,9 @@ namespace Elan.Data.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     UserId = table.Column<Guid>(nullable: false),
                     UploadDate = table.Column<DateTime>(nullable: false),
-                    RawValue = table.Column<string>(nullable: true)
+                    LastUpdateDate = table.Column<DateTime>(nullable: true),
+                    RawValue = table.Column<string>(nullable: true),
+                    IsMain = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,15 +65,15 @@ namespace Elan.Data.Migrations
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
+                name: "Description",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
                 name: "FirstName",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
                 name: "LastName",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "ProfileImage",
                 table: "AspNetUsers");
         }
     }
