@@ -22,6 +22,9 @@ export default class Chat extends Component {
             message: "",
             users: []
         };
+
+        this.shouldScrollChat = false;
+        this.messagesRef = React.createRef();
         const decodedToken = jwtUtils.decodeJwt(localStorage.getItem('token'));
         friendsApi
             .getFriends(decodedToken.jti)
@@ -66,19 +69,20 @@ export default class Chat extends Component {
         message = JSON.parse(message);
         var decodedToken = jwtUtils.decodeJwt(localStorage.getItem('token'));
         var messages = this.state.messages;
-
         if (message.ToUserId === decodedToken.jti) {
             if (!messages[message.FromUserId]) {
                 messages[message.FromUserId] = chatApi.getMessages(message.FromUserId).map(m => {
                     return {
                         isToMe: m.IsToMe,
-                        content: m.Content
+                        content: m.Content,
+                        date: m.SentOn
                     };
                 });
             } else {
                 messages[message.FromUserId].push({
                     isToMe: true,
-                    content: message.Content
+                    content: message.Content,
+                    date: message.SentOn
                 });
             }
 
@@ -87,25 +91,47 @@ export default class Chat extends Component {
                 messages[message.ToUserId] = chatApi.getMessages(message.ToUserId).map(m => {
                     return {
                         isToMe: m.IsToMe,
-                        content: m.Content
+                        content: m.Content,
+                        date: m.SentOn
                     };
                 });
             } else {
                 messages[message.ToUserId].push({
                     isToMe: false,
-                    content: message.Content
+                    content: message.Content,
+                    date: message.SentOn
                 });
             }
         }
-        this.setState({ messages });
+        this.setState({ messages },() => {this.shouldScrollChat = true;});
+    }
+
+    componentDidUpdate() {
+        if(this.shouldScrollChat === true){
+            this.shouldScrollChat = false;
+            this.scrollChatToBottom();
+        }
     }
 
     sendMessage() {
+        //check if empty message
+        if(!this.state.activeUser) {
+            return;
+        }
         this.connection.invoke("SendMessage", this.state.activeUser.id, this.state.message).catch(err => console.error(err.toString()));
         this.setState({
             message: ""
-        });
+        }, () => {this.shouldScrollChat = true;});
+        
     }
+
+    scrollChatToBottom = () => {
+        let sHeight = this.messagesRef.current.scrollHeight;
+        let height = this.messagesRef.current.clientHeight;
+        let maxScrollTop = sHeight - height;
+        this.messagesRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    }
+
 
     updateInputValue(event) {
         this.setState({
@@ -121,7 +147,8 @@ export default class Chat extends Component {
                     messages[user.id] = data.map(m => {
                         return {
                             isToMe: m.isToMe,
-                            content: m.content
+                            content: m.content,
+                            date: m.sentOn
                         };
                     });
                     this.setState({
@@ -140,18 +167,31 @@ export default class Chat extends Component {
 
     }
 
+    handleKeyPress = (e) => {
+        if(e.key === 'Enter') {
+            this.sendMessage();
+        }
+    };
+
     render() {
-        let messages = this.state.visibleMessages.map((msg, index) => <ChatMessage isToMe={msg.isToMe} content={msg.content} key={index} />);
+        let messages = this.state.visibleMessages.map((msg, index) => <ChatMessage isToMe={msg.isToMe} 
+                                                                                   content={msg.content} 
+                                                                                   date={msg.date}
+                                                                                   key={index} />);
 
         return (
             <div className="chat-wrapper">
                 <div className="chat">
                     <ChatTopBar users={this.state.users} activeUser={this.state.activeUser} activeUserChanged={this.onUserChange} />
-                    <div className="chat-messages">
-                        {messages}
+                    <div className="messages-wrapper" ref={this.messagesRef}>
+                        <div className="chat-messages">
+                            {messages}
+                        </div>
                     </div>
                     <div className="chat-bottom">
-                        <input type="text" className="form-control" value={this.state.message} onChange={this.updateInputValue.bind(this)} />
+                        <input type="text" className="form-control" value={this.state.message} 
+                        onKeyPress={this.handleKeyPress.bind(this)}
+                        onChange={this.updateInputValue.bind(this)} />
                         <button className="btn btn-outline-success" onClick={this.sendMessage.bind(this)}>Wyślij</button>
                     </div>
                 </div>

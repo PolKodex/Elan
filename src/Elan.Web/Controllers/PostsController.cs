@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Elan.Posts.Contracts;
+using Elan.Posts.Models;
 using Elan.Users.Contracts;
 using Elan.Web.ViewModels.Posts;
 using Microsoft.AspNetCore.Mvc;
@@ -21,12 +22,12 @@ namespace Elan.Web.Controllers
         }
 
         [HttpPost]
-        public async Task CreatePost(string content, string toUserId = null)
+        public async Task CreatePost([FromBody]CreatePostViewModel data)
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
-            var userTo = await _userService.GetUserById(toUserId);
+            var userTo = await _userService.GetUserById(data.ToUserId);
 
-            await _postsService.CreatePost(currentUser, content, userTo);
+            await _postsService.CreatePost(currentUser, data.Content, userTo);
         }
 
         [HttpGet]

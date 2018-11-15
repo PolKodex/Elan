@@ -1,5 +1,6 @@
 .msg-container-to-me {
 	display: flex;
+	flex-direction: column;
 }
 
 .msg-container-from-me {
@@ -20,10 +21,14 @@
 
 .msg {
 	border-radius: 3px;
-    margin-bottom: 5px;
     padding: 5px 10px;
     max-width: 70%;
     min-width: 70%;
-    margin: 5px;
+    margin: 5px 5px 0px 5px;
 }
 
+.msg-date {
+	color: gray;
+	font-size: 10px;
+	padding: 5px 10px;
+}

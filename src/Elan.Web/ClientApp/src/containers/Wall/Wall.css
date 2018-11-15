@@ -3,3 +3,7 @@
 	flex-direction: column;
 	align-items: center;
 }
+
+.card-body button {
+	margin-top: 5px !important;
+}
