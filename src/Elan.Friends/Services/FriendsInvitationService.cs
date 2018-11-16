@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Elan.Friends.Services
 {
-    internal class FriendsInvitationService : IFriendsInvitationService
+    public class FriendsInvitationService : IFriendsInvitationService
     {
         private readonly IDataService _dataService;
 
@@ -46,7 +46,8 @@ namespace Elan.Friends.Services
                 UserToId = userTo.Id,
                 CreatedDate = DateTime.UtcNow,
                 UserFrom = userFrom,
-                UserTo = userTo
+                UserTo = userTo,
+                IsAccepted = false
             };
 
             await _dataService.GetSet<FriendsInvitation>().AddAsync(invitation);
@@ -70,7 +71,7 @@ namespace Elan.Friends.Services
 
         public async Task<bool> IsInvitedByUser(ElanUser currentUser, ElanUser targetUser)
         {
-            var invitation = _dataService
+            var invitation = await _dataService
                 .GetSet<FriendsInvitation>()
                 .Include(i => i.UserFrom)
                 .Include(i => i.UserTo)
@@ -80,7 +81,7 @@ namespace Elan.Friends.Services
 
             if (invitation != null)
             {
-                return invitation.Result.IsAccepted;
+                return invitation.IsAccepted;
             }
 
             return false;

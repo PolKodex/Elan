@@ -9,6 +9,7 @@ namespace Elan.Friends
         public static void RegisterFriendsModule(this IServiceCollection services)
         {
             services.AddScoped<IFriendsService, FriendsService>();
+            services.AddScoped<IFriendsInvitationService, FriendsInvitationService>();
         }
     }
 }

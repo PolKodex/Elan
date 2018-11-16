@@ -71,7 +71,7 @@ namespace Elan.Web.Controllers
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
             var user = await _userService.GetUserById(userId);
 
-            _friendsInvitationService.AcceptInvitation(currentUser, user);
+            _friendsInvitationService.AcceptInvitation(user, currentUser);
         }
 
         [HttpGet]
