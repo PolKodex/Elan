@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 
 namespace Elan.Web.Controllers
 {
+    // TODO: access rights need to be checked before each action executed
+    // TODO: custom controller method attributes: Owner [user is owner of the entity - like in UserProfile], Participant [user is part of the entity - like in FriendsRelationRequest]
     [Authorize]
     public class FriendsController : ElanBaseController
     {

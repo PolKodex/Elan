@@ -11,6 +11,8 @@ namespace Elan.Account
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAuthValidationService, AuthValidationService>();
             services.AddScoped<IUserSettingsService, UserSettingsService>();
+            services.AddScoped<IUserImageService, UserImageService>();
+            services.AddScoped<IUserProfileService, UserProfileService>();
         }
     }
 }

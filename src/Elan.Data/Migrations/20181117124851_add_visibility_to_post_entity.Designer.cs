@@ -5,14 +5,16 @@ using Elan.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Elan.Data.Migrations
 {
     [DbContext(typeof(ElanDbContext))]
-    partial class ElanDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181117124851_add_visibility_to_post_entity")]
+    partial class add_visibility_to_post_entity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,23 +162,6 @@ namespace Elan.Data.Migrations
                     b.ToTable("ChatMessages");
                 });
 
-            modelBuilder.Entity("Elan.Data.Models.Friends.FriendsInvitation", b =>
-                {
-                    b.Property<Guid>("UserFromId");
-
-                    b.Property<Guid>("UserToId");
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<bool>("IsAccepted");
-
-                    b.HasKey("UserFromId", "UserToId");
-
-                    b.HasIndex("UserToId");
-
-                    b.ToTable("FriendsInvitations");
-                });
-
             modelBuilder.Entity("Elan.Data.Models.Friends.FriendsRelation", b =>
                 {
                     b.Property<Guid>("FirstUserId");
@@ -190,30 +175,6 @@ namespace Elan.Data.Migrations
                     b.HasIndex("SecondUserId");
 
                     b.ToTable("Friends");
-                });
-
-            modelBuilder.Entity("Elan.Data.Models.Notifications.Notification", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<bool>("IsRead");
-
-                    b.Property<string>("Message");
-
-                    b.Property<DateTime>("SentOn");
-
-                    b.Property<Guid?>("TargetUserId");
-
-                    b.Property<int>("Type");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TargetUserId");
-
-                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Elan.Data.Models.Posts.Post", b =>
@@ -353,19 +314,6 @@ namespace Elan.Data.Migrations
                         .HasForeignKey("UserToId");
                 });
 
-            modelBuilder.Entity("Elan.Data.Models.Friends.FriendsInvitation", b =>
-                {
-                    b.HasOne("Elan.Data.Models.Account.ElanUser", "UserFrom")
-                        .WithMany("SentFriendInvitations")
-                        .HasForeignKey("UserFromId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Elan.Data.Models.Account.ElanUser", "UserTo")
-                        .WithMany("ReceivedFriendInvitations")
-                        .HasForeignKey("UserToId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
             modelBuilder.Entity("Elan.Data.Models.Friends.FriendsRelation", b =>
                 {
                     b.HasOne("Elan.Data.Models.Account.ElanUser", "FirstUser")
@@ -377,13 +325,6 @@ namespace Elan.Data.Migrations
                         .WithMany("SecondUserFriends")
                         .HasForeignKey("SecondUserId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Elan.Data.Models.Notifications.Notification", b =>
-                {
-                    b.HasOne("Elan.Data.Models.Account.ElanUser", "TargetUser")
-                        .WithMany()
-                        .HasForeignKey("TargetUserId");
                 });
 
             modelBuilder.Entity("Elan.Data.Models.Posts.Post", b =>

@@ -64,7 +64,7 @@ export default class Register extends Component {
         this.setState({ lastName: event.target.value });
     }
 
-    handleSubmit = () => {
+    handleSubmit = (event) => {
         auth.register(
                 this.state.login, 
                 this.state.password, 
@@ -78,6 +78,8 @@ export default class Register extends Component {
             .catch((response) => {
                 this.handleErrors(response);
             });
+
+        event.preventDefault();
     }
 
     trimError(value) {

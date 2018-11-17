@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Elan.Account.Contracts;
 using Elan.Common.Enums;
@@ -29,13 +30,17 @@ namespace Elan.Account.Services
                     .ToListAsync();
 
             var result = new List<UserSettingViewModel>();
-            userSettings
-                .ForEach(x =>
-                    result.Add(new UserSettingViewModel
-                    {
-                        Setting = x.Setting,
-                        PrivacySetting = x.PrivacySetting
-                    }));
+
+            foreach (UserSetting setting in Enum.GetValues(typeof(UserSetting)))
+            {
+                var userSetting = userSettings.FirstOrDefault(x => x.Setting == setting);
+
+                result.Add(new UserSettingViewModel
+                {
+                    Setting = setting,
+                    PrivacySetting = userSetting?.PrivacySetting ?? PrivacySetting.Friends
+                });
+            }
 
             return result;
         }
@@ -63,7 +68,7 @@ namespace Elan.Account.Services
             var contentSetting = new ElanUserSetting
             {
                 UserId = newUser.Id,
-                Setting = UserSetting.Content,
+                Setting = UserSetting.ViewPosts,
                 PrivacySetting = PrivacySetting.Everyone
             };
             _dataService.GetSet<ElanUserSetting>().Add(contentSetting);
