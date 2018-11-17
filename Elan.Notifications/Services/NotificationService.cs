@@ -48,11 +48,11 @@ namespace Elan.Notifications.Services
             return notifications;
         }
 
-        public Notification MarkAsDeleted(Guid id)
+        public Notification MarkAsDeleted(string id)
         {
             var notification = _dataService
                 .GetSet<Notification>()
-                .Where(n => n.Id == id)
+                .Where(n => n.Id.ToString() == id)
                 .Single();
 
             notification.IsDeleted = true;
@@ -63,11 +63,11 @@ namespace Elan.Notifications.Services
             return notification;
         }
 
-        public Notification MarkAsRead(Guid id)
+        public Notification MarkAsRead(string id)
         {
             var notification = _dataService
                 .GetSet<Notification>()
-                .Where(n => n.Id == id)
+                .Where(n => n.Id.ToString() == id)
                 .Single();
 
             notification.IsRead = true;
