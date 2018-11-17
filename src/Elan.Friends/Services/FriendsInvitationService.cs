@@ -24,9 +24,6 @@ namespace Elan.Friends.Services
         {
             var invitation = _dataService
                 .GetSet<FriendsInvitation>()
-                .Include(i => i.UserFrom)
-                .Include(i => i.UserTo)
-                .Include(i => i.IsAccepted)
                 .Where(i => i.UserFromId == userFrom.Id && i.UserToId == userTo.Id)
                 .Single();
 
@@ -45,8 +42,6 @@ namespace Elan.Friends.Services
                 UserFromId = userFrom.Id,
                 UserToId = userTo.Id,
                 CreatedDate = DateTime.UtcNow,
-                UserFrom = userFrom,
-                UserTo = userTo,
                 IsAccepted = false
             };
 
@@ -60,9 +55,6 @@ namespace Elan.Friends.Services
         {
             var result = await _dataService.GetSet<FriendsInvitation>()
                 .Include(i => i.UserFrom)
-                .Include(i => i.UserTo)
-                .Include(i => i.IsAccepted)
-                .Include(i => i.CreatedDate)
                 .Where(i => i.UserToId == user.Id && i.IsAccepted == false)
                 .ToListAsync();
 
@@ -71,17 +63,23 @@ namespace Elan.Friends.Services
 
         public async Task<bool> IsInvitedByUser(ElanUser currentUser, ElanUser targetUser)
         {
-            var invitation = await _dataService
+            FriendsInvitation invitation = null;
+
+            try
+            {
+                invitation = await _dataService
                 .GetSet<FriendsInvitation>()
-                .Include(i => i.UserFrom)
-                .Include(i => i.UserTo)
-                .Include(i => i.IsAccepted)
                 .Where(i => i.UserFromId == targetUser.Id && i.UserToId == currentUser.Id)
                 .SingleAsync();
-
-            if (invitation != null)
+            }
+            catch
             {
-                return invitation.IsAccepted;
+                //TODO - exception handling
+            }
+
+            if (invitation != null && !invitation.IsAccepted)
+            {
+                return true;
             }
 
             return false;

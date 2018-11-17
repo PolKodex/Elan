@@ -23,15 +23,6 @@ namespace Elan.Web.Controllers
             _friendsInvitationService = friendsInvitationService;
         }
 
-        [HttpPost]
-        public async Task CreateFriendsRelation([FromBody]string userId)
-        {
-            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
-            var user = await _userService.GetUserById(userId);
-
-            await _friendsService.CreateRelation(currentUser, user);
-        }
-
         [HttpGet]
         public async Task<JsonResult> GetCurrentUserFriends()
         {
@@ -72,6 +63,7 @@ namespace Elan.Web.Controllers
             var user = await _userService.GetUserById(userId);
 
             _friendsInvitationService.AcceptInvitation(user, currentUser);
+            await _friendsService.CreateRelation(currentUser, user);
         }
 
         [HttpGet]
@@ -93,7 +85,7 @@ namespace Elan.Web.Controllers
 
             var result = _friendsInvitationService.IsInvitedByUser(currentUser, user);
 
-            return Json(result);
+            return Json(result.Result);
         }
     }
 }
