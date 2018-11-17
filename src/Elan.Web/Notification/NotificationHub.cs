@@ -1,4 +1,7 @@
-﻿using Elan.Users.Contracts;
+﻿using Elan.Common.Enums;
+using Elan.Notifications.Contracts;
+using Elan.Users.Contracts;
+using Elan.Web.ViewModels.Notifications;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -9,14 +12,16 @@ namespace Elan.Web.notification
     public class NotificationHub : Hub
     {
         private readonly IUserService _userService;
+        private readonly INotificationService _notificationService;
 
         private readonly object _lock = new object();
 
         private static readonly Dictionary<string, string> _connections = new Dictionary<string, string>();
 
-        public NotificationHub(IUserService userService)
+        public NotificationHub(IUserService userService, INotificationService notificationService)
         {
             _userService = userService;
+            _notificationService = notificationService;
         }
 
         public override Task OnConnectedAsync()
