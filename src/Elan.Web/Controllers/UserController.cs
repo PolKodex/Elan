@@ -83,14 +83,18 @@ namespace Elan.Web.Controllers
             var user = await _userService.GetUserById(userId);
             var mainImage = await _userImageService.GetMainImage(user);
 
-            var result = new ViewModels.Users.UserProfileViewModel(user);     
-            result.MainImage = new ViewModels.Users.UserImageViewModel(mainImage);
+            var result = new ViewModels.Users.UserProfileViewModel(user);
+            
+            if (mainImage != null)
+            {
+                result.MainImage = new ViewModels.Users.UserImageViewModel(mainImage);
+            }
 
             return result;
         }
 
         [HttpPost]
-        public async Task<ViewModels.Users.UserImageViewModel> UploadImage(UserImageViewModel model)
+        public async Task<ViewModels.Users.UserImageViewModel> UploadImage([FromBody]UserImageViewModel model)
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
             model.User = currentUser;
@@ -101,7 +105,7 @@ namespace Elan.Web.Controllers
         }
 
         [HttpPut]
-        public async Task<ViewModels.Users.UserImageViewModel> UpdateImage(UserImageViewModel model)
+        public async Task<ViewModels.Users.UserImageViewModel> UpdateImage([FromBody]UserImageViewModel model)
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
             model.User = currentUser;
