@@ -22,6 +22,7 @@ namespace Elan.Data.Models.Account
         public virtual ICollection<FriendsRelation> SecondUserFriends { get; set; }
         [NotMapped]
         public virtual ICollection<FriendsRelation> Friends => FirstUserFriends.Union(SecondUserFriends).ToList();
+
         public ElanUser()
         {
             Settings = new List<ElanUserSetting>();
@@ -30,6 +31,11 @@ namespace Elan.Data.Models.Account
             PostedByUser = new List<Post>();
             PostedToUser = new List<Post>();
             Images = new List<ElanUserImage>();
+        }
+        
+        public bool IsFriend(ElanUser user)
+        {
+            return FirstUserFriends.Any(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id) || SecondUserFriends.Any(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id);
         }
     }
 }

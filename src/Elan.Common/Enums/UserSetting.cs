@@ -3,6 +3,6 @@
     public enum UserSetting
     {
         ShowInSearchResult = 0,
-        Content = 1
+        ViewPosts = 1
     }
 }
