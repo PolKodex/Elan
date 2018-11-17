@@ -7,20 +7,28 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Elan.Web.Controllers
 {
+    // TODO: access rights need to be checked before each action executed
+    // TODO: custom controller method attributes: Owner [user is owner of the entity - like in UserProfile], Participant [user is part of the entity - like in FriendsRelationRequest]
     public class UserController : ElanBaseController
     {
         private readonly IUserSettingsService _userSettingsService;
         private readonly IUserService _userService;
         private readonly IUserSearchService _userSearchService;
-        
+        private readonly IUserProfileService _userProfileService;
+        private readonly IUserImageService _userImageService;
+
         public UserController(
             IUserSettingsService userSettingsService,
             IUserService userService,
-            IUserSearchService userSearchService)
+            IUserSearchService userSearchService,
+            IUserProfileService userProfileService,
+            IUserImageService userImageService)
         {
             _userSettingsService = userSettingsService;
             _userService = userService;
             _userSearchService = userSearchService;
+            _userProfileService = userProfileService;
+            _userImageService = userImageService;
         }
 
         [HttpGet]
@@ -61,6 +69,56 @@ namespace Elan.Web.Controllers
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
             await _userSettingsService.ChangeSetting(currentUser, setting);
+        }
+
+        [HttpPut]
+        public async Task UpdateProfile([FromBody]UserProfileViewModel model)
+        {
+            await _userProfileService.UpdateProfile(model);
+        }
+
+        [HttpGet]
+        public async Task<ViewModels.Users.UserProfileViewModel> GetUserProfile(string userId)
+        {
+            var user = await _userService.GetUserById(userId);
+            var mainImage = await _userImageService.GetMainImage(user);
+
+            var result = new ViewModels.Users.UserProfileViewModel(user);
+            
+            if (mainImage != null)
+            {
+                result.MainImage = new ViewModels.Users.UserImageViewModel(mainImage);
+            }
+
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ViewModels.Users.UserImageViewModel> UploadImage([FromBody]UserImageViewModel model)
+        {
+            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+            model.User = currentUser;
+
+            var result = await _userImageService.UploadImage(model);
+
+            return new ViewModels.Users.UserImageViewModel(result);
+        }
+
+        [HttpPut]
+        public async Task<ViewModels.Users.UserImageViewModel> UpdateImage([FromBody]UserImageViewModel model)
+        {
+            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+            model.User = currentUser;
+
+            var result = await _userImageService.UploadImage(model);
+
+            return new ViewModels.Users.UserImageViewModel(result);
+        }
+
+        [HttpDelete]
+        public async Task DeleteImage(string imageId)
+        {
+            await _userImageService.DeleteImage(imageId);
         }
     }
 }

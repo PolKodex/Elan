@@ -23,7 +23,7 @@ export default class Login extends Component {
         this.setState({ password: event.target.value });
     }
 
-    handleSubmit = () => {
+    handleSubmit = (event) => {
         auth.signIn(this.state.login, this.state.password)
             .then(function(token) {
                 localStorage.setItem('token', token);
@@ -34,6 +34,8 @@ export default class Login extends Component {
                     message: 'Login lub hasło nie są poprawne'
                 });
             });
+
+        event.preventDefault();
     }
     
     renderRedirect = () => {

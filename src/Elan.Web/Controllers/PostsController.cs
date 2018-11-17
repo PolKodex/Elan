@@ -1,12 +1,15 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Elan.Posts.Contracts;
+using Elan.Posts.Models;
 using Elan.Users.Contracts;
 using Elan.Web.ViewModels.Posts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Elan.Web.Controllers
-{
+{    
+    // TODO: access rights need to be checked before each action executed
+    // TODO: custom controller method attributes: Owner [user is owner of the entity - like in UserProfile], Participant [user is part of the entity - like in FriendsRelationRequest]
     public class PostsController : ElanBaseController
     {
         private readonly IPostsService _postsService;
@@ -19,12 +22,12 @@ namespace Elan.Web.Controllers
         }
 
         [HttpPost]
-        public async Task CreatePost(string content, string toUserId = null)
+        public async Task CreatePost([FromBody]CreatePostViewModel data)
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
-            var userTo = await _userService.GetUserById(toUserId);
+            var userTo = await _userService.GetUserById(data.ToUserId);
 
-            await _postsService.CreatePost(currentUser, content, null, userTo);
+            await _postsService.CreatePost(currentUser, data.Content, null, userTo);
         }
 
         [HttpGet]

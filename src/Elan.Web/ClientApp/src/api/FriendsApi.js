@@ -1,7 +1,7 @@
 ﻿const axios = require('axios');
 
 export const getFriends = async (userId) => {
-    var api = "/api/Friends/GetFriends";
+    var api = "/api/Friends/GetFriendsByUserId";
 
     const response = await axios.get(api,
         {
