@@ -21,7 +21,10 @@ namespace Elan.Web.Controllers
         private readonly IUserService _userService;
         private readonly INotificationService _notificationService;
 
-        public FriendsController(IFriendsService friendsService, IUserService userService, IFriendsInvitationService friendsInvitationService, INotificationService notificationService)
+        public FriendsController(IFriendsService friendsService, 
+                                 IUserService userService, 
+                                 IFriendsInvitationService friendsInvitationService, 
+                                 INotificationService notificationService)
         {
             _friendsService = friendsService;
             _userService = userService;

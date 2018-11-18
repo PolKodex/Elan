@@ -18,7 +18,6 @@ namespace Elan.Notifications.Services
         public NotificationService(IDataService dataService)
         {
             _dataService = dataService;
-
         }
 
         public async Task<Notification> CreateNotification(string message, NotificationType notificationType, ElanUser userTo)
@@ -48,32 +47,30 @@ namespace Elan.Notifications.Services
             return notifications;
         }
 
-        public Notification MarkAsDeleted(string id)
+        public async Task<Notification> MarkAsDeleted(string id)
         {
-            var notification = _dataService
+            var notification = await _dataService
                 .GetSet<Notification>()
                 .Where(n => n.Id.ToString() == id)
-                .Single();
+                .SingleAsync();
 
             notification.IsDeleted = true;
 
-            _dataService.GetSet<Notification>().Update(notification);
-            _dataService.SaveDbAsync();
+            await _dataService.SaveDbAsync();
 
             return notification;
         }
 
-        public Notification MarkAsRead(string id)
+        public async Task<Notification> MarkAsRead(string id)
         {
-            var notification = _dataService
+            var notification = await _dataService
                 .GetSet<Notification>()
                 .Where(n => n.Id.ToString() == id)
-                .Single();
+                .SingleAsync();
 
             notification.IsRead = true;
-
-            _dataService.GetSet<Notification>().Update(notification);
-            _dataService.SaveDbAsync();
+            
+            await _dataService.SaveDbAsync();
 
             return notification;
         }

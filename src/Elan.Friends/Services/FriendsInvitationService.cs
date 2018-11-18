@@ -17,20 +17,18 @@ namespace Elan.Friends.Services
         public FriendsInvitationService(IDataService dataService)
         {
             _dataService = dataService;
-
         }
 
-        public FriendsInvitation AcceptInvitation(ElanUser userFrom, ElanUser userTo)
+        public async Task<FriendsInvitation> AcceptInvitation(ElanUser userFrom, ElanUser userTo)
         {
-            var invitation = _dataService
+            var invitation = await _dataService
                 .GetSet<FriendsInvitation>()
                 .Where(i => i.UserFromId == userFrom.Id && i.UserToId == userTo.Id)
-                .Single();
+                .SingleAsync();
 
             invitation.IsAccepted = true;
-
-            _dataService.GetSet<FriendsInvitation>().Update(invitation);
-            _dataService.SaveDbAsync();
+            
+            await _dataService.SaveDbAsync();
 
             return invitation;
         }
@@ -68,9 +66,9 @@ namespace Elan.Friends.Services
             try
             {
                 invitation = await _dataService
-                .GetSet<FriendsInvitation>()
-                .Where(i => i.UserFromId == targetUser.Id && i.UserToId == currentUser.Id)
-                .SingleAsync();
+                    .GetSet<FriendsInvitation>()
+                    .Where(i => i.UserFromId == targetUser.Id && i.UserToId == currentUser.Id)
+                    .SingleAsync();
             }
             catch
             {
