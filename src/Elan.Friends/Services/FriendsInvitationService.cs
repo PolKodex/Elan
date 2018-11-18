@@ -23,8 +23,7 @@ namespace Elan.Friends.Services
         {
             var invitation = await _dataService
                 .GetSet<FriendsInvitation>()
-                .Where(i => i.UserFromId == userFrom.Id && i.UserToId == userTo.Id)
-                .SingleAsync();
+                .SingleAsync(i => i.UserFromId == userFrom.Id && i.UserToId == userTo.Id);
 
             invitation.IsAccepted = true;
             

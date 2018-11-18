@@ -51,8 +51,7 @@ namespace Elan.Notifications.Services
         {
             var notification = await _dataService
                 .GetSet<Notification>()
-                .Where(n => n.Id.ToString() == id)
-                .SingleAsync();
+                .SingleAsync(n => n.Id.ToString() == id);
 
             notification.IsDeleted = true;
 
@@ -65,8 +64,7 @@ namespace Elan.Notifications.Services
         {
             var notification = await _dataService
                 .GetSet<Notification>()
-                .Where(n => n.Id.ToString() == id)
-                .SingleAsync();
+                .SingleAsync(n => n.Id.ToString() == id);
 
             notification.IsRead = true;
             
