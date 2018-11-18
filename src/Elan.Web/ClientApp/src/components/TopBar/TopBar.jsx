@@ -16,9 +16,6 @@ class TopBar extends Component {
                         <Link to="/app/account" className="nav-link"><i className="fas fa-address-card"></i> Profil</Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/app/groups" className="nav-link"><i className="fas fa-users"></i> Grupy</Link>
-                    </li>
-                    <li className="nav-item">
                         <Link to="/app/settings" className="nav-link"><i className="fas fa-cog"></i> Ustawienia</Link>
                     </li>
                 </ul>

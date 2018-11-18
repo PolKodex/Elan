@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TopBar from '../../components/TopBar/TopBar';
+import FooterBar from '../../components/FooterBar/FooterBar';
 import Account from '../../components/Account/Account';
 import Chat from '../Chat/Chat';
 import Wall from '../Wall/Wall';
@@ -25,7 +26,8 @@ class App extends Component {
                 <Chat />
               </div>
             </div>
-          </div>
+            </div>
+            <FooterBar />
         </div>
     );
   }
