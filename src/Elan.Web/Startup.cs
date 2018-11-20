@@ -7,6 +7,7 @@ using Elan.Common;
 using Elan.Data;
 using Elan.Data.Models.Account;
 using Elan.Friends;
+using Elan.Notifications;
 using Elan.Posts;
 using Elan.Users;
 using Elan.Web.Chat;
@@ -140,8 +141,9 @@ namespace Elan.Web
             services.RegisterUsersModule();
             services.RegisterPostsModule();
             services.RegisterCommonModule();
+            services.RegisterNotificationsModule();
         }
-        
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             //if (env.IsDevelopment())

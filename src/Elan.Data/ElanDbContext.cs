@@ -1,6 +1,7 @@
 ﻿using Elan.Data.Models.Account;
 using Elan.Data.Models.Chat;
 using Elan.Data.Models.Friends;
+using Elan.Data.Models.Notifications;
 using Elan.Data.Models.Posts;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,8 @@ namespace Elan.Data
         public DbSet<ElanUserImage> ElanUserImages { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<FriendsRelation> Friends { get; set; }
+        public DbSet<FriendsInvitation> FriendsInvitations { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         public ElanDbContext(DbContextOptions options) : base(options)
         {
@@ -30,6 +33,8 @@ namespace Elan.Data
             ConfigureElanUserImagesModel(builder);
 
             ConfigurePostsModel(builder);
+
+            ConfigureFriendsInvitationModel(builder);
 
             base.OnModelCreating(builder);
         }
@@ -78,10 +83,28 @@ namespace Elan.Data
                 .HasOne(x => x.TargetUser)
                 .WithMany(x => x.PostedToUser)
                 .OnDelete(DeleteBehavior.Restrict);
-        
+
             postsBuilder
                 .Property(x => x.VisibilitySetting)
                 .HasDefaultValue(PrivacySetting.Friends);
+        }
+
+        private void ConfigureFriendsInvitationModel(ModelBuilder builder)
+        {
+            var friendsInvitationBuilder = builder.Entity<FriendsInvitation>();
+
+            friendsInvitationBuilder
+                .HasKey(c => new { c.UserFromId, c.UserToId });
+
+            friendsInvitationBuilder
+                .HasOne(x => x.UserFrom)
+                .WithMany(x => x.SentFriendInvitations)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            friendsInvitationBuilder
+                .HasOne(x => x.UserTo)
+                .WithMany(x => x.ReceivedFriendInvitations)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
