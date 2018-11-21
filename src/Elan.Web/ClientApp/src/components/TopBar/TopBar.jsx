@@ -22,7 +22,6 @@ class TopBar extends Component {
     }
 
     findUsers(e.target.value).then((data) =>{
-        console.log(data);
         this.setState({users: data});
     });
   }
