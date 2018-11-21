@@ -7,6 +7,7 @@ using Elan.Data.Contracts;
 using Elan.Data.Models.Account;
 using Elan.Data.Models.Posts;
 using Elan.Posts.Contracts;
+using Elan.Posts.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Elan.Posts.Services
@@ -83,7 +84,7 @@ namespace Elan.Posts.Services
                     .ThenInclude(m => m.SecondUserFriends)
                     .ThenInclude(m => m.FirstUser.SecondUserFriends)
                     .Include(m => m.TargetUser)
-                    .Where(m => !m.BasePostId.HasValue)
+                    .Where(m => m.BasePostId == null)
                     .Where(m => m.CreatedBy.Id != user.Id)
                     .Where(m =>
                         (
@@ -132,7 +133,7 @@ namespace Elan.Posts.Services
                     .ThenInclude(m => m.SecondUserFriends)
                     .ThenInclude(m => m.FirstUser.SecondUserFriends)
                     .Include(m => m.TargetUser)
-                    .Where(m => !m.BasePostId.HasValue)
+                    .Where(m => m.BasePostId == null)
                     .Where(m => m.CreatedBy.Id == user.Id || m.TargetUser.Id == user.Id)
                     .Where(m =>
                         m.VisibilitySetting == PrivacySetting.Everyone
@@ -165,10 +166,47 @@ namespace Elan.Posts.Services
             return posts;
         }
 
+        public async Task DeletePost(int postId)
+        {
+            var post = await GetPost(postId);
+            var postSet = _dataService.GetSet<Post>();
+
+            foreach (var p in post.Comments)
+            {
+                postSet.Remove(p);
+            }
+
+            postSet.Remove(post);
+
+            await _dataService.SaveDbAsync();
+        }
+
+        public async Task EditPost(PostViewModel data)
+        {
+            if (data.PostId == null)
+            {
+                return;
+            }
+
+            var post = await GetPost(data.PostId.Value);
+
+            post.Content = data.Content;
+
+            if (post.BasePostId == null && data.PrivacySetting != null)
+            {
+                post.VisibilitySetting = data.PrivacySetting.Value;
+            }
+
+            post.ModifiedOn = DateTime.UtcNow;
+
+            await _dataService.SaveDbAsync();
+        }
+
         public Task<Post> GetPost(int postId)
         {
             return _dataService
                 .GetSet<Post>()
+                .Include(x => x.Comments)
                 .Include(x => x.Reactions)
                 .Include(x => x.TargetUser)
                 .Include(x => x.CreatedBy)

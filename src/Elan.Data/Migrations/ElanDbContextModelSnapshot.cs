@@ -230,6 +230,8 @@ namespace Elan.Data.Migrations
 
                     b.Property<DateTime>("CreatedOn");
 
+                    b.Property<DateTime>("ModifiedOn");
+
                     b.Property<Guid?>("TargetUserId");
 
                     b.Property<int>("VisibilitySetting")
