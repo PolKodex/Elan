@@ -42,12 +42,10 @@ namespace Elan.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> FindUsers(string query)
+        public async Task<JsonResult> FindUsers(string query, int skip = 0, int take = 10)
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
-            var foundUsers = _userSearchService.FindUsers(currentUser, query);
-
-            // TODO: map users to whatever frontend needs
+            var foundUsers = _userSearchService.FindUsers(currentUser, query, skip, take);
 
             return Json(foundUsers);
         }
