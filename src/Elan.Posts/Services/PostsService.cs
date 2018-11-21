@@ -20,7 +20,7 @@ namespace Elan.Posts.Services
             _dataService = dataService;
         }
 
-        public async Task<Post> CreatePost(ElanUser createdBy, string content, PrivacySetting? postVisibility = null, ElanUser userTo = null)
+        public async Task<Post> CreatePost(ElanUser createdBy, string content, PrivacySetting? postVisibility = null, ElanUser userTo = null, int? basePostId = null)
         {
             var visibility =
                 postVisibility ??

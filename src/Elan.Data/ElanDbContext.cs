@@ -95,6 +95,11 @@ namespace Elan.Data
                 .HasMany(x => x.Reactions)
                 .WithOne(x => x.Post)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            postsBuilder
+                .HasMany(x => x.Comments)
+                .WithOne(x => x.BasePost)
+                .IsRequired(false);
         }
 
         private void ConfigureFriendsInvitationModel(ModelBuilder builder)

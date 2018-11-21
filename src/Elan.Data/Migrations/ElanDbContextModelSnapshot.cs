@@ -222,6 +222,8 @@ namespace Elan.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("BasePostId");
+
                     b.Property<string>("Content");
 
                     b.Property<Guid?>("CreatedById");
@@ -235,6 +237,8 @@ namespace Elan.Data.Migrations
                         .HasDefaultValue(1);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BasePostId");
 
                     b.HasIndex("CreatedById");
 
@@ -403,6 +407,10 @@ namespace Elan.Data.Migrations
 
             modelBuilder.Entity("Elan.Data.Models.Posts.Post", b =>
                 {
+                    b.HasOne("Elan.Data.Models.Posts.Post", "BasePost")
+                        .WithMany("Comments")
+                        .HasForeignKey("BasePostId");
+
                     b.HasOne("Elan.Data.Models.Account.ElanUser", "CreatedBy")
                         .WithMany("PostedByUser")
                         .HasForeignKey("CreatedById")
