@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Elan.Common.Enums;
+using Elan.Notifications.Contracts;
 using Elan.Posts.Contracts;
 using Elan.Posts.Models;
 using Elan.Users.Contracts;
@@ -14,11 +16,19 @@ namespace Elan.Web.Controllers
     {
         private readonly IPostsService _postsService;
         private readonly IUserService _userService;
+        private readonly INotificationService _notificationService;
+        private readonly IPostReactionService _postReactionService;
 
-        public PostsController(IPostsService postsService, IUserService userService)
+        public PostsController(
+            IPostsService postsService,
+            IUserService userService,
+            INotificationService notificationService,
+            IPostReactionService postReactionService)
         {
             _postsService = postsService;
             _userService = userService;
+            _notificationService = notificationService;
+            _postReactionService = postReactionService;
         }
 
         [HttpPost]
@@ -53,6 +63,31 @@ namespace Elan.Web.Controllers
             var result = posts.Select(m => new PostViewModel(m));
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public async Task SetReaction([FromBody]SetPostReactionViewModel model)
+        {
+            model.User = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+
+            await _postReactionService.SetReaction(model);
+
+            var post = await _postsService.GetPost(model.PostId);
+
+            if (model.User.Id != post.CreatedBy.Id)
+            {
+                await _notificationService.CreateNotification(
+                    $"{model.User.FirstName} {model.User.LastName} reacted to your post!", NotificationType.NewReaction,
+                    post.CreatedBy);
+            }
+
+            if (model.User.Id != post.TargetUser.Id && post.TargetUser.Id != post.CreatedBy.Id)
+            {
+                await _notificationService.CreateNotification(
+                    $"{model.User.FirstName} {model.User.LastName} reacted to a post on your wall!", NotificationType.NewReaction,
+                    post.TargetUser);
+            }
+            
         }
     }
 }
