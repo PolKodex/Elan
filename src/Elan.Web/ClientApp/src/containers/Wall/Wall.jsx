@@ -36,7 +36,6 @@ export default class Wall extends Component {
   }
   
   handleSubmit = () => {
-    console.log(this.state.postContent);
     
     //do some crazy register things 
   }
