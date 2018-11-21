@@ -20,7 +20,8 @@ export default class Chat extends Component {
             messages: {},
             visibleMessages: [],
             message: "",
-            users: []
+            users: [],
+            chatDisabled: true
         };
 
         this.shouldScrollChat = false;
@@ -165,6 +166,8 @@ export default class Chat extends Component {
             });
         }
 
+        this.setState({chatDisabled: false});
+
     }
 
     handleKeyPress = (e) => {
@@ -191,8 +194,9 @@ export default class Chat extends Component {
                     <div className="chat-bottom">
                         <input type="text" className="form-control" value={this.state.message} 
                         onKeyPress={this.handleKeyPress.bind(this)}
-                        onChange={this.updateInputValue.bind(this)} />
-                        <button className="btn btn-outline-success" onClick={this.sendMessage.bind(this)}>Wyślij</button>
+                        onChange={this.updateInputValue.bind(this)} 
+                        disabled = {(this.state.chatDisabled)? "disabled" : ""}/>
+                        <button className="btn btn-outline-success" onClick={this.sendMessage.bind(this)} disabled = {(this.state.chatDisabled)? "disabled" : ""}>Wyślij</button>
                     </div>
                 </div>
             </div>
