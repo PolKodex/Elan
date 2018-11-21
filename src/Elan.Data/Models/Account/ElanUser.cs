@@ -42,5 +42,10 @@ namespace Elan.Data.Models.Account
         {
             return FirstUserFriends.Any(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id) || SecondUserFriends.Any(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id);
         }
+
+        public ElanUserImage GetAvatar()
+        {
+            return Images.FirstOrDefault(x => x.IsMain);
+        }
     }
 }
