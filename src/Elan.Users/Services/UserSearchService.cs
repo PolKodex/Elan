@@ -41,7 +41,7 @@ namespace Elan.Users.Services
                                        x.SecondUserFriends.Any(y =>
                                            y.FirstUser.FirstUserFriends.Any(z => z.SecondUserId == user.Id) ||
                                            y.FirstUser.SecondUserFriends.Any(z => z.FirstUserId == user.Id)))
-                .Skip(skip)
+                .Skip(skip * take)
                 .Take(take)
                 .Select(x => new UserSearchResultViewModel
                 {
