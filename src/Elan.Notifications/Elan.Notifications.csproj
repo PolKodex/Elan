@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Elan.Data\Elan.Data.csproj" />
+    <ProjectReference Include="..\Elan.Data\Elan.Data.csproj" />
   </ItemGroup>
 
 </Project>

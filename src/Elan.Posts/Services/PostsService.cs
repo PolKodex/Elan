@@ -141,5 +141,15 @@ namespace Elan.Posts.Services
 
             return posts;
         }
+
+        public Task<Post> GetPost(int postId)
+        {
+            return _dataService
+                .GetSet<Post>()
+                .Include(x => x.Reactions)
+                .Include(x => x.TargetUser)
+                .Include(x => x.CreatedBy)
+                .FirstOrDefaultAsync(x => x.Id == postId);
+        }
     }
 }

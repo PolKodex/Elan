@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elan.Posts", "src\Elan.Post
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elan.Common.Tests", "tests\Elan.Common.Tests\Elan.Common.Tests.csproj", "{50FA9844-0786-48EA-959D-82195BD1D06E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elan.Notifications", "Elan.Notifications\Elan.Notifications.csproj", "{EE255A8D-4477-4621-B133-06ABEBFCB14D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elan.Notifications", "src\Elan.Notifications\Elan.Notifications.csproj", "{EE255A8D-4477-4621-B133-06ABEBFCB14D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

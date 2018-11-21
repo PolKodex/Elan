@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Elan.Common.Enums;
 using Elan.Data.Models.Account;
 
@@ -12,5 +13,6 @@ namespace Elan.Data.Models.Posts
         public PrivacySetting VisibilitySetting { get; set; }
         public virtual ElanUser CreatedBy { get; set; }
         public virtual ElanUser TargetUser { get; set; }
+        public virtual ICollection<PostReaction> Reactions { get; set; }
     }
 }
