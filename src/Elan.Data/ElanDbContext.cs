@@ -19,6 +19,7 @@ namespace Elan.Data
         public DbSet<FriendsRelation> Friends { get; set; }
         public DbSet<FriendsInvitation> FriendsInvitations { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<PostReaction> PostReactions { get; set; }
 
         public ElanDbContext(DbContextOptions options) : base(options)
         {
@@ -33,6 +34,8 @@ namespace Elan.Data
             ConfigureElanUserImagesModel(builder);
 
             ConfigurePostsModel(builder);
+
+            ConfigurePostReactionModel(builder);
 
             ConfigureFriendsInvitationModel(builder);
 
@@ -87,6 +90,11 @@ namespace Elan.Data
             postsBuilder
                 .Property(x => x.VisibilitySetting)
                 .HasDefaultValue(PrivacySetting.Friends);
+
+            postsBuilder
+                .HasMany(x => x.Reactions)
+                .WithOne(x => x.Post)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         private void ConfigureFriendsInvitationModel(ModelBuilder builder)
@@ -105,6 +113,14 @@ namespace Elan.Data
                 .HasOne(x => x.UserTo)
                 .WithMany(x => x.ReceivedFriendInvitations)
                 .OnDelete(DeleteBehavior.Restrict);
+        }
+
+        private void ConfigurePostReactionModel(ModelBuilder builder)
+        {
+            var postReactionBuilder = builder.Entity<PostReaction>();
+
+            postReactionBuilder
+                .HasKey(c => new { c.PostId, c.UserId });
         }
     }
 }
