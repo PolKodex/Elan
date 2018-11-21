@@ -1,10 +1,43 @@
 ﻿import React, { Component } from 'react';
 import { withRouter, Link } from "react-router-dom";
 import Notifications from '../Notifications/Notifications';
+import { findUsers } from '../../api/UserApi';
 import './TopBar.css';
 
 class TopBar extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+        users: []
+    }
+  }  
+
+
+  searchChanged = (e) => {
+    
+    if(e.target.value === "") {
+        this.setState({users: []});
+        return;
+    }
+
+    findUsers(e.target.value).then((data) =>{
+        console.log(data);
+        this.setState({users: data});
+    });
+  }
+
   render() {
+
+    let users = this.state.users.map((item, index) => (<button className="search-result">
+        <img src={require("../../assets/default_avatar.jpg")} alt="" />
+        <span>{item.firstName + " " + item.lastName}</span>
+        </button>));
+
+    if(users.length === 0) {
+        users = (<button className="search-result"><span>Nothing to display</span></button>);
+    }
+
     return (
         <div className="top-bar-wrapper">
             <div className="top-bar">
@@ -21,8 +54,12 @@ class TopBar extends Component {
                     </li>
                 </ul>
                 <div className="nav-right">
-                    <input className="form-control mr-sm-2 form-control-sm" type="search" placeholder="Szukaj" aria-label="Search" />
-                    <button className="btn btn-sm btn-success my-2 my-sm-0" type="submit">Szukaj</button>
+                    <input id="search-list" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" className="form-control mr-sm-2 form-control-sm" type="search" placeholder="Szukaj" aria-label="Search" onChange={this.searchChanged} />
+                     <div className="dropdown-menu dropdown-menu-right" aria-labelledby="search-list">
+                        <div className="users-search-list">
+                            {users}
+                       </div>
+                    </div>
                     <Notifications />
                 </div>
             </div>

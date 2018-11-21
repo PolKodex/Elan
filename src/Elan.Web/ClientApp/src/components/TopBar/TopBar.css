@@ -5,6 +5,10 @@
 	min-height: 40px;
 }
 
+.users-search-list {
+
+}
+
 .top-bar {
 	background-color: #343a40;
 	display: flex;
@@ -41,4 +45,38 @@
 
 .navbar-brand {
 	color: #fff;
+}
+
+#search-list {
+
+}
+
+.users-search-list {
+	display: flex;
+	flex-direction: column;
+	z-index: 99999;
+}
+
+.nav-right .dropdown-menu {
+    z-index: 99999;
+    width: 30%;
+    max-width: 350px;
+    margin-top: 15px;
+}
+
+.nav-right.show {
+	display: flex !important;
+}
+
+.search-result {
+	background-color: transparent;
+	border: 1px solid rgba(0,0,0,0.1);
+	min-height: 30px;
+	margin: 1px;
+}
+
+.search-result img {
+	height: 3rem;
+    float: left;
+    margin-right: 15px;
 }
