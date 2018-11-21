@@ -23,6 +23,16 @@ namespace Elan.Web.Controllers
         }
 
         [HttpGet]
+        public async Task<JsonResult> GetNumberOfNotifications()
+        {
+            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+
+            var numberOfNotifications = await _notificationService.GetNumberOfUnreadNotificationsForUser(currentUser);
+
+            return Json(numberOfNotifications);
+        }
+
+        [HttpGet]
         public async Task<JsonResult> GetNotifications()
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
