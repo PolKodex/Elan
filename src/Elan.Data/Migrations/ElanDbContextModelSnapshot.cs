@@ -243,6 +243,21 @@ namespace Elan.Data.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("Elan.Data.Models.Posts.PostReaction", b =>
+                {
+                    b.Property<int>("PostId");
+
+                    b.Property<Guid>("UserId");
+
+                    b.Property<int>("Type");
+
+                    b.HasKey("PostId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostReactions");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
@@ -397,6 +412,19 @@ namespace Elan.Data.Migrations
                         .WithMany("PostedToUser")
                         .HasForeignKey("TargetUserId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Elan.Data.Models.Posts.PostReaction", b =>
+                {
+                    b.HasOne("Elan.Data.Models.Posts.Post", "Post")
+                        .WithMany("Reactions")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Elan.Data.Models.Account.ElanUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
