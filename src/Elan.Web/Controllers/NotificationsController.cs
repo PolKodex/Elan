@@ -37,13 +37,13 @@ namespace Elan.Web.Controllers
         [HttpPost]
         public async Task MarkAsRead([FromBody]string notificationId)
         {
-            _notificationService.MarkAsRead(notificationId);
+            await _notificationService.MarkAsRead(notificationId);
         }
 
         [HttpPost]
         public async Task MarkAsDeleted([FromBody]string notificationId)
         {
-            _notificationService.MarkAsDeleted(notificationId);
+           await _notificationService.MarkAsDeleted(notificationId);
         }
     }
 }

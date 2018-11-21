@@ -15,7 +15,7 @@ export const savePost = async (content) => {
 };
 
 export const getLatestPosts = async () => {
-    var api = "/api/Posts/GetLatestsPosts";
+    var api = "/api/Posts/GetLatestPosts";
 
     return await axios.get(api,
         {

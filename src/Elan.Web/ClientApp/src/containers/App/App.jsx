@@ -4,10 +4,24 @@ import FooterBar from '../../components/FooterBar/FooterBar';
 import Account from '../../components/Account/Account';
 import Chat from '../Chat/Chat';
 import Wall from '../Wall/Wall';
+import { getNotifications } from '../../api/NotificationsApi';
 import { withRouter, Route } from "react-router-dom";
 import './App.css';
 
 class App extends Component {
+  
+  constructor(props){
+    super(props);
+  }
+
+  componentDidMount(){
+    this.checkNotifications();
+  }
+
+  checkNotifications = () => {
+    getNotifications().then((data) => console.log(data));
+  }
+
   render() {
     return (
         <div className="app-wrapper">

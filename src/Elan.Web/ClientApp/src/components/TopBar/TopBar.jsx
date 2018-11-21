@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { withRouter, Link } from "react-router-dom";
+import Notifications from '../Notifications/Notifications';
 import './TopBar.css';
 
 class TopBar extends Component {
@@ -22,6 +23,7 @@ class TopBar extends Component {
                 <div className="nav-right">
                     <input className="form-control mr-sm-2 form-control-sm" type="search" placeholder="Szukaj" aria-label="Search" />
                     <button className="btn btn-sm btn-success my-2 my-sm-0" type="submit">Szukaj</button>
+                    <Notifications />
                 </div>
             </div>
         </div>
