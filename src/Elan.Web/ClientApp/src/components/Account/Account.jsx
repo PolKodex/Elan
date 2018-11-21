@@ -77,21 +77,25 @@ export default class Account extends Component {
         this.setState({userId: nextProps.match.params.id}, () => this.getData());
     }
     
-    getPictureThumbnail(item, index) {
+    getPictureThumbnail(index, id, pictureSource, baseUrl, title) {
         return <PictureThumbnail 
             key = { index }
-            pictureSource = { item.pictureSource } 
-            targetUrl = { item.targetUrl } 
-            title = { item.title } />
+            pictureSource = { pictureSource } 
+            targetUrl = { baseUrl + id } 
+            title = { title } />
     }
 
     render() {
         //TO DO: endless scroll
-        let friendThumbnailsFirstRow = this.state.friendsList.slice(0, 4).map((item, index) => this.getPictureThumbnail(item, index));
-        let friendThumbnailsSecondRow = this.state.friendsList.slice(4, 8).map((item, index) => this.getPictureThumbnail(item, index));
+        let friendThumbnailsFirstRow = this.state.friendsList.slice(0, 4).map((item, index) => 
+            this.getPictureThumbnail(index, item.id, './../../assets/default_avatar.jpg', '/app/account/', item.userName));
+        let friendThumbnailsSecondRow = this.state.friendsList.slice(4, 8).map((item, index) => 
+            this.getPictureThumbnail(index, item.id, './../../assets/default_avatar.jpg', '/app/account/', item.userName));
 
-        let pictureThumbnailsFirstRow = this.state.picturesList.slice(0, 4).map((item, index) => this.getPictureThumbnail(item, index));
-        let pictureThumbnailsSecondRow = this.state.picturesList.slice(4, 8).map((item, index) => this.getPictureThumbnail(item, index));
+        let pictureThumbnailsFirstRow = this.state.picturesList.slice(0, 4).map((item, index) => 
+            this.getPictureThumbnail(index, item.id, './../../assets/no-photo.png', '/app/photos/', item.title));
+        let pictureThumbnailsSecondRow = this.state.picturesList.slice(4, 8).map((item, index) => 
+            this.getPictureThumbnail(index, item.id, './../../assets/no-photo.png', '/app/photos/', item.title));
 
         let userPosts = this.state.userPostsList.map((item, index) => 
             <Post 
@@ -152,7 +156,7 @@ class PictureThumbnail extends Component {
         return (
             <div className="col-md image-box">
                 <a href={ this.props.targetUrl }>
-                    <img src={ this.props.pictureSource } data-toggle="tooltip" data-placement="bottom" title={ this.props.title } alt="" />
+                    <img src={require('./../../assets/no-photo.png')} data-toggle="tooltip" data-placement="bottom" title={ this.props.title } alt="" />
                 </a>
             </div>
         );
