@@ -107,7 +107,7 @@ namespace Elan.Posts.Services
                         )
                     )
                     .OrderByDescending(m => m.CreatedOn)
-                    .Skip(skip)
+                    .Skip(skip * take)
                     .Take(take)
                     .OrderBy(m => m.CreatedOn)
                     .ToListAsync();
@@ -158,7 +158,7 @@ namespace Elan.Posts.Services
                         )
                     )
                     .OrderByDescending(m => m.CreatedOn)
-                    .Skip(skip)
+                    .Skip(skip * take)
                     .Take(take)
                     .OrderBy(m => m.CreatedOn)
                     .ToListAsync();
@@ -211,6 +211,21 @@ namespace Elan.Posts.Services
                 .Include(x => x.TargetUser)
                 .Include(x => x.CreatedBy)
                 .FirstOrDefaultAsync(x => x.Id == postId);
+        }
+
+        public async Task<List<Post>> GetPostComments(int postId, int skip = 0, int take = 10)
+        {
+            var result = await _dataService
+                .GetSet<Post>()
+                .Include(x => x.Reactions)
+                .Include(x => x.CreatedBy)
+                .Where(x => x.BasePostId == postId)
+                .OrderByDescending(m => m.CreatedOn)
+                .Skip(skip * take)
+                .Take(take)
+                .ToListAsync();
+
+            return result;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Elan.Web.ViewModels.Posts
             CreatedOn = model.CreatedOn;
             CreatedBy = model.CreatedBy?.UserName;
             TargetUser = model.TargetUser?.UserName;
-            Reactions = model.Reactions.GroupBy(x => x.Type)
+            Reactions = model.Reactions?.GroupBy(x => x.Type)
                 .Select(x => new PostReactionViewModel {Count = x.Count(), Type = x.Key}).ToList();
         }
     }

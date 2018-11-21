@@ -120,5 +120,15 @@ namespace Elan.Web.Controllers
         {
             await _postsService.EditPost(data);
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetPostComments(int postId, int skip = 0, int take = 10)
+        {
+            var comments = await _postsService.GetPostComments(postId, skip, take);
+
+            var result = comments.Select(m => new ViewModels.Posts.PostViewModel(m));
+
+            return Json(result);
+        }
     }
 }

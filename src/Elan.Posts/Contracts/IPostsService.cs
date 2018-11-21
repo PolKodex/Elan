@@ -16,5 +16,6 @@ namespace Elan.Posts.Contracts
         Task DeletePost(int postId);
         Task EditPost(PostViewModel data);
         Task<Post> GetPost(int postId);
+        Task<List<Post>> GetPostComments(int postId, int skip = 0, int take = 10);
     }
 }
