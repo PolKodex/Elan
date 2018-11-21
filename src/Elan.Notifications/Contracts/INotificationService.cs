@@ -11,6 +11,7 @@ namespace Elan.Notifications.Contracts
     {
         Task<Notification> CreateNotification(string message, NotificationType notificationType, ElanUser userTo);
         Task<List<Notification>> GetActiveNotificationsForUser(ElanUser user);
+        Task<string> GetNumberOfUnreadNotificationsForUser(ElanUser user);
         Task<Notification> MarkAsRead(string id);
         Task<Notification> MarkAsDeleted(string id);
     }

@@ -2,10 +2,12 @@
 using Elan.Friends.Contracts;
 using Elan.Notifications.Contracts;
 using Elan.Users.Contracts;
+using Elan.Web.notification;
 using Elan.Web.ViewModels.Friends;
 using Elan.Web.ViewModels.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,17 +21,17 @@ namespace Elan.Web.Controllers
         private readonly IFriendsService _friendsService;
         private readonly IFriendsInvitationService _friendsInvitationService;
         private readonly IUserService _userService;
-        private readonly INotificationService _notificationService;
+        private readonly IHubContext<NotificationHub> _notificationHub;
 
         public FriendsController(IFriendsService friendsService, 
                                  IUserService userService, 
-                                 IFriendsInvitationService friendsInvitationService, 
-                                 INotificationService notificationService)
+                                 IFriendsInvitationService friendsInvitationService,
+                                 IHubContext<NotificationHub> notificationHub)
         {
             _friendsService = friendsService;
             _userService = userService;
             _friendsInvitationService = friendsInvitationService;
-            _notificationService = notificationService;
+            _notificationHub = notificationHub;
         }
 
         [HttpGet]
@@ -63,7 +65,7 @@ namespace Elan.Web.Controllers
             var user = await _userService.GetUserById(userId);
 
             await _friendsInvitationService.CreateInvitation(currentUser, user);
-            await _notificationService.CreateNotification("User " + currentUser.UserName + " would like to become your friend", NotificationType.FriendsInvitation, user);
+            //await _notificationService.CreateNotification("User " + currentUser.UserName + " would like to become your friend", NotificationType.FriendsInvitation, user);
         }
 
         [HttpPost]
@@ -76,7 +78,7 @@ namespace Elan.Web.Controllers
 
             await _friendsService.CreateRelation(currentUser, user);
 
-            await _notificationService.CreateNotification("User " + currentUser.UserName + " has accepted your friends request", NotificationType.InvitationAccepted, user);
+            //await _notificationService.CreateNotification("User " + currentUser.UserName + " has accepted your friends request", NotificationType.InvitationAccepted, user);
         }
 
         [HttpGet]
