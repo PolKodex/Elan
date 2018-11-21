@@ -12,7 +12,7 @@ export default class Post extends Component {
                           <img src={require("../../assets/default_avatar.jpg")} alt="" />
                       </div>
                       <div className="user-post">
-                          <a href="#"><strong>{this.props.author.name}</strong></a> 
+                          <a href="#"><strong>{this.props.author ? this.props.author.name : ""}</strong></a> 
                           {this.props.to && this.props.to.isGroup ? ' w ' : ""}
                           {this.props.to && !this.props.to.isGroup ? ' do ' : ""}
                           <a href="#"><strong>{this.props.to ? this.props.to.name : ""}</strong></a> 

@@ -27,9 +27,13 @@ class TopBar extends Component {
     });
   }
 
+  onUserClick = (id) => {
+    this.props.history.push("/app/account/"+id);
+  }
+
   render() {
 
-    let users = this.state.users.map((item, index) => (<button className="search-result">
+    let users = this.state.users.map((item, index) => (<button className="search-result" onClick={() => this.onUserClick(item.id)}>
         <img src={require("../../assets/default_avatar.jpg")} alt="" />
         <span>{item.firstName + " " + item.lastName}</span>
         </button>));

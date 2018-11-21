@@ -46,19 +46,19 @@ export default class Account extends Component {
         }
         return this.state.userId;
     }
-    
-    componentDidMount() {
+
+    getData = () => {
         accountApi.getUser(this.getUserId())
             .then(function (response) {
                 this.setState({ user: response.data })
             }.bind(this));
 
-            accountApi.getUserFriends()
+        accountApi.getUserFriends()
             .then(function (response) {
                 this.setState({ friendsList: response.data })
             }.bind(this));
 
-            accountApi.getUserPictures()
+        accountApi.getUserPictures()
             .then(function (response) {
                 this.setState({ picturesList: response.data })
             }.bind(this));
@@ -66,7 +66,15 @@ export default class Account extends Component {
         accountApi.getUserPosts(jwtUtils.decodeJwt(localStorage.getItem('token')).jti, 0, 10)
         .then(function (response) {
             this.setState({ userPostsList: response.data })
-        }.bind(this));
+        }.bind(this));        
+    }
+    
+    componentDidMount() {
+        this.getData();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({userId: nextProps.match.params.id}, () => this.getData());
     }
     
     getPictureThumbnail(item, index) {
