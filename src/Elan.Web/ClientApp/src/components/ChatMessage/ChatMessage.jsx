@@ -7,8 +7,24 @@ export default class ChatMessage extends Component {
   	return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
   };
 
+  convertUTCDateToLocalDate = (date) => {
+    var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+
+    var offset = date.getTimezoneOffset() / 60;
+    var hours = date.getHours();
+
+    newDate.setHours(hours - offset);
+
+    return newDate;   
+  }
+
   render() {
   	let date = new Date(this.props.date);
+
+    if(!this.props.date.includes("Z")) {
+      date = this.convertUTCDateToLocalDate(date);
+    }
+
   	date = this.formatDate(date);
 
     return (

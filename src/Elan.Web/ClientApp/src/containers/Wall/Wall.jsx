@@ -11,14 +11,20 @@ export default class Wall extends Component {
       postContent: '',
       posts: []
     }
+  }
 
+  componentDidMount(){
     this.getPosts();
+    this.interval = setInterval(() => this.getPosts(), 5000);
+  }
+
+  componentWillUnmount() {
+    if(this.interval)
+    clearInterval(this.interval);
   }
 
   getPosts = () => {
     getLatestPosts().then((posts) => {
-      //return from api sorted
-
       let sortFunc = (a,b) => new Date(b.createdOn) - new Date(a.createdOn);
       posts.sort(sortFunc);
       this.setState({posts});
@@ -30,7 +36,6 @@ export default class Wall extends Component {
   }
   
   handleSubmit = () => {
-    console.log(this.state.postContent);
     
     //do some crazy register things 
   }

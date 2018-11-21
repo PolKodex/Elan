@@ -8,6 +8,11 @@ import { withRouter, Route } from "react-router-dom";
 import './App.css';
 
 class App extends Component {
+  
+  constructor(props){
+    super(props);
+  }
+
   render() {
     return (
         <div className="app-wrapper">
@@ -17,7 +22,7 @@ class App extends Component {
               <div className="page">
                   <div className="page-content">
                     <Route exact path="/app" render={() => <Wall />}/>
-                    <Route exact path="/app/account" render={() => <Account />}/>
+                    <Route exact path="/app/account/:id?" render={(props) => <Account {...props} />}/>
                     <Route exact path="/app/groups" render={() => (<p>Groups page</p>)}/>
                     <Route exact path="/app/settings" render={() => (<p>settings page</p>)}/>
                   </div>

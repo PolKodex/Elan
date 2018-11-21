@@ -34,13 +34,21 @@ export default class Account extends Component {
                     }, 
                     date: "18 października o 14:34", 
                     content: "Siema ziomeczki, jak ktoś chce pograć dzisiaj w piłkę?"
-                }]
+                }],
+            userId: props.match.params.id
         }
+
     }
 
-    componentDidMount()
-    {
-        accountApi.getUser(jwtUtils.decodeJwt(localStorage.getItem('token')).jti)
+    getUserId() {
+        if (this.state.userId == undefined || this.state.userId.trim() == "") {
+            return jwtUtils.decodeJwt(localStorage.getItem('token')).jti;
+        }
+        return this.state.userId;
+    }
+
+    getData = () => {
+        accountApi.getUser(this.getUserId())
             .then(function (response) {
                 this.setState({ user: response.data })
             }.bind(this));
@@ -54,19 +62,27 @@ export default class Account extends Component {
             .then(function (response) {
                 this.setState({ picturesList: response.data })
             }.bind(this));
-
+            
         accountApi.getUserPosts(jwtUtils.decodeJwt(localStorage.getItem('token')).jti, 0, 10)
-            .then(function (response) {
-                this.setState({ userPostsList: response.data })
-            }.bind(this));
+        .then(function (response) {
+            this.setState({ userPostsList: response.data })
+        }.bind(this));        
+    }
+    
+    componentDidMount() {
+        this.getData();
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({userId: nextProps.match.params.id}, () => this.getData());
+    }
+    
     getPictureThumbnail(item, index) {
         return <PictureThumbnail 
-                    key = { index }
-                    pictureSource = { item.pictureSource } 
-                    targetUrl = { item.targetUrl } 
-                    title = { item.title } />
+            key = { index }
+            pictureSource = { item.pictureSource } 
+            targetUrl = { item.targetUrl } 
+            title = { item.title } />
     }
 
     render() {
@@ -84,7 +100,7 @@ export default class Account extends Component {
                 content = { item.content } 
                 key = { index }
                 date = { item.date } />);
-                
+        
         return (
             <div>
                 <div className="account-introduction">
