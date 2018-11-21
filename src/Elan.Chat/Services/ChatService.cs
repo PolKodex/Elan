@@ -45,7 +45,7 @@ namespace Elan.Chat.Services
                     .Where(m => (m.UserFrom.Id == user1.Id && m.UserTo.Id == user2.Id) ||
                                 (m.UserFrom.Id == user2.Id && m.UserTo.Id == user1.Id))
                     .OrderByDescending(m => m.SentOn)
-                    .Skip(skip)
+                    .Skip(skip * take)
                     .Take(take)
                     .OrderBy(m => m.SentOn)
                     .ToListAsync();
