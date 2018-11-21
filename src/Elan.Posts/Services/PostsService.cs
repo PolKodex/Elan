@@ -20,7 +20,7 @@ namespace Elan.Posts.Services
             _dataService = dataService;
         }
 
-        public async Task<Post> CreatePost(ElanUser createdBy, string content, PrivacySetting? postVisibility = null, ElanUser userTo = null, int? basePostId = null)
+        public async Task<Post> CreatePost(ElanUser createdBy, string content, PrivacySetting? postVisibility = null, ElanUser userTo = null)
         {
             var visibility =
                 postVisibility ??
@@ -45,6 +45,26 @@ namespace Elan.Posts.Services
             return post;
         }
 
+        public async Task<Post> CreatePostComment(ElanUser createdBy, string content, int postId)
+        {
+            var basePost = await GetPost(postId);
+
+            var postComment = new Post
+            {
+                BasePostId = postId,
+                Content = content,
+                CreatedBy = createdBy,
+                TargetUser = basePost.TargetUser,
+                CreatedOn = DateTime.UtcNow,
+                VisibilitySetting = PrivacySetting.Everyone
+            };
+
+            await _dataService.GetSet<Post>().AddAsync(postComment);
+            await _dataService.SaveDbAsync();
+
+            return postComment;
+        }
+
         public async Task<List<Post>> GetLatestPostsAsync(ElanUser user, int skip = 0, int take = 10)
         {
             var posts =
@@ -63,6 +83,7 @@ namespace Elan.Posts.Services
                     .ThenInclude(m => m.SecondUserFriends)
                     .ThenInclude(m => m.FirstUser.SecondUserFriends)
                     .Include(m => m.TargetUser)
+                    .Where(m => !m.BasePostId.HasValue)
                     .Where(m => m.CreatedBy.Id != user.Id)
                     .Where(m =>
                         (
@@ -89,6 +110,7 @@ namespace Elan.Posts.Services
                     .Take(take)
                     .OrderBy(m => m.CreatedOn)
                     .ToListAsync();
+
             return posts;
         }
 
@@ -110,6 +132,7 @@ namespace Elan.Posts.Services
                     .ThenInclude(m => m.SecondUserFriends)
                     .ThenInclude(m => m.FirstUser.SecondUserFriends)
                     .Include(m => m.TargetUser)
+                    .Where(m => !m.BasePostId.HasValue)
                     .Where(m => m.CreatedBy.Id == user.Id || m.TargetUser.Id == user.Id)
                     .Where(m =>
                         m.VisibilitySetting == PrivacySetting.Everyone
