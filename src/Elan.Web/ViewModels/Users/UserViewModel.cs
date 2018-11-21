@@ -6,11 +6,13 @@ namespace Elan.Web.ViewModels.Users
     {
         public string Id { get; set; }
         public string UserName { get; set; }
+        public string AvatarBase64 { get; set; }
 
         public UserViewModel(ElanUser user)
         {
             Id = user.Id.ToString();
             UserName = user.UserName;
+            AvatarBase64 = user.GetAvatar()?.RawValue;
         }
     }
 }
