@@ -74,6 +74,11 @@ namespace Elan.Web.Controllers
 
             var post = await _postsService.GetPost(model.PostId);
 
+            if (post.Reactions.FirstOrDefault(x => x.UserId == model.User.Id) == null)
+            {
+                return;
+            }
+
             if (model.User.Id != post.CreatedBy.Id)
             {
                 await _notificationService.CreateNotification(
