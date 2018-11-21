@@ -35,14 +35,20 @@ export default class Account extends Component {
                     date: "18 października o 14:34", 
                     content: "Siema ziomeczki, jak ktoś chce pograć dzisiaj w piłkę?"
                 }],
-            userId: ''
+            userId: props.match.params.id
         }
 
     }
+
+    getUserId() {
+        if (this.state.userId == undefined || this.state.userId.trim() == "") {
+            return jwtUtils.decodeJwt(localStorage.getItem('token')).jti;
+        }
+        return this.state.userId;
+    }
     
-    componentDidMount()
-    {
-        accountApi.getUser(jwtUtils.decodeJwt(localStorage.getItem('token')).jti)
+    componentDidMount() {
+        accountApi.getUser(this.getUserId())
             .then(function (response) {
                 this.setState({ user: response.data })
             }.bind(this));
@@ -61,19 +67,17 @@ export default class Account extends Component {
         .then(function (response) {
             this.setState({ userPostsList: response.data })
         }.bind(this));
-
-        this.setState({ userId: this.props.match.params.id });
     }
     
     getPictureThumbnail(item, index) {
         return <PictureThumbnail 
-        key = { index }
-                    pictureSource = { item.pictureSource } 
-                    targetUrl = { item.targetUrl } 
-                    title = { item.title } />
-                }
+            key = { index }
+            pictureSource = { item.pictureSource } 
+            targetUrl = { item.targetUrl } 
+            title = { item.title } />
+    }
 
-                render() {
+    render() {
         //TO DO: endless scroll
         let friendThumbnailsFirstRow = this.state.friendsList.slice(0, 4).map((item, index) => this.getPictureThumbnail(item, index));
         let friendThumbnailsSecondRow = this.state.friendsList.slice(4, 8).map((item, index) => this.getPictureThumbnail(item, index));
@@ -88,7 +92,7 @@ export default class Account extends Component {
                 content = { item.content } 
                 key = { index }
                 date = { item.date } />);
-
+        
         return (
             <div>
                 <div className="account-introduction">
