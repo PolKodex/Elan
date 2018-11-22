@@ -101,12 +101,18 @@ export default class Account extends Component {
     uploadImage = () => {
         userApi.uploadImage(this.state.mainPictureUpload, 1)
             .then(function (response) {
-                this.setState({ mainPictureUpload: response.RawValue })
+                this.setState({ 
+                    mainPictureUpload: response.RawValue,
+                    showMainPictureModal: false
+                })
             }.bind(this));
     }
 
     mainImageClick = () => {
-        this.setState({ showMainPictureModal: !this.state.showMainPictureModal });
+        this.setState({ 
+            showMainPictureModal: !this.state.showMainPictureModal,
+            mainPictureUpload: ''
+        });
     }
 
     mainPictureChange = (event) => {
