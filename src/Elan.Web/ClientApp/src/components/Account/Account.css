@@ -1,0 +1,14 @@
+.media-body {
+    padding: 0 10px;
+}
+
+.media-body p {
+    font-style: italic;
+    color: #707070;
+    font-size: 16px;
+}
+
+.upload-image.thumbnail {
+    margin: 0 auto;
+    max-height: 250px;
+}

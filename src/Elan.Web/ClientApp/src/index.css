@@ -189,6 +189,7 @@ body > .container {
 /* width */
 ::-webkit-scrollbar {
     width: 10px;
+    display: none;
 }
 
 /* Track */
@@ -204,4 +205,9 @@ body > .container {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #555; 
+}
+
+.link:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
