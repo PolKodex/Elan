@@ -4,7 +4,6 @@ using Elan.Data.Models.Account;
 using Elan.Users.Contracts;
 using System.Collections.Generic;
 using System.Linq;
-using Elan.Account.Models;
 using Elan.Common.Contracts;
 using Elan.Users.Models;
 using Microsoft.EntityFrameworkCore;

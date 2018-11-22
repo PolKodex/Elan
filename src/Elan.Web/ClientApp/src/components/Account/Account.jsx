@@ -13,30 +13,14 @@ export default class Account extends Component {
         //after testing remove sample data in state in contructor
         this.state = {
             user: {
-                id: 'guid-12345678-abcdefgh',
+                id: '',
                 profilePictureSource: '../../assets/default_avatar.jpg',
-                fullName: 'Maciej Owerczuk',
-                description: 'Maciek jest debeściak'
+                fullName: '',
+                description: ''
             },
-            friendsList: [{key: 1, pictureSource: '../../assets/no-photo.png', targetUrl: '#', title: 'Marcin Korwek'}],
-            picturesList: [{key: 1, pictureSource: '../../assets/no-photo.png', targetUrl: '#', title: 'IMG1234'}],
-            userPostsList: [
-                {
-                    author: 
-                    {
-                        id: 1, 
-                        isGroup: false, 
-                        name: "Maciej Owerczuk"
-                    }, 
-                    to:
-                    {
-                        id: 2, 
-                        isGroup: true, 
-                        name: "Sportowe świry"
-                    }, 
-                    date: "18 października o 14:34", 
-                    content: "Siema ziomeczki, jak ktoś chce pograć dzisiaj w piłkę?"
-                }],
+            friendsList: [],
+            picturesList: [],
+            userPostsList: [],
             userId: props.match.params.id,
             mainPictureUpload: '',
             showMainPictureModal: false,
@@ -46,6 +30,7 @@ export default class Account extends Component {
 
     }
 
+    //move to utils?
     getUserId = () => {
         if (this.state.userId === undefined || this.state.userId.trim() === "") {
             return jwtUtils.decodeJwt(localStorage.getItem('token')).jti;
@@ -71,7 +56,6 @@ export default class Account extends Component {
             
         accountApi.getUserPosts(this.getUserId(), 0, 10)
             .then(function (response) {
-                console.log(response);
                 this.setState({ userPostsList: response.data })
         }.bind(this));
     }
@@ -84,6 +68,7 @@ export default class Account extends Component {
         this.setState({userId: nextProps.match.params.id}, () => this.getData());
     }
     
+    //move to utils?
     getPictureThumbnail = (index, id, pictureSource, baseUrl, title) => {
         return <PictureThumbnail 
             key = { index }
@@ -116,7 +101,6 @@ export default class Account extends Component {
     }
 
     mainPictureChange = (event) => {
-        console.log(event.target.value);
         var reader = new FileReader();
         var file = event.target.files[0];
         var self = this;
@@ -158,20 +142,28 @@ export default class Account extends Component {
 
     renderPicturesThumbnails = () => {
         return this.state.picturesList.map((item, index) => 
-            this.getPictureThumbnail(index, item.id, './../../assets/no-photo.png', '/app/photos/', item.title));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/app/photos/', item.title));
+    }
+
+    getPictureSource = (source) => {
+        if (source === null || source === undefined || source.trim() === "") {
+            return require('./../../assets/no-photo.png');
+        }
+
+        return source;
     }
 
     render() {
         //TO DO: endless scroll
         let friendThumbnailsFirstRow = this.state.friendsList.slice(0, 4).map((item, index) => 
-            this.getPictureThumbnail(index, item.id, './../../assets/default_avatar.jpg', '/app/account/', item.userName));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.avatarBase64), '/app/account/', item.userName));
         let friendThumbnailsSecondRow = this.state.friendsList.slice(4, 8).map((item, index) => 
-            this.getPictureThumbnail(index, item.id, './../../assets/default_avatar.jpg', '/app/account/', item.userName));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.avatarBase64), '/app/account/', item.userName));
 
         let pictureThumbnailsFirstRow = this.state.picturesList.slice(0, 4).map((item, index) => 
-            this.getPictureThumbnail(index, item.id, './../../assets/no-photo.png', '/app/photos/', item.title));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/app/photos/', item.title));
         let pictureThumbnailsSecondRow = this.state.picturesList.slice(4, 8).map((item, index) => 
-            this.getPictureThumbnail(index, item.id, './../../assets/no-photo.png', '/app/photos/', item.title));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/app/photos/', item.title));
 
         let userPosts = this.state.userPostsList.map((item, index) => 
             <Post 
@@ -185,11 +177,10 @@ export default class Account extends Component {
             <div>
                 <div className="account-introduction">
                     <div className="media avatar">
-                        <img className="align-self-start mr-3" 
+                        <img className="align-self-start mr-3 link" 
                             src={ this.getMainPicture() } 
                             alt=""
-                            onClick={ () => this.mainImageClick() } 
-                            className="link"/>
+                            onClick={ () => this.mainImageClick() } />
 
                         <div className="media-body">
                             <h3>{ this.state.user.firstName } { this.state.user.lastName }</h3>
@@ -204,7 +195,7 @@ export default class Account extends Component {
                     </div>
                     <div className="card-body">
                         <div className="row">
-                            { friendThumbnailsFirstRow }
+                            { this.state.friendsList.length > 0 ? friendThumbnailsFirstRow : (<p className="no-data">Brak znajomych</p>) }
                         </div>
                         <div className="row">
                             { friendThumbnailsSecondRow }
@@ -218,7 +209,7 @@ export default class Account extends Component {
                     </div>
                     <div className="card-body">
                         <div className="row">
-                            { pictureThumbnailsFirstRow }
+                            { this.state.picturesList.length > 0 ? pictureThumbnailsFirstRow : (<p className="no-data">Brak zdjęć</p>) }
                         </div>
                         <div className="row">
                             { pictureThumbnailsSecondRow }
@@ -237,7 +228,7 @@ export default class Account extends Component {
 
     renderUploadImageThumbnail = () => {
         if (this.state.mainPictureUpload !== null && this.state.mainPictureUpload !== '') {
-            return <img className="upload-image thumbnail" src={ this.state.mainPictureUpload } />;
+            return <img className="upload-image thumbnail" src={ this.state.mainPictureUpload } alt="" />;
         }
     }
 

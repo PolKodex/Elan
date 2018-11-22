@@ -211,3 +211,8 @@ body > .container {
     text-decoration: underline;
     cursor: pointer;
 }
+
+.no-data {
+    color: #757575;
+    margin: 0 auto;
+}
