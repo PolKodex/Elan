@@ -2,7 +2,7 @@ const axios = require('axios');
 const baseUrl = '/api/User/';
 
 export const findUsers = async (query) => {
-    var api = "/api/User/FindUsers";
+    var api = baseUrl + 'FindUsers';
 
     return await axios.get(api,
         {   
@@ -13,7 +13,23 @@ export const findUsers = async (query) => {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         }).then((response) => response.data);
-    };
+};
+
+export const updateUser = async (id, firstName, lastName, description, age) => {
+    var api = baseUrl + 'UpdateProfile';
+
+    return await axios.put(api,
+        {   
+            Id: id,
+            FirstName: firstName,
+            LastName: lastName,
+            Description: description,
+            Age: age,
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }).then((response) => response.data);
+};
 
 export const uploadImage = async (imageBase64, isMain) => {
     var api = baseUrl + 'UploadImage';

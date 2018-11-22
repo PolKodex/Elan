@@ -12,12 +12,7 @@ export default class Account extends Component {
 
         //after testing remove sample data in state in contructor
         this.state = {
-            user: {
-                id: '',
-                profilePictureSource: '../../assets/default_avatar.jpg',
-                fullName: '',
-                description: ''
-            },
+            user: {},
             friendsList: [],
             picturesList: [],
             userPostsList: [],
@@ -25,7 +20,12 @@ export default class Account extends Component {
             mainPictureUpload: '',
             showMainPictureModal: false,
             showFriendsListModal: false,
-            showPictureListModal: false
+            showPictureListModal: false,
+            showEditUserModal: false,
+            firstNameEdit: '',
+            lastNameEdit: '',
+            descriptionEdit: '',
+            ageEdit: 13
         }
 
     }
@@ -41,7 +41,13 @@ export default class Account extends Component {
     getData = () => {
         accountApi.getUser(this.getUserId())
             .then(function (response) {
-                this.setState({ user: response.data })
+                this.setState({ 
+                    user: response.data,
+                    firstNameEdit: response.data.firstName ,
+                    lastNameEdit: response.data.lastName ,
+                    descriptionEdit: response.data.description ,
+                    ageEdit: response.data.age 
+                })
             }.bind(this));
 
         friendsApi.getFriends(this.getUserId())
@@ -93,13 +99,6 @@ export default class Account extends Component {
             }.bind(this));
     }
 
-    mainImageClick = () => {
-        this.setState({ 
-            showMainPictureModal: !this.state.showMainPictureModal,
-            mainPictureUpload: ''
-        });
-    }
-
     mainPictureChange = (event) => {
         var reader = new FileReader();
         var file = event.target.files[0];
@@ -117,10 +116,6 @@ export default class Account extends Component {
         this.setState({ mainPictureUpload: event.target.value });
     }
 
-    friendsListClick = () => {
-        this.setState({ showFriendsListModal: !this.state.showFriendsListModal });
-    }
-
     renderFriendsListRows = () => {
         let list = [];
         for (let i = 0; i < this.state.friendsList.length; i++) {
@@ -136,8 +131,23 @@ export default class Account extends Component {
         return list;
     }
 
+    mainImageClick = () => {
+        this.setState({ 
+            showMainPictureModal: !this.state.showMainPictureModal,
+            mainPictureUpload: ''
+        });
+    }
+
+    friendsListClick = () => {
+        this.setState({ showFriendsListModal: !this.state.showFriendsListModal });
+    }
+
     pictureListClick = () => {
         this.setState({ showPictureListModal: !this.state.showPictureListModal });
+    }
+
+    editUserClick = () => {
+        this.setState({ editUserClick: !this.state.editUserClick });
     }
 
     renderPicturesThumbnails = () => {
@@ -152,6 +162,31 @@ export default class Account extends Component {
 
         return source;
     }
+
+    firstNameChange = (event) => {
+        this.setState({ firstNameEdit: event.target.value });
+    }
+
+    lastNameChange = (event) => {
+        this.setState({ lastNameEdit: event.target.value });
+    }
+
+    descriptionChange = (event) => {
+        this.setState({ descriptionEdit: event.target.value });
+    }
+
+    ageChange = (event) => {
+        this.setState({ ageEdit: event.target.value });
+    }
+
+    editUser = () => {
+        userApi.updateUser(this.state.user.id, this.state.firstNameEdit, this.state.lastNameEdit, this.state.descriptionEdit, this.state.ageEdit)
+        .then(function (response) {
+            this.setState({ editUserClick: false });
+            this.forceUpdate();
+        }.bind(this));
+    }
+
 
     render() {
         //TO DO: endless scroll
@@ -185,6 +220,7 @@ export default class Account extends Component {
                         <div className="media-body">
                             <h3>{ this.state.user.firstName } { this.state.user.lastName }</h3>
                             <p className="lead">„{ this.state.user.description }”</p>
+                            <a className="link" onClick={ () => this.editUserClick() } title="Edytuj profil"><i className="fas fa-edit"></i></a>
                         </div>
                     </div>
                 </div>
@@ -222,6 +258,7 @@ export default class Account extends Component {
                 { this.renderMainPictureModal() }
                 { this.renderFriendsListModal() }
                 { this.renderPictureListModal() }
+                { this.renderEditUserModal() }
             </div>
         );
     }
@@ -309,8 +346,69 @@ export default class Account extends Component {
             );
         }
     }
+
+    renderEditUserModal() {
+        if (this.state.editUserClick) {
+            return (
+                <div className="modal show" tabIndex="-1" role="dialog">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Edytuj podstawowe informacje</h5>
+                            </div>
+                            <div className="modal-body">
+                                <div className="form-group">
+                                    <label for="edit-first-name">Imię</label>
+                                    <input id="edit-first-name"
+                                            type="text" 
+                                            placeholder="Imię" 
+                                            className="form-control"
+                                            value={ this.state.firstNameEdit } 
+                                            onChange={ this.firstNameChange } ></input>
+                                </div>
+                                <div className="form-group">
+                                    <label for="edit-last-name">Nazwisko</label>
+                                    <input id="edit-last-name"
+                                            type="text" 
+                                            placeholder="Nazwisko" 
+                                            className="form-control"
+                                            value={ this.state.lastNameEdit } 
+                                            onChange={ this.lastNameChange } ></input>
+                                </div>
+                                <div className="form-group">
+                                    <label for="edit-description">Opis</label>
+                                    <input id="edit-description"
+                                            type="text" 
+                                            placeholder="Opis" 
+                                            className="form-control"
+                                            value={ this.state.descriptionEdit } 
+                                            onChange={ this.descriptionChange } ></input>
+                                </div>
+                                <div className="form-group">
+                                    <label for="edit-age">Wiek</label>
+                                    <input id="edit-age"
+                                            type="number" 
+                                            placeholder="Wiek" 
+                                            min="13" 
+                                            max="150" 
+                                            className="form-control"
+                                            value={ this.state.ageEdit } 
+                                            onChange={ this.ageChange } ></input>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-primary" onClick={ () => this.editUser() }>Zapisz</button>
+                                <button type="button" className="btn btn-secondary" onClick={ () => this.editUserClick() }>Zamknij</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    }
 }
 
+//move to new component?
 class PictureThumbnail extends Component {
     render() {
         return (
