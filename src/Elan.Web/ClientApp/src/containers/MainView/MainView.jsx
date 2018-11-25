@@ -8,9 +8,6 @@ import * as jwtUtils from '../../utils/JwtUtils';
 import './MainView.css';
 
 export default class MainView extends Component {
-  constructor(props){
-    super(props);
-  }
 
   render() {
     let authenticated = false;

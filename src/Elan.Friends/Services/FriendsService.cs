@@ -39,6 +39,8 @@ namespace Elan.Friends.Services
             var result = await _dataService.GetSet<FriendsRelation>()
                 .Include(u => u.FirstUser)
                 .Include(u => u.SecondUser)
+                .Include(u => u.FirstUser.Images)
+                .Include(u => u.SecondUser.Images)
                 .Where(u => u.FirstUser.Id == user.Id || u.SecondUser.Id == user.Id)
                 .Select(r => GetFriendUser(r, user))
                 .ToListAsync();

@@ -88,12 +88,14 @@ namespace Elan.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             postsBuilder
-                .Property(x => x.VisibilitySetting)
-                .HasDefaultValue(PrivacySetting.Friends);
-
-            postsBuilder
                 .HasMany(x => x.Reactions)
                 .WithOne(x => x.Post)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            postsBuilder
+                .HasMany(x => x.Comments)
+                .WithOne(x => x.BasePost)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 

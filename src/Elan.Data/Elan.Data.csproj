@@ -11,6 +11,7 @@
     <Compile Remove="Migrations\20181114192544_user_profile.cs" />
     <Compile Remove="Migrations\20181114194712_friends_invitation.cs" />
     <Compile Remove="Migrations\20181114194958_notifications.cs" />
+    <Compile Remove="Migrations\20181121190405_post_comments.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -37,17 +37,14 @@ export default class Login extends Component {
 
         event.preventDefault();
     }
-    
-    renderRedirect = () => {
-        if (this.state.redirect) {
-            return <Redirect to='/app' />
-        }
-    }
 
     render() {
+        if (this.state.redirect) {
+            return (<Redirect to='/app' />)
+        }
+
         return (
             <div className="container login-page">
-                { this.renderRedirect() }
                 <div className="row login-logo">
                     <div className="">
 
