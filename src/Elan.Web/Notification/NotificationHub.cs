@@ -1,7 +1,5 @@
-﻿using Elan.Common.Enums;
-using Elan.Notifications.Contracts;
+﻿using Elan.Notifications.Contracts;
 using Elan.Users.Contracts;
-using Elan.Web.ViewModels.Notifications;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -23,7 +21,12 @@ namespace Elan.Web.notification
             _userService = userService;
             _notificationService = notificationService;
         }
-
+ 
+        public static string GetConnectionID(string userName)
+        {
+            return _connections[userName];
+        }
+        
         public override Task OnConnectedAsync()
         {
             var userName = Context.User.Identity.Name;

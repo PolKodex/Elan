@@ -47,6 +47,15 @@ namespace Elan.Notifications.Services
             return notifications;
         }
 
+        public async Task<string> GetNumberOfUnreadNotificationsForUser(ElanUser user)
+        {
+            var notifications = await _dataService.GetSet<Notification>()
+                .Where(n => n.TargetUser.Id == user.Id && n.IsDeleted != true && n.IsRead != true)
+                .ToListAsync();
+
+            return notifications.Count.ToString();
+        }
+
         public async Task<Notification> MarkAsDeleted(string id)
         {
             var notification = await _dataService

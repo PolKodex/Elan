@@ -11,6 +11,7 @@ using Elan.Notifications;
 using Elan.Posts;
 using Elan.Users;
 using Elan.Web.Chat;
+using Elan.Web.notification;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -121,7 +122,9 @@ namespace Elan.Web
                         {
                             var accessToken = context.Request.Query["access_token"];
                             var path = context.HttpContext.Request.Path;
-                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chathub"))
+                            if (!string.IsNullOrEmpty(accessToken) 
+                                && (path.StartsWithSegments("/chathub") || 
+                                    path.StartsWithSegments("/notificationhub")))
                             {
                                 context.Token = accessToken;
                             }
@@ -169,6 +172,7 @@ namespace Elan.Web
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/chathub");
+                routes.MapHub<NotificationHub>("/notificationhub");
             });
 
             app.UseMvc(routes =>
