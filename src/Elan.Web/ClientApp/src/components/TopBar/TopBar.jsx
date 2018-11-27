@@ -27,7 +27,7 @@ class TopBar extends Component {
   }
 
   onUserClick = (id) => {
-    this.props.history.push("/app/account/"+id);
+    this.props.history.push("/account/"+id);
   }
 
   render() {
@@ -44,16 +44,16 @@ class TopBar extends Component {
     return (
         <div className="top-bar-wrapper">
             <div className="top-bar">
-                <Link to="/app" className="navbar-brand" href="#"><span className="brand-color">EL</span>AN</Link>
+                <Link to="/" className="navbar-brand" href="#"><span className="brand-color">EL</span>AN</Link>
                 <ul className="">
                     <li className="nav-item active">
-                        <Link to="/app" className="nav-link"><i className="fas fa-home"></i> Strona główna <span className="sr-only">(current)</span></Link>
+                        <Link to="/" className="nav-link"><i className="fas fa-home"></i> Strona główna <span className="sr-only">(current)</span></Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/app/account" className="nav-link"><i className="fas fa-address-card"></i> Profil</Link>
+                        <Link to="/account" className="nav-link"><i className="fas fa-address-card"></i> Profil</Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/app/settings" className="nav-link"><i className="fas fa-cog"></i> Ustawienia</Link>
+                        <Link to="/settings" className="nav-link"><i className="fas fa-cog"></i> Ustawienia</Link>
                     </li>
                 </ul>
                 <div className="nav-right">

@@ -17,10 +17,10 @@ class App extends Component {
             <div className="app-view">
               <div className="page">
                   <div className="page-content">
-                    <Route exact path="/app" render={() => <Wall />}/>
-                    <Route exact path="/app/account/:id?" render={(props) => <Account {...props} />}/>
-                    <Route exact path="/app/groups" render={() => (<p>Groups page</p>)}/>
-                    <Route exact path="/app/settings" render={() => (<p>settings page</p>)}/>
+                    <Route exact path="/" render={() => <Wall />}/>
+                    <Route exact path="/account/:id?" render={(props) => <Account {...props} />}/>
+                    <Route exact path="/groups" render={() => (<p>Groups page</p>)}/>
+                    <Route exact path="/settings" render={() => (<p>settings page</p>)}/>
                   </div>
               </div>
               <div className="chat-container">

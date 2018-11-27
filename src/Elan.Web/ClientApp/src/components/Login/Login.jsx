@@ -3,6 +3,9 @@ import * as auth from '../../api/AuthApi';
 import './Login.css';
 import { Redirect } from 'react-router';
 
+import * as authService from '../../services/AuthService';
+
+
 export default class Login extends Component {
     constructor(props) {
         super(props);
@@ -11,7 +14,7 @@ export default class Login extends Component {
             login: '',
             password: '',
             message: '',
-            redirect: false
+            redirect: authService.userIsAuthenticated()
         }
     }
 
@@ -39,10 +42,10 @@ export default class Login extends Component {
     }
 
     render() {
-        if (this.state.redirect) {
-            return (<Redirect to='/app' />)
+        var redirectTo = "/";
+        if (this.state.from) {
+            redirectTo = this.state.from;
         }
-
         return (
             <div className="container login-page">
                 <div className="row login-logo">
@@ -114,7 +117,8 @@ export default class Login extends Component {
                             </li>
                         </ul>
                     </div>
-                </div>
+                </div> 
+                {this.state.redirect && <Redirect to={redirectTo} />}
             </div>
         );
     }

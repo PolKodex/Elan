@@ -4,43 +4,31 @@ import Register from '../../components/Register/Register';
 import App from '../App/App';
 import { Route, BrowserRouter as Router } from "react-router-dom";
 import { Redirect } from 'react-router';
-import * as jwtUtils from '../../utils/JwtUtils';
+
+import * as authService from '../../services/AuthService';
+
 import './MainView.css';
 
 export default class MainView extends Component {
 
-  render() {
-    let authenticated = false;
-    const token = localStorage.getItem('token');
-    if (token != null){
-      const decodedToken = jwtUtils.decodeJwt(localStorage.getItem('token'));
-      const currentUnixTimestamp = Math.round((new Date()).getTime() / 1000);
-
-      if (decodedToken.exp > currentUnixTimestamp){
-        authenticated = true;
-      }
+    render() {
+        debugger;
+        return (           
+            <Router>
+                <div className="main-view">
+                    <Route exact path="/login" render={() => <Login />} />
+                    <Route exact path="/register" render={() => <Register />} />
+                    <SecretRoute path="/" component={App} />}
+                </div>
+            </Router>
+        );        
     }
-
-    return (
-      <Router>
-        <div className="main-view">
-            <Route exact path="/" render={() => (<p>Login. App in /#/app url</p>)}/>
-            <Route exact path="/login" render={() => <Login /> }/>
-            <Route exact path="/register" render={() => <Register />}/>
-            <PrivateRoute authed={ authenticated } path="/app" component={ App }/>
-        </div>
-      </Router>
-    );
-  }
 }
-
-function PrivateRoute ({component: Component, authed, ...rest}) {
-  return (
-    <Route
-      {...rest}
-      render={(props) => authed === true
-        ? <Component {...props} />
-        : <Redirect to={{pathname: '/login', state: {from: props.location}}} />}
-    />
-  )
+const SecretRoute = ({ component: Component, ...rest }) => {
+    let authenticated = authService.userIsAuthenticated();
+    return (<Route {...rest} render={(props) => (
+        authenticated === true
+            ? <Component {...props} />
+            : <Redirect to='/login' />
+    )}/>);
 }
