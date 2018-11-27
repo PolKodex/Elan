@@ -4,24 +4,16 @@ import Register from '../../components/Register/Register';
 import App from '../App/App';
 import { Route, BrowserRouter as Router } from "react-router-dom";
 import { Redirect } from 'react-router';
-import * as jwtUtils from '../../utils/JwtUtils';
+
+import * as authService from '../../services/AuthService';
+
 import './MainView.css';
-
-
 
 export default class MainView extends Component {
 
     render() {
-        let authenticated = false;
-        const token = localStorage.getItem('token');
-        if (token !== null) {
-            const decodedToken = jwtUtils.decodeJwt(localStorage.getItem('token'));
-            const currentUnixTimestamp = Math.round((new Date()).getTime() / 1000);
+        let authenticated = authService.userIsAuthenticated();
 
-            if (decodedToken.exp > currentUnixTimestamp) {
-                authenticated = true;
-            }
-        }
         debugger;
         return (           
             <Router>

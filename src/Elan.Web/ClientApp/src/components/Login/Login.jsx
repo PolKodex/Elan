@@ -3,6 +3,9 @@ import * as auth from '../../api/AuthApi';
 import './Login.css';
 import { Redirect } from 'react-router';
 
+import * as authService from '../../services/AuthService';
+
+
 export default class Login extends Component {
     constructor(props) {
         super(props);
@@ -11,7 +14,7 @@ export default class Login extends Component {
             login: '',
             password: '',
             message: '',
-            redirect: false
+            redirect: authService.userIsAuthenticated()
         }
     }
 
