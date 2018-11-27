@@ -39,10 +39,10 @@ export default class Login extends Component {
     }
 
     render() {
-        if (this.state.redirect) {
-            return (<Redirect to='/app' />)
+        var redirectTo = "/";
+        if (this.state.from) {
+            redirectTo = this.state.from;
         }
-
         return (
             <div className="container login-page">
                 <div className="row login-logo">
@@ -114,7 +114,8 @@ export default class Login extends Component {
                             </li>
                         </ul>
                     </div>
-                </div>
+                </div> 
+                {this.state.redirect && <Redirect to={redirectTo} />}
             </div>
         );
     }

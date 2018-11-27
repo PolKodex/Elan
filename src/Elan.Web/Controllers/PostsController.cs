@@ -9,6 +9,8 @@ using Elan.Web.ViewModels.Posts;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using Elan.Data.Models.Account;
+using Elan.Data.Models.Posts;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 
@@ -40,7 +42,7 @@ namespace Elan.Web.Controllers
         }
 
         [HttpPost]
-        public async Task CreatePost([FromBody]PostViewModel data)
+        public async Task CreatePost([FromBody]Posts.Models.PostViewModel data)
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
             var userTo = await _userService.GetUserById(data.ToUserId);
@@ -49,7 +51,7 @@ namespace Elan.Web.Controllers
         }
 
         [HttpPost]
-        public async Task CreatePostComment([FromBody]PostViewModel data)
+        public async Task CreatePostComment([FromBody]Posts.Models.PostViewModel data)
         {
             if (data.BasePostId == null)
             {
@@ -127,7 +129,7 @@ namespace Elan.Web.Controllers
         }
 
         [HttpPut]
-        public async Task EditPost([FromBody]PostViewModel data)
+        public async Task EditPost([FromBody]Posts.Models.PostViewModel data)
         {
             await _postsService.EditPost(data);
         }
