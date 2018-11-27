@@ -30,7 +30,7 @@ export default class Login extends Component {
         auth.signIn(this.state.login, this.state.password)
             .then(function(token) {
                 localStorage.setItem('token', token);
-                this.setState({ redirect: true });
+                this.setState({ redirect: true, signIn: true });
             }.bind(this))
             .catch(() => {
                 this.setState({ 
@@ -43,9 +43,9 @@ export default class Login extends Component {
 
     render() {
         var redirectTo = "/";
-        if (this.state.from) {
-            redirectTo = this.state.from;
-        }
+        //if (this.state.from && this.state.signIn) {
+        //    redirectTo = this.state.from;
+        //}
         return (
             <div className="container login-page">
                 <div className="row login-logo">

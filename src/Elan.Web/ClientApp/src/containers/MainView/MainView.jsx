@@ -12,25 +12,23 @@ import './MainView.css';
 export default class MainView extends Component {
 
     render() {
-        let authenticated = authService.userIsAuthenticated();
-
         debugger;
         return (           
             <Router>
                 <div className="main-view">
                     <Route exact path="/login" render={() => <Login />} />
                     <Route exact path="/register" render={() => <Register />} />
-                    <SecretRoute auth={ authenticated } path="/" component={App} />}
+                    <SecretRoute path="/" component={App} />}
                 </div>
             </Router>
-        );
-        //                    <PrivateRoute authed={authenticated} path="/" component={App} />           
+        );        
     }
 }
-const SecretRoute = ({ auth, component: Component, ...rest }) => (
-    <Route {...rest} render={(props) => (
-        auth === true
+const SecretRoute = ({ component: Component, ...rest }) => {
+    let authenticated = authService.userIsAuthenticated();
+    return (<Route {...rest} render={(props) => (
+        authenticated === true
             ? <Component {...props} />
             : <Redirect to='/login' />
-    )} />
-);
+    )}/>);
+}
