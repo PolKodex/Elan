@@ -85,8 +85,9 @@ namespace Elan.Posts.Services
                     .ThenInclude(m => m.FirstUser.SecondUserFriends)
                     .Include(m => m.TargetUser)
                     .Where(m => m.BasePostId == null)
-                    .Where(m => m.CreatedBy.Id != user.Id)
                     .Where(m =>
+                        m.CreatedBy.Id == user.Id
+                            ||
                         (
                             (m.VisibilitySetting == PrivacySetting.Friends ||
                              m.VisibilitySetting == PrivacySetting.Connections)
