@@ -105,7 +105,11 @@ namespace Elan.Account.Services
         {
             var userImageSet = _dataService.GetSet<ElanUserImage>();
 
-            var userImages = await userImageSet.Where(x => x.UserId == user.Id).ToListAsync();
+            var userImages = 
+                await userImageSet
+                    .Where(ui => ui.UserId == user.Id)
+                    .OrderByDescending(ui => ui.UploadDate)
+                    .ToListAsync();
 
             return userImages;
         }

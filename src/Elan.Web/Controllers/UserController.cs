@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 using Elan.Account.Contracts;
 using Elan.Account.Models;
 using Elan.Users.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Elan.Web.Controllers
 {
     // TODO: access rights need to be checked before each action executed
     // TODO: custom controller method attributes: Owner [user is owner of the entity - like in UserProfile], Participant [user is part of the entity - like in FriendsRelationRequest]
+    [Authorize]
     public class UserController : ElanBaseController
     {
         private readonly IUserSettingsService _userSettingsService;

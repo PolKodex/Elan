@@ -19,7 +19,6 @@ class App extends Component {
                   <div className="page-content">
                     <Route exact path="/" render={() => <Wall />}/>
                     <Route exact path="/account/:id?" render={(props) => <Account {...props} />}/>
-                    <Route exact path="/groups" render={() => (<p>Groups page</p>)}/>
                     <Route exact path="/settings" render={() => (<p>settings page</p>)}/>
                   </div>
               </div>

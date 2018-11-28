@@ -13,6 +13,7 @@ using Elan.Data.Models.Account;
 using Elan.Data.Models.Posts;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using Elan.Account.Contracts;
 
 namespace Elan.Web.Controllers
 {
@@ -32,7 +33,7 @@ namespace Elan.Web.Controllers
             IUserService userService,
             INotificationService notificationService,
             IPostReactionService postReactionService,
-             IHubContext<NotificationHub> notificationHub)
+            IHubContext<NotificationHub> notificationHub)
         {
             _postsService = postsService;
             _userService = userService;
