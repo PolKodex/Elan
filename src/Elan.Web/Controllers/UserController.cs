@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Elan.Account.Contracts;
 using Elan.Account.Models;
 using Elan.Users.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Elan.Web.Controllers
 {
     // TODO: access rights need to be checked before each action executed
     // TODO: custom controller method attributes: Owner [user is owner of the entity - like in UserProfile], Participant [user is part of the entity - like in FriendsRelationRequest]
+    [Authorize]
     public class UserController : ElanBaseController
     {
         private readonly IUserSettingsService _userSettingsService;
@@ -117,6 +120,16 @@ namespace Elan.Web.Controllers
         public async Task DeleteImage(string imageId)
         {
             await _userImageService.DeleteImage(imageId);
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<ViewModels.Users.UserImageViewModel>> GetUserImages(string userId)
+        {
+            var user = await _userService.GetUserById(userId);
+
+            var userImages = await _userImageService.GetUserImages(user);
+
+            return userImages.Select(x => new ViewModels.Users.UserImageViewModel(x));
         }
     }
 }

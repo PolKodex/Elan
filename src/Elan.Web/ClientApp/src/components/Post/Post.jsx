@@ -4,9 +4,8 @@ import './Post.css';
 export default class Post extends Component {
     render() {
         let authorName = '';
-        debugger;
-        if (this.props.author !== undefined && this.props.author.name.trim() !== "") {
-            authorName = this.props.author.name;
+        if (this.props.author !== undefined && this.props.author.trim() !== "") {
+            authorName = this.props.author;
         }
 
         return (
@@ -15,10 +14,10 @@ export default class Post extends Component {
                     <div className="card-header card-sm">
                         <div className="user-info">
                             <div className="avatar-post">
-                                <img src={require("../../assets/default_avatar.jpg")} alt="" />
+                                <img src={ this.props.pictureSource } alt="" />
                             </div>
                             <div className="user-post">
-                                <a href="#"><strong>{ authorName }</strong></a> 
+                                <a href={ "/account/" + this.props.userId }><strong>{ authorName }</strong></a> 
                                 {this.props.to && this.props.to.isGroup ? ' w ' : ""}
                                 {this.props.to && !this.props.to.isGroup ? ' do ' : ""}
                                 <a href="#"><strong>{this.props.to ? this.props.to.name : ""}</strong></a> 

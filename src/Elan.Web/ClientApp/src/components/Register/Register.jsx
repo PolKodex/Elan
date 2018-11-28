@@ -141,7 +141,7 @@ export default class Register extends Component {
 
     renderRedirect = () => {
         if (this.state.redirect) {
-            return <Redirect to='/app' />
+            return <Redirect to='/' />
         }
     }
 

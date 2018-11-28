@@ -55,7 +55,7 @@ export default class Account extends Component {
                 this.setState({ friendsList: response.data })
             }.bind(this));
 
-        accountApi.getUserPictures()
+        accountApi.getUserPictures(this.getUserId())
             .then(function (response) {
                 this.setState({ picturesList: response.data })
             }.bind(this));
@@ -64,10 +64,6 @@ export default class Account extends Component {
             .then(function (response) {
                 this.setState({ userPostsList: response.data })
         }.bind(this));
-    }
-    
-    componentDidMount() {
-        this.getData();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -83,17 +79,17 @@ export default class Account extends Component {
             title = { title } />
     }
 
-    getMainPicture = () =>{
+    getMainPicture = () => {
         return this.state.user.mainImage == null 
             ? require('./../../assets/default_avatar.jpg') 
-            : this.state.user.mainImage.RawValue
+            : this.state.user.mainImage.rawValue
     }
 
     uploadImage = () => {
         userApi.uploadImage(this.state.mainPictureUpload, 1)
             .then(function (response) {
                 this.setState({ 
-                    mainPictureUpload: response.RawValue,
+                    mainPictureUpload: response.rawValue,
                     showMainPictureModal: false
                 })
             }.bind(this));
@@ -152,7 +148,7 @@ export default class Account extends Component {
 
     renderPicturesThumbnails = () => {
         return this.state.picturesList.map((item, index) => 
-            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/app/photos/', item.title));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/photos/', item.title));
     }
 
     getPictureSource = (source) => {
@@ -180,29 +176,38 @@ export default class Account extends Component {
     }
 
     editUser = () => {
-        userApi.updateUser(this.state.user.id, this.state.firstNameEdit, this.state.lastNameEdit, this.state.descriptionEdit, this.state.ageEdit)
-        .then(function (response) {
-            this.setState({ editUserClick: false });
-            this.forceUpdate();
-        }.bind(this));
+        userApi
+            .updateUser(
+                this.state.user.id, 
+                this.state.firstNameEdit, 
+                this.state.lastNameEdit, 
+                this.state.descriptionEdit, 
+                this.state.ageEdit)
+            .then(function (response) {
+                this.setState({ editUserClick: false });
+            }.bind(this));
     }
 
 
     render() {
+        this.getData();
+
         //TO DO: endless scroll
         let friendThumbnailsFirstRow = this.state.friendsList.slice(0, 4).map((item, index) => 
-            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.avatarBase64), '/app/account/', item.userName));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.avatarBase64), '/account/', item.userName));
         let friendThumbnailsSecondRow = this.state.friendsList.slice(4, 8).map((item, index) => 
-            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.avatarBase64), '/app/account/', item.userName));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.avatarBase64), '/account/', item.userName));
 
         let pictureThumbnailsFirstRow = this.state.picturesList.slice(0, 4).map((item, index) => 
-            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/app/photos/', item.title));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/photos/', item.title));
         let pictureThumbnailsSecondRow = this.state.picturesList.slice(4, 8).map((item, index) => 
-            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/app/photos/', item.title));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/photos/', item.title));
 
         let userPosts = this.state.userPostsList.map((item, index) => 
             <Post 
-                author = { item.createdBy } 
+                userId = { item.userId }
+                author = { item.createdBy }
+                pictureSource = { item.authorMainImageRawValue } 
                 to = { item.targetUser } 
                 content = { item.content } 
                 key = { index }
@@ -358,7 +363,7 @@ export default class Account extends Component {
                             </div>
                             <div className="modal-body">
                                 <div className="form-group">
-                                    <label for="edit-first-name">Imię</label>
+                                    <label htmlFor="edit-first-name">Imię</label>
                                     <input id="edit-first-name"
                                             type="text" 
                                             placeholder="Imię" 
@@ -367,7 +372,7 @@ export default class Account extends Component {
                                             onChange={ this.firstNameChange } ></input>
                                 </div>
                                 <div className="form-group">
-                                    <label for="edit-last-name">Nazwisko</label>
+                                    <label htmlFor="edit-last-name">Nazwisko</label>
                                     <input id="edit-last-name"
                                             type="text" 
                                             placeholder="Nazwisko" 
@@ -376,7 +381,7 @@ export default class Account extends Component {
                                             onChange={ this.lastNameChange } ></input>
                                 </div>
                                 <div className="form-group">
-                                    <label for="edit-description">Opis</label>
+                                    <label htmlFor="edit-description">Opis</label>
                                     <input id="edit-description"
                                             type="text" 
                                             placeholder="Opis" 
@@ -385,7 +390,7 @@ export default class Account extends Component {
                                             onChange={ this.descriptionChange } ></input>
                                 </div>
                                 <div className="form-group">
-                                    <label for="edit-age">Wiek</label>
+                                    <label htmlFor="edit-age">Wiek</label>
                                     <input id="edit-age"
                                             type="number" 
                                             placeholder="Wiek" 
@@ -414,7 +419,7 @@ class PictureThumbnail extends Component {
         return (
             <div className="col-md-3 image-box">
                 <a href={ this.props.targetUrl } className="thumbnail">
-                    <img src={require('./../../assets/no-photo.png')} data-toggle="tooltip" data-placement="bottom" title={ this.props.title } alt="" />
+                    <img src={ this.props.pictureSource } data-toggle="tooltip" data-placement="bottom" title={ this.props.title } alt="" />
                 </a>
             </div>
         );

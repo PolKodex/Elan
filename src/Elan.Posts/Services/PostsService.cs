@@ -83,6 +83,8 @@ namespace Elan.Posts.Services
                     .Include(m => m.CreatedBy)
                     .ThenInclude(m => m.SecondUserFriends)
                     .ThenInclude(m => m.FirstUser.SecondUserFriends)
+                    .Include(m => m.CreatedBy)
+                    .ThenInclude(m => m.Images)
                     .Include(m => m.TargetUser)
                     .Where(m => m.BasePostId == null)
                     .Where(m =>
@@ -133,6 +135,8 @@ namespace Elan.Posts.Services
                     .Include(m => m.CreatedBy)
                     .ThenInclude(m => m.SecondUserFriends)
                     .ThenInclude(m => m.FirstUser.SecondUserFriends)
+                    .Include(m => m.CreatedBy)
+                    .ThenInclude(m => m.Images)
                     .Include(m => m.TargetUser)
                     .Where(m => m.BasePostId == null)
                     .Where(m => m.CreatedBy.Id == user.Id || m.TargetUser.Id == user.Id)
@@ -211,6 +215,7 @@ namespace Elan.Posts.Services
                 .Include(x => x.Reactions)
                 .Include(x => x.TargetUser)
                 .Include(x => x.CreatedBy)
+                .ThenInclude(m => m.Images)
                 .FirstOrDefaultAsync(x => x.Id == postId);
         }
 

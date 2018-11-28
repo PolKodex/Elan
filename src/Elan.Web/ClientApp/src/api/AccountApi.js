@@ -13,24 +13,14 @@ export const getUser = async (userId) => {
     return response;
 };
 
-export const getUserFriends = async () => {
-    var api = "/api/Friends/GetCurrentUserFriends";
+export const getUserPictures = async (userId) => {
+    var api = "/api/User/GetUserImages";
 
     const response = await axios.get(api,
         {
-            headers: {
-                Authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-
-    return response;
-};
-
-export const getUserPictures = async () => {
-    var api = "/api/User/Pictures";
-
-    const response = await axios.get(api,
-        {
+            params: {
+                userId: userId
+            },
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }

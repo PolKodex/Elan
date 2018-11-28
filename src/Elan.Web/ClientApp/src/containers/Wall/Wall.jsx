@@ -59,11 +59,13 @@ export default class Wall extends Component {
 
     let posts = this.state.posts.map((item, index) => 
       <Post 
-        author={{name: item.createdBy}} 
-        to={item.to}
-        content={item.content} 
-        key={index}
-        date={item.createdOn} />)
+        userId = { item.userId }
+        author = { item.createdBy } 
+        pictureSource = { item.authorMainImageRawValue } 
+        to = { item.to }
+        content = { item.content } 
+        key = { index }
+        date = { item.createdOn } />)
 
     return (
       <div className="wall">
