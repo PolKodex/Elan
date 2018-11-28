@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Notifications.css';
 import { getNotifications, setNotificationAsRead } from '../../api/NotificationsApi';
+import * as signalR from '@aspnet/signalr';
 
 export default class Notifications extends Component {
 
@@ -11,15 +12,35 @@ export default class Notifications extends Component {
     }
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.checkNotifications();
-    this.interval = setInterval(() => this.checkNotifications(), 5000);
+
+    const options = {
+        logMessageContent: true,
+        logger: signalR.LogLevel.Trace,
+        accessTokenFactory: () => localStorage.getItem('token')
+    };
+
+    this.connection = new signalR.HubConnectionBuilder()
+        .withHubProtocol(new signalR.JsonHubProtocol())
+        .withUrl("/notificationhub", options)
+        .build();
+
+    const startSignalRConnection = connection => connection.start()
+        .then(() => console.info('Websocket Connection Established'))
+        .catch(err => console.error('SignalR Connection Error: ', err));
+
+    this.connection.start()
+        .then(() => console.info('SignalR Connected'))
+        .catch(err => console.error('SignalR Connection Error: ', err));
+
+    this.connection.on('NotificationsCount', this.onNotification);
+    this.connection.onclose(() => setTimeout(startSignalRConnection(this.connection), 5000));
   }
 
-  componentWillUnmount() {
-    if(this.interval)
-    clearInterval(this.interval);
-  }
+  onNotification = (count) => {
+    this.checkNotifications();
+  };
 
   checkNotifications = () => {
     getNotifications().then((data) => {
