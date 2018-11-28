@@ -4,8 +4,7 @@ import './Post.css';
 export default class Post extends Component {
     render() {
         let authorName = '';
-        debugger;
-        if (this.props.author !== undefined && this.props.author.name.trim() !== "") {
+        if (this.props.author.name !== undefined && this.props.author.name.trim() !== "") {
             authorName = this.props.author.name;
         }
 

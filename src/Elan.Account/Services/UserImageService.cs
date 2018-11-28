@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Elan.Account.Contracts;
@@ -98,6 +99,15 @@ namespace Elan.Account.Services
             userImageSet.Remove(userImage);
 
             await _dataService.SaveDbAsync();
+        }
+
+        public async Task<IList<ElanUserImage>> GetUserImages(ElanUser user)
+        {
+            var userImageSet = _dataService.GetSet<ElanUserImage>();
+
+            var userImages = await userImageSet.Where(x => x.UserId == user.Id).ToListAsync();
+
+            return userImages;
         }
     }
 }

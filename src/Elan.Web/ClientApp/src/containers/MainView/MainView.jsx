@@ -12,7 +12,6 @@ import './MainView.css';
 export default class MainView extends Component {
 
     render() {
-        debugger;
         return (           
             <Router>
                 <div className="main-view">

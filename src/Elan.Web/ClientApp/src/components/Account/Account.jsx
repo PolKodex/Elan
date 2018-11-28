@@ -55,7 +55,7 @@ export default class Account extends Component {
                 this.setState({ friendsList: response.data })
             }.bind(this));
 
-        accountApi.getUserPictures()
+        accountApi.getUserPictures(this.getUserId())
             .then(function (response) {
                 this.setState({ picturesList: response.data })
             }.bind(this));

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Elan.Account.Contracts;
 using Elan.Account.Models;
@@ -117,6 +118,16 @@ namespace Elan.Web.Controllers
         public async Task DeleteImage(string imageId)
         {
             await _userImageService.DeleteImage(imageId);
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<ViewModels.Users.UserImageViewModel>> GetUserImages(string userId)
+        {
+            var user = await _userService.GetUserById(userId);
+
+            var userImages = await _userImageService.GetUserImages(user);
+
+            return userImages.Select(x => new ViewModels.Users.UserImageViewModel(x));
         }
     }
 }
