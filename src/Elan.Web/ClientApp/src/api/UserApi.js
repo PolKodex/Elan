@@ -26,7 +26,7 @@ export const updateUser = async (id, firstName, lastName, description, age) => {
             FirstName: firstName,
             LastName: lastName,
             Description: description,
-            Age: age,
+            Age: age
         },
         {   
             headers: {

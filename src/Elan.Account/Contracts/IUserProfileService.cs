@@ -6,6 +6,6 @@ namespace Elan.Account.Contracts
 {
     public interface IUserProfileService
     {
-        Task UpdateProfile(UserProfileViewModel model);
+        Task<ElanUser> UpdateProfile(UserProfileViewModel model);
     }
 }

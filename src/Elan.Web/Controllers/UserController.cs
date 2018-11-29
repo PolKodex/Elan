@@ -73,9 +73,19 @@ namespace Elan.Web.Controllers
         }
 
         [HttpPut]
-        public async Task UpdateProfile([FromBody]UserProfileViewModel model)
+        public async Task<ViewModels.Users.UserProfileViewModel> UpdateProfile([FromBody]UserProfileViewModel model)
         {
-            await _userProfileService.UpdateProfile(model);
+            var user = await _userProfileService.UpdateProfile(model);
+            var mainImage = await _userImageService.GetMainImage(user);
+
+            var result = new ViewModels.Users.UserProfileViewModel(user);
+
+            if (mainImage != null)
+            {
+                result.MainImage = new ViewModels.Users.UserImageViewModel(mainImage);
+            }
+
+            return result;
         }
 
         [HttpGet]
