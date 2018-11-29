@@ -2,7 +2,7 @@
 import * as auth from '../../api/AuthApi';
 import './Login.css';
 import { Redirect } from 'react-router';
-
+import { Link } from "react-router-dom";
 import * as authService from '../../services/AuthService';
 
 
@@ -95,7 +95,7 @@ export default class Login extends Component {
                     <div className="col-md register-welcome">
                         <div className="title text-center">
                             <p className="h3 brand-color">
-                                Zarejestruj się!
+                                <Link to="/register" className="brand-color">Zarejestruj się!</Link>                     
                             </p>
                         </div>
 
