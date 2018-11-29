@@ -1,4 +1,7 @@
-﻿export default class PictureThumbnail extends Component {
+﻿import React, { Component } from 'react';
+
+
+export default class PictureThumbnail extends Component {
     render() {
         return (
             <div className="col-md-3 image-box">

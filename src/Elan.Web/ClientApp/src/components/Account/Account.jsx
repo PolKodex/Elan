@@ -85,10 +85,18 @@ export default class Account extends Component {
     uploadImage = () => {
         userApi.uploadImage(this.state.mainPictureUpload, 1)
             .then(function (response) {
+                var user = this.state.user; 
+                var picturesList = this.state.picturesList;
+
+                user.mainImage.rawValue = response.rawValue;
+                user.mainImage.id = response.id;
+                picturesList.push(response);
                 this.setState({
                     mainPictureUpload: response.rawValue,
+                    picturesList,
+                    user,
                     showMainPictureModal: false
-                })
+                });
             }.bind(this));
     }
 
