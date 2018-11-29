@@ -14,8 +14,7 @@ export default class Wall extends Component {
   }
 
   componentDidMount(){
-    this.getPosts();
-    this.interval = setInterval(() => this.getPosts(), 5000);
+      this.getPosts();
   }
 
   componentWillUnmount() {
