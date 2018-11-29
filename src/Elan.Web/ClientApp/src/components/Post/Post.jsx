@@ -8,13 +8,19 @@ export default class Post extends Component {
             authorName = this.props.author;
         }
 
+        let pictureSource = this.props.pictureSource;
+
+        if (!pictureSource) {
+            pictureSource = "../../assets/default_avatar.jpg";
+        }
+
         return (
             <div className="post">
                 <div className="card">
                     <div className="card-header card-sm">
                         <div className="user-info">
                             <div className="avatar-post">
-                                <img src={ this.props.pictureSource } alt="" />
+                                 <img src={pictureSource} alt="" />
                             </div>
                             <div className="user-post">
                                 <a href={ "/account/" + this.props.userId }><strong>{ authorName }</strong></a> 
