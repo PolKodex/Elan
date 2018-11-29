@@ -16,7 +16,7 @@ namespace Elan.Account.Services
             _dataService = dataService;
         }
 
-        public async Task UpdateProfile(UserProfileViewModel model)
+        public async Task<ElanUser> UpdateProfile(UserProfileViewModel model)
         {
             var user = await _dataService.GetSet<ElanUser>().FirstOrDefaultAsync(x => x.Id.ToString() == model.Id);
 
@@ -26,6 +26,7 @@ namespace Elan.Account.Services
             user.LastName = model.LastName;
 
             await _dataService.SaveDbAsync();
+            return user;
         }
     }
 }
