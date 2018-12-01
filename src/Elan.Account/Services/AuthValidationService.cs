@@ -1,13 +1,11 @@
-﻿using System.Linq;
-using System.Net.Mail;
-using System.Threading.Tasks;
-using Elan.Account.Contracts;
+﻿using Elan.Account.Contracts;
 using Elan.Account.Models;
 using Elan.Common.Exceptions;
 using Elan.Data.Contracts;
 using Elan.Data.Models.Account;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
+using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace Elan.Account.Services
 {
