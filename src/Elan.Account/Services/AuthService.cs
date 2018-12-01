@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
+using Elan.Data.Contracts;
 
 namespace Elan.Account.Services
 {
@@ -40,7 +41,7 @@ namespace Elan.Account.Services
 
         public async Task<string> Register(RegisterViewModel model)
         {
-            _authValidationService.ValidateRegisterViewModel(model);
+            await _authValidationService.ValidateRegisterViewModel(model);
 
             var newUser = new ElanUser
             {
@@ -49,7 +50,7 @@ namespace Elan.Account.Services
                 FirstName = model.FirstName,
                 LastName = model.LastName
             };
-
+            
             var result = await _userManager.CreateAsync(newUser, model.Password);
 
             if (!result.Succeeded)

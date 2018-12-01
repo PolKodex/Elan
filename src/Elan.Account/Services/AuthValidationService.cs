@@ -1,45 +1,72 @@
-﻿using Elan.Account.Contracts;
+﻿using System.Linq;
+using System.Net.Mail;
+using System.Threading.Tasks;
+using Elan.Account.Contracts;
 using Elan.Account.Models;
 using Elan.Common.Exceptions;
+using Elan.Data.Contracts;
+using Elan.Data.Models.Account;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Elan.Account.Services
 {
     public class AuthValidationService: IAuthValidationService
     {
-        public void ValidateRegisterViewModel(RegisterViewModel model)
+        private readonly IDataService _dataService;
+
+        public AuthValidationService(IDataService dataService)
         {
-            if (string.IsNullOrEmpty(model.Email))
+            _dataService = dataService;
+        }
+
+        public async Task ValidateRegisterViewModel(RegisterViewModel model)
+        {
+            try
+            {
+                var email = new MailAddress(model.Email);
+            }
+            catch
             {
                 throw new RegistrationFailedException(
-                    $"Registration error: Email cannot be null!");
+                    $"Email address is invalid!");
+            }
+
+            var userWithSameEmail = await _dataService.GetSet<ElanUser>().FirstOrDefaultAsync(x => x.Email == model.Email);
+            if (userWithSameEmail != null)
+            {
+                throw new RegistrationFailedException(
+                    $"Account with this email address already exists!");
             }
 
             if (string.IsNullOrEmpty(model.Password))
             {
                 throw new RegistrationFailedException(
-                    $"Registration error: Password cannot be null!");
+                    $"Password cannot be null or empty!");
             }
 
             if (string.IsNullOrEmpty(model.UserName))
             {
                 throw new RegistrationFailedException(
-                    $"Registration error: UserName cannot be null!");
+                    $"UserName cannot be null or empty!");
             }
         }
 
-        public void ValidateSignInViewModel(SignInViewModel model)
+        public Task ValidateSignInViewModel(SignInViewModel model)
         {
             if (string.IsNullOrEmpty(model.Password))
             {
                 throw new SignInFailedException(
-                    $"Registration error: Password cannot be null!");
+                    $"Password cannot be null or empty!");
             }
 
             if (string.IsNullOrEmpty(model.UserName))
             {
                 throw new SignInFailedException(
-                    $"Registration error: UserName cannot be null!");
+                    $"UserName cannot be null or empty!");
             }
+
+            return Task.CompletedTask;
         }
     }
 }
