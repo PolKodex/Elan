@@ -54,7 +54,8 @@ namespace Elan.Users.Services
                     FirstName = x.FirstName, LastName = x.LastName,
                     ImageRawValue = x.Images.FirstOrDefault(y => y.IsMain) != null
                         ? x.Images.FirstOrDefault(y => y.IsMain).RawValue
-                        : string.Empty
+                        : string.Empty,
+                    Id = x.Id.ToString()
                 })
                 .ToList();
 
