@@ -45,7 +45,9 @@ namespace Elan.Account.Services
             var newUser = new ElanUser
             {
                 UserName = model.UserName,
-                Email = model.Email
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName
             };
 
             var result = await _userManager.CreateAsync(newUser, model.Password);

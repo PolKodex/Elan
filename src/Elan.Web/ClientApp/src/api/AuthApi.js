@@ -20,7 +20,9 @@ export const register = async (userName, password, email, firstName, lastName) =
         {
             Email: email,
             Password: password,
-            UserName: userName
+            UserName: userName,
+            FirstName: firstName,
+            LastName: lastName
         })
         .then ((response) => {
             return response.data;
