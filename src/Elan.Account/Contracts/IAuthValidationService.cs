@@ -1,10 +1,11 @@
-﻿using Elan.Account.Models;
+﻿using System.Threading.Tasks;
+using Elan.Account.Models;
 
 namespace Elan.Account.Contracts
 {
     public interface IAuthValidationService
     {
-        void ValidateRegisterViewModel(RegisterViewModel model);
-        void ValidateSignInViewModel(SignInViewModel model);
+        Task ValidateRegisterViewModel(RegisterViewModel model);
+        Task ValidateSignInViewModel(SignInViewModel model);
     }
 }

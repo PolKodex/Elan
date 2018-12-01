@@ -1,18 +1,18 @@
-﻿using System;
-using System.Globalization;
-using System.Security.Claims;
-using System.Text;
-using Elan.Account.Contracts;
+﻿using Elan.Account.Contracts;
 using Elan.Account.Models;
 using Elan.Common.Exceptions;
 using Elan.Data.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
-using System.Threading.Tasks;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Elan.Account.Services
 {
@@ -40,14 +40,16 @@ namespace Elan.Account.Services
 
         public async Task<string> Register(RegisterViewModel model)
         {
-            _authValidationService.ValidateRegisterViewModel(model);
+            await _authValidationService.ValidateRegisterViewModel(model);
 
             var newUser = new ElanUser
             {
                 UserName = model.UserName,
-                Email = model.Email
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName
             };
-
+            
             var result = await _userManager.CreateAsync(newUser, model.Password);
 
             if (!result.Succeeded)
@@ -64,7 +66,7 @@ namespace Elan.Account.Services
 
         public async Task<string> SignIn(SignInViewModel model)
         {
-            _authValidationService.ValidateSignInViewModel(model);
+            await _authValidationService.ValidateSignInViewModel(model);
 
             var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
 
