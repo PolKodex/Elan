@@ -40,3 +40,19 @@ export const commentPost = async (content, basePostId) => {
             }
         }).then((response) => response.data);
 }
+
+export const getComments = async (postId, skip, take) => {
+    var api = "/api/Posts/GetPostComments";
+
+    return await axios.get(api,
+        {
+        	params: {
+                postId: postId,
+                skip: skip,
+                take: take
+            },
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }).then((response) => response.data);
+}

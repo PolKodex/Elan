@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import './Post.css';
 import * as postsApi from '../../api/PostsApi';
+import * as dateUtils from '../../utils/DateUtils';
 
 export default class Post extends Component {
     constructor(props) {
@@ -8,7 +9,8 @@ export default class Post extends Component {
 
         this.state = {
             commentsOpened: false,
-            newComment: ''
+            newComment: '',
+            comments: []
         }
 
     }
@@ -18,7 +20,12 @@ export default class Post extends Component {
     }
 
     commentsModalToggle = () => {
-        this.setState({ commentsOpened: !this.state.commentsOpened });
+        postsApi
+            .getComments(this.props.id, 0, 10)
+            .then(function(response) {
+                this.setState({ comments: response });
+                this.setState({ commentsOpened: !this.state.commentsOpened });
+            }.bind(this));
     }
 
     commentPost = () => {
@@ -52,7 +59,7 @@ export default class Post extends Component {
                                 {this.props.to && !this.props.to.isGroup ? ' do ' : ""}
                                 <a href="#"><strong>{this.props.to ? this.props.to.name : ""}</strong></a> 
                                 <br/>
-                                <small className="text-muted">{this.props.date}</small>
+                                <small className="text-muted">{dateUtils.getFormattedDate(this.props.date)}</small>
                             </div>
                         </div>
                     </div>
@@ -70,16 +77,14 @@ export default class Post extends Component {
         );
     }
 
-    renderCommentRow(posts) {
-        posts = [1, 2, 3];
-
-        return posts.map(p => (
+    renderCommentRow() {
+        return this.state.comments.map(p => (
             <a href="#" className="list-group-item list-group-item-action flex-column align-items-start">
                 <div className="d-flex w-100 justify-content-between">
-                    <h5 className="mb-1"><strong>p.createdBy</strong></h5>
-                    <small>p.createdOn</small>
+                    <h5 className="mb-1"><strong>{p.createdBy}</strong></h5>
+                    <small>{dateUtils.getFormattedDate(p.createdOn)}</small>
                 </div>
-                <p className="mb-1">p.content</p>
+                <p className="mb-1">{p.content}</p>
             </a>)
         );
     }

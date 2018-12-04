@@ -1,12 +1,8 @@
 ﻿import React, { Component } from 'react';
 import './ChatMessage.css';
+import * as dateUtils from '../../utils/DateUtils';
 
 export default class ChatMessage extends Component {
-  
-  formatDate = (date) => {
-  	return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
-  };
-
   convertUTCDateToLocalDate = (date) => {
     var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
 
@@ -25,7 +21,7 @@ export default class ChatMessage extends Component {
       date = this.convertUTCDateToLocalDate(date);
     }
 
-  	date = this.formatDate(date);
+  	date = dateUtils.getFormattedDate(date);
 
     return (
       <div className={this.props.isToMe ? "msg-container-to-me" : "msg-container-from-me"}>
