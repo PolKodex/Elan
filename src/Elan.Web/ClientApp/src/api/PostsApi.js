@@ -25,3 +25,18 @@ export const getLatestPosts = async () => {
         }).then((response) => response.data);
 
 }
+
+export const commentPost = async (content, basePostId) => {
+    var api = "/api/Posts/CreatePostComment";
+
+    return await axios.post(api,
+        {
+            content: content,
+            basePostId: basePostId
+        },
+        {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }).then((response) => response.data);
+}

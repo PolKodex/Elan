@@ -375,6 +375,7 @@ export default class Account extends Component {
 
         let userPosts = this.state.userPostsList.map((item, index) =>
             <Post
+                id = {item.id}
                 userId={item.userId}
                 author={item.createdBy}
                 pictureSource={item.authorMainImageRawValue}
