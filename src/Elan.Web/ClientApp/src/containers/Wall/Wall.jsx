@@ -58,6 +58,7 @@ export default class Wall extends Component {
 
     let posts = this.state.posts.map((item, index) => 
       <Post 
+        id = { item.id }
         userId = { item.userId }
         author = { item.createdBy } 
         pictureSource = { item.authorMainImageRawValue } 
