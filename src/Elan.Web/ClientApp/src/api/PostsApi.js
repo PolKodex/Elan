@@ -56,3 +56,18 @@ export const getComments = async (postId, skip, take) => {
             }
         }).then((response) => response.data);
 }
+
+export const setReaction = async (postId) => {
+    var api = '/api/Posts/SetReaction';
+
+    return await axios.post(api,
+        {
+            PostId: postId,
+            Type: 1
+        },
+        {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }).then((response) => response.data);
+}

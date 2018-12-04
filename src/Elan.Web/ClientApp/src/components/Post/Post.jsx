@@ -10,7 +10,9 @@ export default class Post extends Component {
         this.state = {
             commentsOpened: false,
             newComment: '',
-            comments: []
+            comments: [],
+            commentsCount: 0,
+            reactionsCount: 0
         }
 
     }
@@ -23,14 +25,25 @@ export default class Post extends Component {
         postsApi
             .getComments(this.props.id, 0, 10)
             .then(function(response) {
-                this.setState({ comments: response });
-                this.setState({ commentsOpened: !this.state.commentsOpened });
+                this.setState({ 
+                    comments: response,
+                    commentsCount: response.length,
+                    commentsOpened: !this.state.commentsOpened 
+                 });
             }.bind(this));
     }
 
     commentPost = () => {
         postsApi.commentPost(this.state.newComment, this.props.id);
         this.setState({ newComment: '' });
+    }
+
+    addReaction = () => {
+
+    }
+
+    toggleReaction = () => {
+        postsApi.setReaction(this.props.id);
     }
 
     render() {
@@ -67,8 +80,8 @@ export default class Post extends Component {
                         <p className="card-text" dangerouslySetInnerHTML={{__html:this.props.content}}></p>
                     </div>
                     <div className="card-footer text-muted card-sm">
-                        <a href="#"><i className="fas fa-beer"></i> Piwa (0)</a>
-                        <a className="link" onClick={() => this.commentsModalToggle()}><i className="fas fa-comments"></i> Komentarze (1)</a>
+                        <a className="link" onClick={() => this.toggleReaction()}><i className="fas fa-beer"></i> Piwa ({this.state.reactionsCount})</a>
+                        <a className="link" onClick={() => this.commentsModalToggle()}><i className="fas fa-comments"></i> Komentarze ({this.state.commentsCount})</a>
                     </div>
                 </div>
 
