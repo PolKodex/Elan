@@ -26,7 +26,6 @@ export default class MainView extends Component {
     }
 }
 const SecretRoute = ({ component: Component, ...rest }) => {
-    debugger;
     let authenticated = authService.userIsAuthenticated();
     return (<Route {...rest} render={(props) => (
         authenticated === true

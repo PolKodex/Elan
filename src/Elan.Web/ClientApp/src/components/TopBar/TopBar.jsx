@@ -30,6 +30,11 @@ class TopBar extends Component {
     this.props.history.push("/account/"+id);
   }
 
+  logout = () => {
+      localStorage.removeItem('token');
+      window.location.reload();
+  }
+
   render() {
 
     let users = this.state.users.map((item, index) => (<button className="search-result" onClick={() => this.onUserClick(item.id)}>
@@ -64,6 +69,7 @@ class TopBar extends Component {
                        </div>
                     </div>
                     <Notifications />
+                    <button className="btn btn-secondary" onClick={() => this.logout()}>Wyloguj się</button>
                 </div>
             </div>
         </div>

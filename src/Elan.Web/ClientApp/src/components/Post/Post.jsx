@@ -2,6 +2,19 @@
 import './Post.css';
 
 export default class Post extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            commentsOpened: false,
+        }
+
+    }
+
+    commentsModalToggle = () => {
+        this.setState({ commentsOpened: !this.state.commentsOpened });
+    }
+
     render() {
         let authorName = '';
         if (this.props.author !== undefined && this.props.author.trim() !== "") {
@@ -37,10 +50,32 @@ export default class Post extends Component {
                     </div>
                     <div className="card-footer text-muted card-sm">
                         <a href="#"><i className="fas fa-beer"></i> Piwa (0)</a>
-                        <a href="#"><i className="fas fa-comments"></i> Komentarze (1)</a>
+                        <a onClick={() => this.commentsModalToggle()}><i className="fas fa-comments"></i> Komentarze (1)</a>
                     </div>
                 </div>
             </div>
         );
+    }
+
+    renderCommentsModal() {
+        if (this.state.commentsOpened) {
+            return (
+                <div className="modal show" tabIndex="-1" role="dialog">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Komentarze</h5>
+                            </div>
+                            <div className="modal-body">
+                                <p> SOMETHING SHOULD BE HERE XDXDXDXDXD</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => this.commentsModalToggle()}>Zamknij</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
     }
 }
