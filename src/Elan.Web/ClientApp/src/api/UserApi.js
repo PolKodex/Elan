@@ -87,3 +87,27 @@ export const deleteImage = async (id) => {
             return response.data;
         });
 };
+
+export const getSettings = async () => {
+    var api = baseUrl + 'GetSettings';
+
+    return await axios.get(api,
+        {   
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }).then((response) => response.data);
+};
+
+export const saveSetting = async (setting) => {
+    var api = baseUrl + 'ChangeSetting';
+        return axios.put(api, setting,
+        {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        })
+        .then(function (response) {
+            return response.data;
+        });
+}
