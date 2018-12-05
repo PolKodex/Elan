@@ -39,10 +39,13 @@ export default class Post extends Component {
     
         this.connection.on('ReactionsCount', this.onNotification);
         this.connection.onclose(() => setTimeout(startSignalRConnection(this.connection), 5000));
+
+        if (this.props.reactions != null) {
+            this.setState({reactionsCount: this.props.reactions.length});
+        }
     }
     onNotification = (count) => {
-        debugger;
-        console.log(count);
+        this.setState({reactionsCount: count});
     };
     
     newCommentChange = (event) => {

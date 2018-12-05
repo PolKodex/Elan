@@ -64,6 +64,7 @@ export default class Wall extends Component {
         pictureSource = { item.authorMainImageRawValue } 
         to = { item.to }
         content = { item.content } 
+        reactions={item.reactions}
         key = { index }
         date = { item.createdOn } />)
 

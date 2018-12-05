@@ -165,7 +165,7 @@ namespace Elan.Web.Controllers
 
             if (connectionID != null)
             {
-                await _notificationHub.Clients.Client(connectionID).SendAsync("ReactionsCount", JsonConvert.SerializeObject(reactionsCount));
+                await _notificationHub.Clients.All.SendAsync("ReactionsCount", JsonConvert.SerializeObject(reactionsCount));
             }
         }
     }

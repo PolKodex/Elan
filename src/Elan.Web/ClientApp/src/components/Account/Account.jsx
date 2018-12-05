@@ -403,6 +403,7 @@ export default class Account extends Component {
                 pictureSource={item.authorMainImageRawValue}
                 to={item.targetUser}
                 content={item.content}
+                reactions={item.reactions}
                 key={index}
                 date={item.createdOn} />);
 
