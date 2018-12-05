@@ -12,8 +12,8 @@ export default class Post extends Component {
             commentsOpened: false,
             newComment: '',
             comments: [],
-            commentsCount: 0,
-            reactionsCount: 0
+            commentsCount: props.commentsCount,
+            reactionsCount: props.reactionsCount
         }
     }
     
