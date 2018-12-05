@@ -200,6 +200,16 @@ export default class Account extends Component {
             }.bind(this));
     }
 
+    renderEditButton = () => {
+        if (this.state.userId === undefined || 
+            (this.state.userId !== undefined && this.state.userId.trim() === "") || 
+            this.state.userId === jwtUtils.decodeJwt(localStorage.getItem('token')).jti) {
+            return (
+                <a className="link" onClick={() => this.editUserClick()} title="Edytuj profil"><i className="fas fa-edit"></i></a>
+            );
+        }
+    }
+
     renderUploadImageThumbnail = () => {
         if (this.state.mainPictureUpload !== null && this.state.mainPictureUpload !== '') {
             return <img className="upload-image thumbnail" src={this.state.mainPictureUpload} alt="" />;
@@ -396,7 +406,7 @@ export default class Account extends Component {
                         <div className="media-body">
                             <h3>{this.state.user.firstName} {this.state.user.lastName}</h3>
                             <p className="lead">„{this.state.user.description}”</p>
-                            <a className="link" onClick={() => this.editUserClick()} title="Edytuj profil"><i className="fas fa-edit"></i></a>
+                            {this.renderEditButton()}
                         </div>
                     </div>
                 </div>
