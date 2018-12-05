@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
 using Elan.Account.Contracts;
 using Elan.Account.Models;
 using Elan.Data.Contracts;
@@ -18,6 +19,11 @@ namespace Elan.Account.Services
 
         public async Task<ElanUser> UpdateProfile(UserProfileViewModel model)
         {
+            if (model.Age < 13)
+            {
+                throw new InvalidDataException("Age cannot be lower than 13.");
+            }
+
             var user = await _dataService.GetSet<ElanUser>().FirstOrDefaultAsync(x => x.Id.ToString() == model.Id);
 
             user.Age = model.Age;

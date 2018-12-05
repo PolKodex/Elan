@@ -100,6 +100,8 @@ namespace Elan.Web.Controllers
                 return;
             }
 
+            await PushNumberOfPostReactions(model);
+
             if (model.User.Id != post.CreatedBy.Id)
             {
                 await _notificationService.CreateNotification(
@@ -150,6 +152,17 @@ namespace Elan.Web.Controllers
             if (connectionID != null)
             {
                 await _notificationHub.Clients.Client(connectionID).SendAsync("NotificationsCount", JsonConvert.SerializeObject(notificationsCount));
+            }
+        }
+
+        private async Task PushNumberOfPostReactions(SetPostReactionViewModel postReaction)
+        {
+            var connectionID = NotificationHub.GetConnectionID(postReaction.User.UserName);
+            var reactionsCount = _postReactionService.GetReactionCount(postReaction.PostId);
+
+            if (connectionID != null)
+            {
+                await _notificationHub.Clients.All.SendAsync("ReactionsCount", JsonConvert.SerializeObject(reactionsCount));
             }
         }
     }

@@ -6,5 +6,7 @@ namespace Elan.Posts.Contracts
     public interface IPostReactionService
     {
         Task SetReaction(SetPostReactionViewModel model);
+
+        int GetReactionCount(int postId);
     }
 }

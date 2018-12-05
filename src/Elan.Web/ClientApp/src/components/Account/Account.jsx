@@ -200,9 +200,31 @@ export default class Account extends Component {
             }.bind(this));
     }
 
+    addToFriends = () => {
+        friendsApi.addToFriends(this.state.userId);
+    }
+
+    renderEditButton = () => {
+        if (this.state.userId === undefined || 
+            (this.state.userId !== undefined && this.state.userId.trim() === "") || 
+            this.state.userId === jwtUtils.decodeJwt(localStorage.getItem('token')).jti) {
+            return (
+                <a className="link faded edit" onClick={() => this.editUserClick()} title="Edytuj profil"><i className="fas fa-edit"></i></a>
+            );
+        }
+    }
+
+    renderAddToFriendsButton = () => {
+        if (this.state.userId !== undefined && this.state.userId.trim() !== '' && !this.state.friendsList.map(f => f.id).includes(jwtUtils.decodeJwt(localStorage.getItem('token')).jti)) {
+            return (
+                <button className="btn btn-secondary" onClick={() => this.addToFriends()}>Dodaj do znajomych</button>
+            );
+        }
+    }
+
     renderUploadImageThumbnail = () => {
         if (this.state.mainPictureUpload !== null && this.state.mainPictureUpload !== '') {
-            return <img className="upload-image thumbnail" src={this.state.mainPictureUpload} alt="" />;
+            return (<img className="upload-image thumbnail" src={this.state.mainPictureUpload} alt="" />);
         }
     }
 
@@ -375,11 +397,13 @@ export default class Account extends Component {
 
         let userPosts = this.state.userPostsList.map((item, index) =>
             <Post
+                id = {item.id}
                 userId={item.userId}
                 author={item.createdBy}
                 pictureSource={item.authorMainImageRawValue}
                 to={item.targetUser}
                 content={item.content}
+                reactions={item.reactions}
                 key={index}
                 date={item.createdOn} />);
 
@@ -393,9 +417,12 @@ export default class Account extends Component {
                             onClick={() => this.mainImageClick()} />
 
                         <div className="media-body">
-                            <h3>{this.state.user.firstName} {this.state.user.lastName}</h3>
+                            <h3>
+                                {this.state.user.firstName} {this.state.user.lastName} 
+                                {this.renderEditButton()}
+                            </h3>
                             <p className="lead">„{this.state.user.description}”</p>
-                            <a className="link" onClick={() => this.editUserClick()} title="Edytuj profil"><i className="fas fa-edit"></i></a>
+                            {this.renderAddToFriendsButton()}
                         </div>
                     </div>
                 </div>

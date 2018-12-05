@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Elan.Account.Contracts;
@@ -75,6 +76,12 @@ namespace Elan.Web.Controllers
         [HttpPut]
         public async Task<ViewModels.Users.UserProfileViewModel> UpdateProfile([FromBody]UserProfileViewModel model)
         {
+            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+            if (!currentUser.Id.ToString().Equals(model.Id))
+            {
+                throw new InvalidOperationException("You can't edit other user profile info.");
+            }
+            
             var user = await _userProfileService.UpdateProfile(model);
             var mainImage = await _userImageService.GetMainImage(user);
 

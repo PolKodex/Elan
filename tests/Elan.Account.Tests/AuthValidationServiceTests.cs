@@ -1,6 +1,8 @@
 ﻿using Elan.Account.Models;
 using Elan.Account.Services;
 using Elan.Common.Exceptions;
+using Elan.Data.Contracts;
+using FakeItEasy;
 using Xunit;
 namespace Elan.Account.Tests
 {
@@ -12,7 +14,8 @@ namespace Elan.Account.Tests
         [InlineData("properUserName", "password", "")]
         public void ValidateRegisterViewModel_InvalidCredentials_ThrowsRegistrationFailedException(string userName, string password, string email)
         {
-            var sut = new AuthValidationService();
+            var dataService = A.Fake<IDataService>();
+            var sut = new AuthValidationService(dataService);
 
             var model = new RegisterViewModel
             {
@@ -21,7 +24,7 @@ namespace Elan.Account.Tests
                 Email = email
             };
 
-            Assert.Throws<RegistrationFailedException>(() => sut.ValidateRegisterViewModel(model));
+            Assert.ThrowsAsync<RegistrationFailedException>(() => sut.ValidateRegisterViewModel(model));
         }
 
         [Theory]
@@ -29,7 +32,8 @@ namespace Elan.Account.Tests
         [InlineData("properUserName", "")]
         public void ValidateSignInViewModel_InvalidCredentials_ThrowsRegistrationFailedException(string userName, string password)
         {
-            var sut = new AuthValidationService();
+            var dataService = A.Fake<IDataService>();
+            var sut = new AuthValidationService(dataService);
 
             var model = new SignInViewModel
             {
@@ -37,7 +41,7 @@ namespace Elan.Account.Tests
                 Password = password,
             };
 
-            Assert.Throws<SignInFailedException>(() => sut.ValidateSignInViewModel(model));
+            Assert.ThrowsAsync<SignInFailedException>(() => sut.ValidateSignInViewModel(model));
         }
     }
 }
