@@ -16,37 +16,6 @@ export default class Post extends Component {
             reactionsCount: 0
         }
     }
-
-    componentDidMount() {
-        const options = {
-            logMessageContent: true,
-            logger: signalR.LogLevel.Trace,
-            accessTokenFactory: () => localStorage.getItem('token')
-        };
-    
-        this.connection = new signalR.HubConnectionBuilder()
-            .withHubProtocol(new signalR.JsonHubProtocol())
-            .withUrl("/notificationhub", options)
-            .build();
-    
-        const startSignalRConnection = connection => connection.start()
-            .then(() => console.info('Websocket Connection Established'))
-            .catch(err => console.error('SignalR Connection Error: ', err));
-    
-        this.connection.start()
-            .then(() => console.info('SignalR Connected'))
-            .catch(err => console.error('SignalR Connection Error: ', err));
-    
-        this.connection.on('ReactionsCount', this.onNotification);
-        this.connection.onclose(() => setTimeout(startSignalRConnection(this.connection), 5000));
-
-        if (this.props.reactions != null) {
-            this.setState({reactionsCount: this.props.reactions.length});
-        }
-    }
-    onNotification = (count) => {
-        this.setState({reactionsCount: count});
-    };
     
     newCommentChange = (event) => {
         this.setState({ newComment: event.target.value });
@@ -75,6 +44,7 @@ export default class Post extends Component {
 
     toggleReaction = () => {
         postsApi.setReaction(this.props.id);
+        this.setState({reactionsCount: this.state.reactionsCount + 1})
     }
 
     render() {
