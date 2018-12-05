@@ -13,6 +13,7 @@ namespace Elan.Web.ViewModels.Posts
         public string CreatedBy { get; set; }
         public string TargetUser { get; set; }
         public List<PostReactionViewModel> Reactions { get; set; }
+        public int ReactionsCount { get; set; }
         public string AuthorMainImageRawValue { get; set; }
         public string UserId { get; set; }
 
@@ -25,6 +26,8 @@ namespace Elan.Web.ViewModels.Posts
             TargetUser = model.TargetUser?.UserName;
             Reactions = model.Reactions?.GroupBy(x => x.Type)
                 .Select(x => new PostReactionViewModel {Count = x.Count(), Type = x.Key}).ToList();
+            ReactionsCount = model.Reactions?.GroupBy(x => x.Type)
+                                 .Sum(x => x.Count()) ?? 0;
             AuthorMainImageRawValue = model.CreatedBy?.Images.FirstOrDefault(x => x.IsMain)?.RawValue;
             UserId = model.CreatedBy?.Id.ToString();
         }

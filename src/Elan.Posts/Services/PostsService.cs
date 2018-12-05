@@ -71,6 +71,7 @@ namespace Elan.Posts.Services
             var posts =
                 await _dataService
                     .GetSet<Post>()
+                    .Include(m => m.Reactions)
                     .Include(m => m.CreatedBy)
                     .ThenInclude(m => m.FirstUserFriends)
                     .ThenInclude(m => m.SecondUser.FirstUserFriends)
@@ -123,6 +124,7 @@ namespace Elan.Posts.Services
             var posts =
                 await _dataService
                     .GetSet<Post>()
+                    .Include(m => m.Reactions)
                     .Include(m => m.CreatedBy)
                     .ThenInclude(m => m.FirstUserFriends)
                     .ThenInclude(m => m.SecondUser.FirstUserFriends)
