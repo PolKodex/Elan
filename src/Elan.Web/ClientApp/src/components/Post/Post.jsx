@@ -2,6 +2,7 @@
 import './Post.css';
 import * as postsApi from '../../api/PostsApi';
 import * as dateUtils from '../../utils/DateUtils';
+import * as signalR from '@aspnet/signalr';
 
 export default class Post extends Component {
     constructor(props) {
@@ -14,9 +15,36 @@ export default class Post extends Component {
             commentsCount: 0,
             reactionsCount: 0
         }
-
     }
 
+    componentDidMount() {
+        const options = {
+            logMessageContent: true,
+            logger: signalR.LogLevel.Trace,
+            accessTokenFactory: () => localStorage.getItem('token')
+        };
+    
+        this.connection = new signalR.HubConnectionBuilder()
+            .withHubProtocol(new signalR.JsonHubProtocol())
+            .withUrl("/notificationhub", options)
+            .build();
+    
+        const startSignalRConnection = connection => connection.start()
+            .then(() => console.info('Websocket Connection Established'))
+            .catch(err => console.error('SignalR Connection Error: ', err));
+    
+        this.connection.start()
+            .then(() => console.info('SignalR Connected'))
+            .catch(err => console.error('SignalR Connection Error: ', err));
+    
+        this.connection.on('ReactionsCount', this.onNotification);
+        this.connection.onclose(() => setTimeout(startSignalRConnection(this.connection), 5000));
+    }
+    onNotification = (count) => {
+        debugger;
+        console.log(count);
+    };
+    
     newCommentChange = (event) => {
         this.setState({ newComment: event.target.value });
     }

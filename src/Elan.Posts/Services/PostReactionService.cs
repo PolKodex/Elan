@@ -72,5 +72,12 @@ namespace Elan.Posts.Services
             await postReactions.AddAsync(newReaction);
             await _dataService.SaveDbAsync();
         }
+
+        public int GetReactionCount(int postId)
+        {
+            var reactionNumber = _dataService.GetSet<PostReaction>().Where(pr => pr.PostId == postId).Count();
+
+            return reactionNumber;
+        }
     }
 }
