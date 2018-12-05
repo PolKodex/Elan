@@ -1,6 +1,7 @@
 ﻿using Elan.Data.Models.Account;
 using Elan.Users.Contracts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace Elan.Users.Services
@@ -22,6 +23,12 @@ namespace Elan.Users.Services
         public async Task<ElanUser> GetUserByName(string userName)
         {
             var user = await _userManager.FindByNameAsync(userName);
+            return user;
+        }
+        public async Task<ElanUser> GetUserByNameWithSettings(string userName)
+        {
+            var user = await _userManager.Users.Include(x => x.Settings)
+                .FirstOrDefaultAsync(x => x.UserName == userName);
             return user;
         }
     }
