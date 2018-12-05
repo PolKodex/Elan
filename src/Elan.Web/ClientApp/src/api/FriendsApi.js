@@ -15,3 +15,15 @@ export const getFriends = async (userId) => {
 
     return response;
 };
+
+export const addToFriends = async (userId) => {
+    var api = '/api/Friends/SendInvitation';
+
+    await axios.post(api,"\"" + userId + "\"", 
+        {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            }
+        });
+}

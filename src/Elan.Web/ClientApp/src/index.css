@@ -170,6 +170,7 @@ body > .container {
 
 .account-box {
     margin-top: 25px;
+    width: 90%;
 }
 
 .account-box .image-box img{
@@ -215,4 +216,13 @@ body > .container {
 .no-data {
     color: #757575;
     margin: 0 auto;
+}
+
+.avatar h3 .link {
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+.faded {
+    opacity: 0.3;
 }
