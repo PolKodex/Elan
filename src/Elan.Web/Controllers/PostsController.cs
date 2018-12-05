@@ -1,19 +1,16 @@
 ﻿using Elan.Common.Enums;
+using Elan.Data.Models.Account;
 using Elan.Notifications.Contracts;
 using Elan.Posts.Contracts;
 using Elan.Posts.Models;
 using Elan.Users.Contracts;
-using Microsoft.AspNetCore.Authorization;
 using Elan.Web.notification;
-using Elan.Web.ViewModels.Posts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
-using Elan.Data.Models.Account;
-using Elan.Data.Models.Posts;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
-using Elan.Account.Contracts;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Elan.Web.Controllers
 {
@@ -45,10 +42,10 @@ namespace Elan.Web.Controllers
         [HttpPost]
         public async Task CreatePost([FromBody]Posts.Models.PostViewModel data)
         {
-            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+            var currentUser = await _userService.GetUserByNameWithSettings(HttpContext.User.Identity.Name);
             var userTo = await _userService.GetUserById(data.ToUserId);
 
-            await _postsService.CreatePost(currentUser, data.Content, null, userTo);
+            await _postsService.CreatePost(currentUser, data.Content, data.PrivacySetting, userTo);
         }
 
         [HttpPost]
