@@ -14,7 +14,6 @@ export default class Settings extends Component {
 
     componentDidMount(){
         getSettings().then((settings) => {
-            console.log("SEE", settings);
             if(settings.length == 2) {
                 for(let i=0; i < 2; i++){
                     if(settings[i].setting === 0){
@@ -46,9 +45,6 @@ export default class Settings extends Component {
     }
 
     render() {
-        console.log("SEARCH", this.state.searchSettings.privacySetting);
-        console.log("CONTENT", this.state.contentSettings.privacySetting);
-
         return (
             <div className="form-group">
                 <div className="settings-item">

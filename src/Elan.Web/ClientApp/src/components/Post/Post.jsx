@@ -2,6 +2,11 @@
 import './Post.css';
 
 export default class Post extends Component {
+
+    formatDate = (date) => {
+    return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    };
+
     render() {
         let authorName = '';
         if (this.props.author !== undefined && this.props.author.trim() !== "") {
@@ -28,7 +33,7 @@ export default class Post extends Component {
                                 {this.props.to && !this.props.to.isGroup ? ' do ' : ""}
                                 <a href="#"><strong>{this.props.to ? this.props.to.name : ""}</strong></a> 
                                 <br/>
-                                <small className="text-muted">{this.props.date}</small>
+                                <small className="text-muted">{this.formatDate(new Date(this.props.date))}</small>
                             </div>
                         </div>
                     </div>
