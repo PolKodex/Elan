@@ -11,7 +11,7 @@ namespace Elan.Web.ViewModels.Users
         public UserViewModel(ElanUser user)
         {
             Id = user.Id.ToString();
-            UserName = user.UserName;
+            UserName = user.GetDisplayName();
             AvatarBase64 = user.GetAvatar()?.RawValue;
         }
     }
