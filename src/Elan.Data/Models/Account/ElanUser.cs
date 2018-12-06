@@ -47,5 +47,17 @@ namespace Elan.Data.Models.Account
         {
             return Images.FirstOrDefault(x => x.IsMain);
         }
+
+        public string GetDisplayName()
+        {
+            var userName = UserName;
+
+            if (!string.IsNullOrWhiteSpace(FirstName) && !string.IsNullOrWhiteSpace(LastName))
+            {
+                userName = $"{FirstName} {LastName}";
+            }
+
+            return userName;
+        }
     }
 }

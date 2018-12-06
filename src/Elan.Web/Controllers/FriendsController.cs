@@ -71,7 +71,7 @@ namespace Elan.Web.Controllers
 
             await _friendsInvitationService.CreateInvitation(currentUser, user);
 
-            await _notificationService.CreateNotification("User " + currentUser.UserName + " would like to become your friend", NotificationType.FriendsInvitation, user);
+            await _notificationService.CreateNotification("User " + currentUser.GetDisplayName() + " would like to become your friend", NotificationType.FriendsInvitation, user, currentUser.Id.ToString());
 
             await PushNumberOfNotifications(user);
         }
@@ -86,7 +86,7 @@ namespace Elan.Web.Controllers
 
             await _friendsService.CreateRelation(currentUser, user);
 
-            await _notificationService.CreateNotification("User " + currentUser.UserName + " has accepted your friends request", NotificationType.InvitationAccepted, user);
+            await _notificationService.CreateNotification("User " + currentUser.GetDisplayName() + " has accepted your friends request", NotificationType.InvitationAccepted, user, currentUser.Id.ToString());
 
             await PushNumberOfNotifications(user);
         }

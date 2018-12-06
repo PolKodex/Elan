@@ -42,7 +42,6 @@ export default class Account extends Component {
         let userId = jwtUtils.getUserId(this.state);
         accountApi.getUser(userId)
             .then(function (response) {
-                console.log(response.data.isPrivate);
                 this.setState({
                     user: response.data,
                     firstNameEdit: response.data.firstName,

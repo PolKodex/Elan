@@ -20,7 +20,7 @@ namespace Elan.Notifications.Services
             _dataService = dataService;
         }
 
-        public async Task<Notification> CreateNotification(string message, NotificationType notificationType, ElanUser userTo)
+        public async Task<Notification> CreateNotification(string message, NotificationType notificationType, ElanUser userTo, string notificationSourceId)
         {
             var notification = new Notification
             {
@@ -29,7 +29,8 @@ namespace Elan.Notifications.Services
                 Message = message,
                 SentOn = DateTime.UtcNow,
                 Type = notificationType,
-                TargetUser = userTo
+                TargetUser = userTo,
+                SourceId = notificationSourceId
             };
 
             await _dataService.GetSet<Notification>().AddAsync(notification);

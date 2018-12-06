@@ -29,7 +29,7 @@ namespace Elan.Web.ViewModels.Posts
                 .Select(x => new PostReactionViewModel {Count = x.Count(), Type = x.Key}).ToList();
             ReactionsCount = model.Reactions?.GroupBy(x => x.Type)
                                  .Sum(x => x.Count()) ?? 0;
-            CommentsCount = model.Comments?.Count ?? 0;
+            CommentsCount = model.CommentsCount;
             AuthorMainImageRawValue = model.CreatedBy?.Images.FirstOrDefault(x => x.IsMain)?.RawValue;
             UserId = model.CreatedBy?.Id.ToString();
         }

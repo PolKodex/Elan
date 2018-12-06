@@ -11,6 +11,7 @@ namespace Elan.Web.ViewModels.Notifications
         public bool IsRead { get; set; }
         public bool IsDeleted { get; set; }
         public int NotificationType { get; set; }
+        public string SourceId { get; set; }
 
         public NotificationViewModel(Notification model)
         {
@@ -20,6 +21,7 @@ namespace Elan.Web.ViewModels.Notifications
             IsRead = model.IsRead;
             IsDeleted = model.IsDeleted;
             NotificationType = (int)model.Type;
+            SourceId = model.SourceId;
         }
     }
 }

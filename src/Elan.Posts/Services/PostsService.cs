@@ -68,11 +68,10 @@ namespace Elan.Posts.Services
 
         public async Task<List<Post>> GetLatestPostsAsync(ElanUser user, int skip = 0, int take = 10)
         {
+            var postsSet = _dataService.GetSet<Post>();
             var posts =
-                await _dataService
-                    .GetSet<Post>()
+                await postsSet
                     .Include(m => m.Reactions)
-                    .Include(m => m.Comments)
                     .Include(m => m.CreatedBy)
                     .ThenInclude(m => m.FirstUserFriends)
                     .ThenInclude(m => m.SecondUser.FirstUserFriends)
@@ -117,16 +116,20 @@ namespace Elan.Posts.Services
                     .OrderBy(m => m.CreatedOn)
                     .ToListAsync();
 
+            foreach (var post in posts)
+            {
+                post.CommentsCount = postsSet.Count(x => x.BasePostId == post.Id);
+            }
+
             return posts;
         }
 
         public async Task<List<Post>> GetPostsForUserAsync(ElanUser user, ElanUser currentUser, int skip, int take)
         {
+            var postsSet = _dataService.GetSet<Post>();
             var posts =
-                await _dataService
-                    .GetSet<Post>()
+                await postsSet
                     .Include(m => m.Reactions)
-                    .Include(m => m.Comments)
                     .Include(m => m.CreatedBy)
                     .ThenInclude(m => m.FirstUserFriends)
                     .ThenInclude(m => m.SecondUser.FirstUserFriends)
@@ -174,6 +177,11 @@ namespace Elan.Posts.Services
                     .OrderBy(m => m.CreatedOn)
                     .ToListAsync();
 
+            foreach (var post in posts)
+            {
+                post.CommentsCount = postsSet.Count(x => x.BasePostId == post.Id);
+            }
+
             return posts;
         }
 
@@ -182,7 +190,9 @@ namespace Elan.Posts.Services
             var post = await GetPost(postId);
             var postSet = _dataService.GetSet<Post>();
 
-            foreach (var p in post.Comments)
+            var postComments = postSet.Where(x => x.BasePostId == postId);
+
+            foreach (var p in postComments)
             {
                 postSet.Remove(p);
             }
@@ -213,16 +223,20 @@ namespace Elan.Posts.Services
             await _dataService.SaveDbAsync();
         }
 
-        public Task<Post> GetPost(int postId)
+        public async Task<Post> GetPost(int postId)
         {
-            return _dataService
-                .GetSet<Post>()
-                .Include(x => x.Comments)
+            var postsSet = _dataService.GetSet<Post>();
+
+            var post = await postsSet
                 .Include(x => x.Reactions)
                 .Include(x => x.TargetUser)
                 .Include(x => x.CreatedBy)
                 .ThenInclude(m => m.Images)
                 .FirstOrDefaultAsync(x => x.Id == postId);
+
+            post.CommentsCount = postsSet.Count(x => x.BasePostId == postId);
+
+            return post;
         }
 
         public async Task<List<Post>> GetPostComments(int postId, int skip = 0, int take = 10)

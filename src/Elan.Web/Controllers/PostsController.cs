@@ -105,8 +105,8 @@ namespace Elan.Web.Controllers
             if (model.User.Id != post.CreatedBy.Id)
             {
                 await _notificationService.CreateNotification(
-                    $"{model.User.FirstName} {model.User.LastName} reacted to your post!", NotificationType.NewReaction,
-                    post.CreatedBy);
+                    $"{model.User.GetDisplayName()} reacted to your post!", NotificationType.NewReaction,
+                    post.CreatedBy, model.PostId.ToString());
 
                 await PushNumberOfNotifications(post.CreatedBy);
             }
@@ -114,9 +114,9 @@ namespace Elan.Web.Controllers
             if (model.User.Id != post.TargetUser.Id && post.TargetUser.Id != post.CreatedBy.Id)
             {
                 await _notificationService.CreateNotification(
-                    $"{model.User.FirstName} {model.User.LastName} reacted to a post on your wall!",
+                    $"{model.User.GetDisplayName()} reacted to a post on your wall!",
                     NotificationType.NewReaction,
-                    post.TargetUser);
+                    post.TargetUser, model.PostId.ToString());
 
                 await PushNumberOfNotifications(post.TargetUser);
             }
