@@ -12,6 +12,9 @@
     <Compile Remove="Migrations\20181114194712_friends_invitation.cs" />
     <Compile Remove="Migrations\20181114194958_notifications.cs" />
     <Compile Remove="Migrations\20181121190405_post_comments.cs" />
+    <Compile Remove="Migrations\20181206195616_notification_source.cs" />
+    <Compile Remove="Migrations\20181206200850_notification_source.cs" />
+    <Compile Remove="Migrations\20181206211320_friend_invitation_fix.cs" />
   </ItemGroup>
 
   <ItemGroup>

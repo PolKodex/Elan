@@ -47,27 +47,33 @@ export default class Account extends Component {
                     firstNameEdit: response.data.firstName,
                     lastNameEdit: response.data.lastName,
                     descriptionEdit: response.data.description,
-                    ageEdit: response.data.age
-                })
-            }.bind(this));
+                    ageEdit: response.data.age,
+                    isPrivate: response.data.isPrivate,
+                    isFriend: response.data.isFriend,
+                    invitedByMe: response.data.invitedByMe,
+                    invitedMe: response.data.invitedMe
+                });
 
-        friendsApi.getFriends(userId)
-            .then(function (response) {
-                this.setState({ friendsList: response.data });
-            }.bind(this));
+                if (!response.data.isPrivate) {
+                    friendsApi.getFriends(userId)
+                        .then(function(response) {
+                            this.setState({ friendsList: response.data });
+                        }.bind(this));
 
-        accountApi.getUserPictures(userId)
-            .then(function (response) {
-                this.setState({ picturesList: response.data });
-            }.bind(this));
+                    accountApi.getUserPictures(userId)
+                        .then(function(response) {
+                            this.setState({ picturesList: response.data });
+                        }.bind(this));
 
-        accountApi.getUserPosts(userId, 0, 10)
-            .then(function (response) {
-                this.setState({ userPostsList: response.data });
+                    accountApi.getUserPosts(userId, 0, 10)
+                        .then(function(response) {
+                            this.setState({ userPostsList: response.data });
+                        }.bind(this));
+                }
             }.bind(this));
     }
 
-    //move to utils?
+    //move to utils? yes pls
     getPictureThumbnail = (index, id, pictureSource, baseUrl, title) => {
         return <PictureThumbnail
             key={index}
@@ -77,7 +83,7 @@ export default class Account extends Component {
     }
 
     getMainPicture = () => {
-        return this.state.user.mainImage == null
+        return !this.state.user.mainImage
             ? require('./../../assets/default_avatar.jpg')
             : this.state.user.mainImage.rawValue;
     }
@@ -158,7 +164,7 @@ export default class Account extends Component {
 
     getPictureSource = (source) => {
         if (source === null || source === undefined || source.trim() === "") {
-            return require('./../../assets/no-photo.png');
+            return require('./../../assets/default_avatar.jpg');
         }
 
         return source;
@@ -200,9 +206,26 @@ export default class Account extends Component {
             }.bind(this));
     }
 
-    addToFriends = () => {
-        friendsApi.addToFriends(this.state.userId);
+    inviteToFriends = () => {
+        friendsApi.inviteToFriends(this.state.userId).then(() => this.setState({invitedByMe: true}));
     }
+
+    removeFriend = () => {
+        friendsApi.removeFriend(this.state.userId).then(() => window.location.reload());
+    }
+
+    acceptInvitation = () => {
+        friendsApi.acceptInvitation(this.state.userId).then(() => window.location.reload());
+    }
+
+    declineInvitation = () => {
+        friendsApi.declineInvitation(this.state.userId).then(() => this.setState({ invitedMe: false }));
+    }
+
+    cancelInvitation = () => {
+        friendsApi.cancelInvitation(this.state.userId).then(() => this.setState({ invitedByMe: false }));
+    }
+
 
     renderEditButton = () => {
         if (this.state.userId === undefined || 
@@ -214,11 +237,42 @@ export default class Account extends Component {
         }
     }
 
-    renderAddToFriendsButton = () => {
-        if (this.state.userId !== undefined && this.state.userId.trim() !== '' && !this.state.friendsList.map(f => f.id).includes(jwtUtils.decodeJwt(localStorage.getItem('token')).jti)) {
-            return (
-                <button className="btn btn-secondary" onClick={() => this.addToFriends()}>Dodaj do znajomych</button>
-            );
+    renderFriendButtons = () => {
+        if (this.state.userId !== undefined &&
+            this.state.userId.trim() !== '') {
+            if (this.state.isFriend) {
+                return (
+                    <button className="btn btn-danger" onClick={() => this.removeFriend()}>
+                        Usun ze znajomych
+                        </button>
+                );
+            }
+            else if (this.state.invitedByMe) {
+                return (
+                    <button className="btn btn-secondary" onClick={() => this.cancelInvitation()}>
+                        Anuluj zaproszenie
+                        </button>
+                );
+            }
+            else if (this.state.invitedMe) {
+                return (
+                    <div>
+                        <button className="btn btn-success" onClick={() => this.acceptInvitation()}>
+                            Akceptuj zaproszenie
+                            </button>
+                        <button className="btn btn-danger" onClick={() => this.declineInvitation()}>
+                            Odrzuc zaproszenie
+                            </button>
+                    </div>
+                );
+            } else {
+                return (
+                    <button className="btn btn-secondary" onClick={() => this.inviteToFriends()}>
+                        Dodaj do znajomych
+                        </button>
+                );
+            }
+
         }
     }
 
@@ -402,8 +456,11 @@ export default class Account extends Component {
                 author={item.createdBy}
                 pictureSource={item.authorMainImageRawValue}
                 to={item.targetUser}
+                toUserId={item.targetUserId}
                 content={item.content}
                 reactions={item.reactions}
+                reactionsCount={item.reactionsCount}
+                commentsCount={item.commentsCount}
                 key={index}
                 date={item.createdOn} />);
 
@@ -421,13 +478,15 @@ export default class Account extends Component {
                                 {this.state.user.firstName} {this.state.user.lastName} 
                                 {this.renderEditButton()}
                             </h3>
-                            <p className="lead">„{this.state.user.description}”</p>
-                            {this.renderAddToFriendsButton()}
+
+                            {!this.state.user.isPrivate && this.state.user.description && <p className="lead">„{this.state.user.description}”</p>}
+                            {this.state.user.isPrivate && <p className="lead red-color">To konto jest prywatne.</p>}
+                            {this.renderFriendButtons()}
                         </div>
                     </div>
                 </div>
 
-                <div className="card account-box">
+                {!this.state.isPrivate && <div className="card account-box">
                     <div className="card-header card-sm">
                         <span className="link" onClick={() => this.friendsListClick()}>Znajomi ({this.state.friendsList.length})</span>
                     </div>
@@ -439,9 +498,9 @@ export default class Account extends Component {
                             {friendThumbnailsSecondRow}
                         </div>
                     </div>
-                </div>
+                </div>}
 
-                <div className="card account-box">
+                {!this.state.isPrivate && <div className="card account-box">
                     <div className="card-header card-sm">
                         <span className="link" onClick={() => this.pictureListClick()}>Zdjęcia ({this.state.picturesList.length})</span>
                     </div>
@@ -453,7 +512,7 @@ export default class Account extends Component {
                             {pictureThumbnailsSecondRow}
                         </div>
                     </div>
-                </div>
+                </div>}
 
                 {userPosts}
 

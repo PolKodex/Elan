@@ -8,8 +8,10 @@ namespace Elan.Friends.Contracts
     public interface IFriendsInvitationService
     {
         Task<FriendsInvitation> CreateInvitation(ElanUser userFrom, ElanUser userTo);
-        Task<List<FriendsInvitation>> GetNotAcceptedFriendsInvitationsForUser(ElanUser user);
-        Task<bool> IsInvitedByUser(ElanUser currentUser, ElanUser targetUser);
-        Task<FriendsInvitation> AcceptInvitation(ElanUser userFrom, ElanUser userTo);
+        Task<List<FriendsInvitation>> GetPendingInvitationsForUser(ElanUser user);
+        Task<bool> IsInvitedByUser(ElanUser invitedUser, ElanUser invitingUser);
+        Task<FriendsInvitation> AcceptInvitation(ElanUser acceptingUser, ElanUser invitingUser);
+        Task DeclineInvitation(ElanUser decliningUser, ElanUser invitingUser);
+        Task CancelInvitation(ElanUser cancelingUser, ElanUser invitedUser);
     }
 }

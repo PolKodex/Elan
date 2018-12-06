@@ -71,7 +71,7 @@ namespace Elan.Web.Controllers
 
             await _friendsInvitationService.CreateInvitation(currentUser, user);
 
-            await _notificationService.CreateNotification("User " + currentUser.UserName + " would like to become your friend", NotificationType.FriendsInvitation, user);
+            await _notificationService.CreateNotification("User " + currentUser.GetDisplayName() + " would like to become your friend", NotificationType.FriendsInvitation, user, currentUser.Id.ToString());
 
             await PushNumberOfNotifications(user);
         }
@@ -82,20 +82,47 @@ namespace Elan.Web.Controllers
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
             var user = await _userService.GetUserById(userId);
 
-            await _friendsInvitationService.AcceptInvitation(user, currentUser);
+            await _friendsInvitationService.AcceptInvitation(currentUser, user);
 
             await _friendsService.CreateRelation(currentUser, user);
 
-            await _notificationService.CreateNotification("User " + currentUser.UserName + " has accepted your friends request", NotificationType.InvitationAccepted, user);
+            await _notificationService.CreateNotification("User " + currentUser.GetDisplayName() + " has accepted your friends request", NotificationType.InvitationAccepted, user, currentUser.Id.ToString());
 
             await PushNumberOfNotifications(user);
+        }
+
+        [HttpPost]
+        public async Task DeclineInvitation([FromBody]string userId)
+        {
+            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+            var user = await _userService.GetUserById(userId);
+
+            await _friendsInvitationService.DeclineInvitation(currentUser, user);
+        }
+
+        [HttpPost]
+        public async Task CancelInvitation([FromBody]string userId)
+        {
+            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+            var user = await _userService.GetUserById(userId);
+
+            await _friendsInvitationService.CancelInvitation(currentUser, user);
+        }
+
+        [HttpPost]
+        public async Task RemoveFriend([FromBody]string userId)
+        {
+            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+            var user = await _userService.GetUserById(userId);
+
+            await _friendsService.RemoveRelation(currentUser, user);
         }
 
         [HttpGet]
         public async Task<JsonResult> GetInvitationsForUser()
         {
             var user = await _userService.GetUserByName(HttpContext.User.Identity.Name);
-            var invitations = await _friendsInvitationService.GetNotAcceptedFriendsInvitationsForUser(user);
+            var invitations = await _friendsInvitationService.GetPendingInvitationsForUser(user);
 
             var result = invitations.Select(i => new FriendsInvitationViewModel(i));
 

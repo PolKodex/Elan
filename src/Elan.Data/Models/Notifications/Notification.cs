@@ -13,5 +13,6 @@ namespace Elan.Data.Models.Notifications
         public DateTime SentOn { get; set; }
         public NotificationType Type { get; set; }
         public virtual ElanUser TargetUser { get; set; }
+        public string SourceId { get; set; }
     }
 }

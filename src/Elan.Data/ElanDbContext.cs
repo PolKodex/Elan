@@ -90,13 +90,7 @@ namespace Elan.Data
             postsBuilder
                 .HasMany(x => x.Reactions)
                 .WithOne(x => x.Post)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            postsBuilder
-                .HasMany(x => x.Comments)
-                .WithOne(x => x.BasePost)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);     
         }
 
         private void ConfigureFriendsInvitationModel(ModelBuilder builder)
@@ -104,7 +98,7 @@ namespace Elan.Data
             var friendsInvitationBuilder = builder.Entity<FriendsInvitation>();
 
             friendsInvitationBuilder
-                .HasKey(c => new { c.UserFromId, c.UserToId });
+                .HasKey(x => x.Id);
 
             friendsInvitationBuilder
                 .HasOne(x => x.UserFrom)

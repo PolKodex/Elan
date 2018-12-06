@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Elan.Common.Exceptions;
 
 namespace Elan.Friends.Services
 {
@@ -46,6 +47,24 @@ namespace Elan.Friends.Services
                 .ToListAsync();
 
             return result;
+        }
+
+        public async Task RemoveRelation(ElanUser currentUser, ElanUser user)
+        {
+            var friendsRelationsSet = _dataService.GetSet<FriendsRelation>();
+
+            var relation = await friendsRelationsSet.FirstOrDefaultAsync(x =>
+                (x.FirstUserId == currentUser.Id && x.SecondUserId == user.Id) ||
+                (x.SecondUserId == currentUser.Id && x.FirstUserId == user.Id));
+
+            if (relation == null)
+            {
+                throw new RelationNotFoundException();
+            }
+
+            friendsRelationsSet.Remove(relation);
+
+            await _dataService.SaveDbAsync();
         }
 
         private ElanUser GetFriendUser(FriendsRelation relation, ElanUser user)

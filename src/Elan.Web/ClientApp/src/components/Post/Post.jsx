@@ -43,8 +43,10 @@ export default class Post extends Component {
     }
 
     toggleReaction = () => {
-        postsApi.setReaction(this.props.id);
-        this.setState({reactionsCount: this.state.reactionsCount + 1})
+        postsApi
+            .setReaction(this.props.id)
+            .then((count) => this.setState({ reactionsCount: count }));
+
     }
 
     render() {
@@ -69,9 +71,7 @@ export default class Post extends Component {
                             </div>
                             <div className="user-post">
                                 <a href={ "/account/" + this.props.userId }><strong>{ authorName }</strong></a> 
-                                {this.props.to && this.props.to.isGroup ? ' w ' : ""}
-                                {this.props.to && !this.props.to.isGroup ? ' do ' : ""}
-                                <a href="#"><strong>{this.props.to ? this.props.to.name : ""}</strong></a> 
+                                {this.props.to && this.props.to !== authorName && <span> do <a href={"/account/" + this.props.toUserId}><strong>{this.props.to}</strong></a></span> }
                                 <br/>
                                 <small className="text-muted">{dateUtils.getFormattedDate(this.props.date)}</small>
                             </div>

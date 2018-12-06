@@ -9,5 +9,6 @@ namespace Elan.Friends.Contracts
     {
         Task<FriendsRelation> CreateRelation(ElanUser firstUser, ElanUser secondUser);
         Task<List<ElanUser>> GetFriendsForUser(ElanUser user);
+        Task RemoveRelation(ElanUser currentUser, ElanUser user);
     }
 }

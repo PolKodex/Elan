@@ -20,14 +20,31 @@ namespace Elan.Users.Services
             var user = await _userManager.FindByIdAsync(userId);
             return user;
         }
+
         public async Task<ElanUser> GetUserByName(string userName)
         {
             var user = await _userManager.FindByNameAsync(userName);
             return user;
         }
+
+        public async Task<ElanUser> GetUserByIdWithSettings(string id)
+        {
+            var user = await _userManager
+                .Users
+                .Include(x => x.Settings)
+                .Include(x => x.FirstUserFriends)
+                .Include(x => x.SecondUserFriends)
+                .FirstOrDefaultAsync(x => x.Id.ToString() == id);
+            return user;
+        }
+
         public async Task<ElanUser> GetUserByNameWithSettings(string userName)
         {
-            var user = await _userManager.Users.Include(x => x.Settings)
+            var user = await _userManager
+                .Users
+                .Include(x => x.Settings)
+                .Include(x => x.FirstUserFriends)
+                .Include(x => x.SecondUserFriends)
                 .FirstOrDefaultAsync(x => x.UserName == userName);
             return user;
         }

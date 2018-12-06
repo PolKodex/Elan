@@ -2,7 +2,7 @@
 {
     public enum UserSetting
     {
-        ShowInSearchResult = 0,
+        ProfileVisibility = 0,
         ViewPosts = 1
     }
 }

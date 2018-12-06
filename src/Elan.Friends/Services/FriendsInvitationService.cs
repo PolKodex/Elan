@@ -19,11 +19,11 @@ namespace Elan.Friends.Services
             _dataService = dataService;
         }
 
-        public async Task<FriendsInvitation> AcceptInvitation(ElanUser userFrom, ElanUser userTo)
+        public async Task<FriendsInvitation> AcceptInvitation(ElanUser acceptingUser, ElanUser invitingUser)
         {
             var invitation = await _dataService
                 .GetSet<FriendsInvitation>()
-                .SingleAsync(i => i.UserFromId == userFrom.Id && i.UserToId == userTo.Id);
+                .SingleAsync(i => !i.IsAccepted && !i.IsRejected && !i.IsCanceled && i.UserFromId == invitingUser.Id && i.UserToId == acceptingUser.Id);
 
             invitation.IsAccepted = true;
             
@@ -32,6 +32,26 @@ namespace Elan.Friends.Services
             return invitation;
         }
 
+        public async Task DeclineInvitation(ElanUser decliningUser, ElanUser invitingUser)
+        {
+            var invitation = await _dataService
+                .GetSet<FriendsInvitation>()
+                .SingleAsync(i => !i.IsAccepted && !i.IsRejected && !i.IsCanceled && i.UserFromId == invitingUser.Id && i.UserToId == decliningUser.Id);
+
+            invitation.IsRejected = true;
+
+            await _dataService.SaveDbAsync();
+        }
+        public async Task CancelInvitation(ElanUser cancelingUser, ElanUser invitedUser)
+        {
+            var invitation = await _dataService
+                .GetSet<FriendsInvitation>()
+                .SingleAsync(i => !i.IsAccepted && !i.IsRejected && !i.IsCanceled && i.UserFromId == cancelingUser.Id && i.UserToId == invitedUser.Id);
+
+            invitation.IsCanceled = true;
+
+            await _dataService.SaveDbAsync();
+        }
         public async Task<FriendsInvitation> CreateInvitation(ElanUser userFrom, ElanUser userTo)
         {
             var invitation = new FriendsInvitation
@@ -48,33 +68,24 @@ namespace Elan.Friends.Services
             return invitation;
         }
 
-        public async Task<List<FriendsInvitation>> GetNotAcceptedFriendsInvitationsForUser(ElanUser user)
+        public async Task<List<FriendsInvitation>> GetPendingInvitationsForUser(ElanUser user)
         {
             var result = await _dataService.GetSet<FriendsInvitation>()
                 .Include(i => i.UserFrom)
-                .Where(i => i.UserToId == user.Id && i.IsAccepted == false)
+                .Where(i => i.UserToId == user.Id && !i.IsAccepted && !i.IsRejected && !i.IsCanceled)
                 .ToListAsync();
 
             return result;
         }
 
-        public async Task<bool> IsInvitedByUser(ElanUser currentUser, ElanUser targetUser)
+        public async Task<bool> IsInvitedByUser(ElanUser invitedUser, ElanUser invitingUser)
         {
-            FriendsInvitation invitation = null;
+            var invitation = await _dataService
+                .GetSet<FriendsInvitation>()
+                .Where(i => !i.IsAccepted && !i.IsRejected && !i.IsCanceled && i.UserFromId == invitingUser.Id && i.UserToId == invitedUser.Id)
+                .FirstOrDefaultAsync();
 
-            try
-            {
-                invitation = await _dataService
-                    .GetSet<FriendsInvitation>()
-                    .Where(i => i.UserFromId == targetUser.Id && i.UserToId == currentUser.Id)
-                    .SingleAsync();
-            }
-            catch
-            {
-                //TODO - exception handling
-            }
-
-            if (invitation != null && !invitation.IsAccepted)
+            if (invitation != null)
             {
                 return true;
             }
