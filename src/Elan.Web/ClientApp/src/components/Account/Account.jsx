@@ -48,7 +48,10 @@ export default class Account extends Component {
                     lastNameEdit: response.data.lastName,
                     descriptionEdit: response.data.description,
                     ageEdit: response.data.age,
-                    isPrivate: response.data.isPrivate
+                    isPrivate: response.data.isPrivate,
+                    isFriend: response.data.isFriend,
+                    invitedByMe: response.data.invitedByMe,
+                    invitedMe: response.data.invitedMe
                 });
 
                 if (!response.data.isPrivate) {
@@ -70,7 +73,7 @@ export default class Account extends Component {
             }.bind(this));
     }
 
-    //move to utils?
+    //move to utils? yes pls
     getPictureThumbnail = (index, id, pictureSource, baseUrl, title) => {
         return <PictureThumbnail
             key={index}
@@ -161,7 +164,7 @@ export default class Account extends Component {
 
     getPictureSource = (source) => {
         if (source === null || source === undefined || source.trim() === "") {
-            return require('./../../assets/no-photo.png');
+            return require('./../../assets/default_avatar.jpg');
         }
 
         return source;
@@ -203,8 +206,20 @@ export default class Account extends Component {
             }.bind(this));
     }
 
-    addToFriends = () => {
-        friendsApi.addToFriends(this.state.userId);
+    inviteToFriends = () => {
+        friendsApi.inviteToFriends(this.state.userId).then(() => this.setState({invitedByMe: true}));
+    }
+
+    removeFriend = () => {
+        friendsApi.removeFriend(this.state.userId).then(() => this.setState({ isFriend: false }));
+    }
+
+    acceptInvitation = () => {
+        friendsApi.acceptInvitation(this.state.userId).then(() => this.setState({ isFriend: true}));
+    }
+
+    declineInvitation = () => {
+        friendsApi.declineInvitation(this.state.userId).then(() => this.setState({ invitedMe: false }));
     }
 
     renderEditButton = () => {
@@ -217,13 +232,42 @@ export default class Account extends Component {
         }
     }
 
-    renderAddToFriendsButton = () => {
+    renderFriendButtons = () => {
         if (this.state.userId !== undefined &&
-            this.state.userId.trim() !== '' &&          
-            !this.state.friendsList.map(f => f.id).includes(jwtUtils.decodeJwt(localStorage.getItem('token')).jti)) {
-            return (
-                <button className="btn btn-secondary" onClick={() => this.addToFriends()}>Dodaj do znajomych</button>
-            );
+            this.state.userId.trim() !== '') {
+            if (this.state.isFriend) {
+                return (
+                    <button className="btn btn-danger" onClick={() => this.removeFriend()}>
+                        Usun ze znajomych
+                        </button>
+                );
+            }
+            else if (this.state.invitedByMe) {
+                return (
+                    <button className="btn btn-secondary" onClick={() => this.cancelInvitation()}>
+                        Anuluj zaproszenie
+                        </button>
+                );
+            }
+            else if (this.state.invitedMe) {
+                return (
+                    <div>
+                        <button className="btn btn-success" onClick={() => this.acceptInvitation()}>
+                            Akceptuj zaproszenie
+                            </button>
+                        <button className="btn btn-danger" onClick={() => this.declineInvitation()}>
+                            Odrzuc zaproszenie
+                            </button>
+                    </div>
+                );
+            } else {
+                return (
+                    <button className="btn btn-secondary" onClick={() => this.inviteToFriends()}>
+                        Dodaj do znajomych
+                        </button>
+                );
+            }
+
         }
     }
 
@@ -407,6 +451,7 @@ export default class Account extends Component {
                 author={item.createdBy}
                 pictureSource={item.authorMainImageRawValue}
                 to={item.targetUser}
+                toUserId={item.targetUserId}
                 content={item.content}
                 reactions={item.reactions}
                 key={index}
@@ -429,7 +474,7 @@ export default class Account extends Component {
 
                             {!this.state.user.isPrivate && this.state.user.description && <p className="lead">„{this.state.user.description}”</p>}
                             {this.state.user.isPrivate && <p className="lead red-color">To konto jest prywatne.</p>}
-                            {this.renderAddToFriendsButton()}
+                            {this.renderFriendButtons()}
                         </div>
                     </div>
                 </div>

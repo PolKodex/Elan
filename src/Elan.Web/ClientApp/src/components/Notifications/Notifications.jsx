@@ -83,7 +83,7 @@ export default class Notifications extends Component {
             <div className="notification-container">
                 <button className="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img src={require("../../assets/notification.png")} />
-                    {count !== 0 ? (<span class="notification">{count}</span>) : ""}
+                    {count !== 0 ? (<span className = "notification">{count}</span>) : ""}
                 </button>
                 <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <div className="notifications-list">

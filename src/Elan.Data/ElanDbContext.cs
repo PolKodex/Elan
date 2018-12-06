@@ -98,7 +98,7 @@ namespace Elan.Data
             var friendsInvitationBuilder = builder.Entity<FriendsInvitation>();
 
             friendsInvitationBuilder
-                .HasKey(c => new { c.UserFromId, c.UserToId });
+                .HasKey(x => x.Id);
 
             friendsInvitationBuilder
                 .HasOne(x => x.UserFrom)

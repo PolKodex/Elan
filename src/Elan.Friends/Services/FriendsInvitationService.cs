@@ -19,11 +19,11 @@ namespace Elan.Friends.Services
             _dataService = dataService;
         }
 
-        public async Task<FriendsInvitation> AcceptInvitation(ElanUser userFrom, ElanUser userTo)
+        public async Task<FriendsInvitation> AcceptInvitation(ElanUser acceptingUser, ElanUser invitatingUser)
         {
             var invitation = await _dataService
                 .GetSet<FriendsInvitation>()
-                .SingleAsync(i => i.UserFromId == userFrom.Id && i.UserToId == userTo.Id);
+                .SingleAsync(i => i.UserFromId == invitatingUser.Id && i.UserToId == acceptingUser.Id);
 
             invitation.IsAccepted = true;
             
@@ -58,23 +58,16 @@ namespace Elan.Friends.Services
             return result;
         }
 
-        public async Task<bool> IsInvitedByUser(ElanUser currentUser, ElanUser targetUser)
+        public async Task<bool> IsInvitedByUser(ElanUser invitedUser, ElanUser invitingUser)
         {
             FriendsInvitation invitation = null;
 
-            try
-            {
-                invitation = await _dataService
-                    .GetSet<FriendsInvitation>()
-                    .Where(i => i.UserFromId == targetUser.Id && i.UserToId == currentUser.Id)
-                    .SingleAsync();
-            }
-            catch
-            {
-                //TODO - exception handling
-            }
+            invitation = await _dataService
+                .GetSet<FriendsInvitation>()
+                .Where(i => i.UserFromId == invitingUser.Id && i.UserToId == invitedUser.Id)
+                .FirstOrDefaultAsync();
 
-            if (invitation != null && !invitation.IsAccepted)
+            if (invitation != null && !invitation.IsAccepted && !invitation.IsRejected && !invitation.IsCanceled)
             {
                 return true;
             }

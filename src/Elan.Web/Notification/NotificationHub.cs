@@ -12,7 +12,7 @@ namespace Elan.Web.notification
         private readonly IUserService _userService;
         private readonly INotificationService _notificationService;
 
-        private readonly object _lock = new object();
+        private static readonly object _lock = new object();
 
         private static readonly Dictionary<string, string> _connections = new Dictionary<string, string>();
 
@@ -24,7 +24,15 @@ namespace Elan.Web.notification
  
         public static string GetConnectionID(string userName)
         {
-            return _connections[userName];
+            lock (_lock)
+            {
+                if (_connections != null && _connections.ContainsKey(userName))
+                {
+                    return _connections[userName];
+                }
+            }
+
+            return null;
         }
         
         public override Task OnConnectedAsync()

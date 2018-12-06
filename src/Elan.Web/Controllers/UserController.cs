@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Elan.Account.Contracts;
 using Elan.Account.Models;
 using Elan.Common.Enums;
+using Elan.Friends.Contracts;
 using Elan.Users.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,18 +23,23 @@ namespace Elan.Web.Controllers
         private readonly IUserProfileService _userProfileService;
         private readonly IUserImageService _userImageService;
 
+        private readonly IFriendsInvitationService _friendsInvitationService;
+
+
         public UserController(
             IUserSettingsService userSettingsService,
             IUserService userService,
             IUserSearchService userSearchService,
             IUserProfileService userProfileService,
-            IUserImageService userImageService)
+            IUserImageService userImageService, 
+            IFriendsInvitationService friendsInvitationService)
         {
             _userSettingsService = userSettingsService;
             _userService = userService;
             _userSearchService = userSearchService;
             _userProfileService = userProfileService;
             _userImageService = userImageService;
+            _friendsInvitationService = friendsInvitationService;
         }
 
         [HttpGet]
@@ -103,18 +109,31 @@ namespace Elan.Web.Controllers
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
             var result = new ViewModels.Users.UserProfileViewModel(user);
 
+            result.IsFriend =
+                user.Friends.Any(x => x.FirstUserId == currentUser.Id || x.SecondUserId == currentUser.Id);
+
             var userPrivacySetting = user.Settings.FirstOrDefault(x => x.Setting == UserSetting.ProfileVisibility);
             if (userPrivacySetting != null && userId != currentUser.Id.ToString())
             {
                 if (userPrivacySetting.PrivacySetting == PrivacySetting.Friends)
                 {
-                    if (!user.Friends.Any(x => x.FirstUserId == currentUser.Id || x.SecondUserId == currentUser.Id))
+                    if (!result.IsFriend)
                     {
                         result.IsPrivate = true;
                     }
                 }
             }
 
+            if (!result.IsFriend)
+            {
+                result.InvitedByMe = await _friendsInvitationService.IsInvitedByUser(user, currentUser);
+
+                if (!result.InvitedByMe)
+                {
+                    result.InvitedMe = await _friendsInvitationService.IsInvitedByUser(currentUser, user);
+                }
+            }
+          
             var mainImage = await _userImageService.GetMainImage(user);
       
             if (mainImage != null)

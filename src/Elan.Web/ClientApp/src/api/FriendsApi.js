@@ -16,10 +16,46 @@ export const getFriends = async (userId) => {
     return response;
 };
 
-export const addToFriends = async (userId) => {
+export const inviteToFriends = async (userId) => {
     var api = '/api/Friends/SendInvitation';
 
-    await axios.post(api,"\"" + userId + "\"", 
+    return await axios.post(api,"\"" + userId + "\"", 
+        {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            }
+        });
+}
+
+export const removeFriend = async (userId) => {
+    var api = '/api/Friends/RemoveFriend';
+
+    return await axios.post(api, "\"" + userId + "\"",
+        {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            }
+        });
+}
+
+export const acceptInvitation = async (userId) => {
+    var api = '/api/Friends/AcceptInvitation';
+
+    return await axios.post(api, "\"" + userId + "\"",
+        {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            }
+        });
+}
+
+export const declineInvitation = async (userId) => {
+    var api = '/api/Friends/DeclineInvitation';
+
+    return await axios.post(api, "\"" + userId + "\"",
         {
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token'),

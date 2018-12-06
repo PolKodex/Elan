@@ -161,15 +161,24 @@ namespace Elan.Data.Migrations
 
             modelBuilder.Entity("Elan.Data.Models.Friends.FriendsInvitation", b =>
                 {
-                    b.Property<Guid>("UserFromId");
-
-                    b.Property<Guid>("UserToId");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedDate");
 
                     b.Property<bool>("IsAccepted");
 
-                    b.HasKey("UserFromId", "UserToId");
+                    b.Property<bool>("IsCanceled");
+
+                    b.Property<bool>("IsRejected");
+
+                    b.Property<Guid>("UserFromId");
+
+                    b.Property<Guid>("UserToId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserFromId");
 
                     b.HasIndex("UserToId");
 

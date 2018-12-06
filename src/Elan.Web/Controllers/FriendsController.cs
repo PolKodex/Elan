@@ -82,13 +82,43 @@ namespace Elan.Web.Controllers
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
             var user = await _userService.GetUserById(userId);
 
-            await _friendsInvitationService.AcceptInvitation(user, currentUser);
+            await _friendsInvitationService.AcceptInvitation(currentUser, user);
 
             await _friendsService.CreateRelation(currentUser, user);
 
             await _notificationService.CreateNotification("User " + currentUser.GetDisplayName() + " has accepted your friends request", NotificationType.InvitationAccepted, user, currentUser.Id.ToString());
 
             await PushNumberOfNotifications(user);
+        }
+
+        [HttpPost]
+        public async Task DeclineInvitation([FromBody]string userId)
+        {
+            //var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+            //var user = await _userService.GetUserById(userId);
+
+            //await _friendsInvitationService.AcceptInvitation(user, currentUser);
+
+            //await _friendsService.CreateRelation(currentUser, user);
+
+            //await _notificationService.CreateNotification("User " + currentUser.GetDisplayName() + " has accepted your friends request", NotificationType.InvitationAccepted, user, currentUser.Id.ToString());
+
+            //await PushNumberOfNotifications(user);
+        }
+
+        [HttpPost]
+        public async Task RemoveFriend([FromBody]string userId)
+        {
+            //var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+            //var user = await _userService.GetUserById(userId);
+
+            //await _friendsInvitationService.AcceptInvitation(user, currentUser);
+
+            //await _friendsService.CreateRelation(currentUser, user);
+
+            //await _notificationService.CreateNotification("User " + currentUser.GetDisplayName() + " has accepted your friends request", NotificationType.InvitationAccepted, user, currentUser.Id.ToString());
+
+            //await PushNumberOfNotifications(user);
         }
 
         [HttpGet]
