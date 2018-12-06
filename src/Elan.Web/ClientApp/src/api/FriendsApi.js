@@ -63,3 +63,15 @@ export const declineInvitation = async (userId) => {
             }
         });
 }
+
+export const cancelInvitation = async (userId) => {
+    var api = '/api/Friends/CancelInvitation';
+
+    return await axios.post(api, "\"" + userId + "\"",
+        {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            }
+        });
+}

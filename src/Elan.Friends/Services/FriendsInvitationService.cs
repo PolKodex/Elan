@@ -42,7 +42,16 @@ namespace Elan.Friends.Services
 
             await _dataService.SaveDbAsync();
         }
+        public async Task CancelInvitation(ElanUser cancelingUser, ElanUser invitedUser)
+        {
+            var invitation = await _dataService
+                .GetSet<FriendsInvitation>()
+                .SingleAsync(i => i.UserFromId == cancelingUser.Id && i.UserToId == invitedUser.Id);
 
+            invitation.IsCanceled = true;
+
+            await _dataService.SaveDbAsync();
+        }
         public async Task<FriendsInvitation> CreateInvitation(ElanUser userFrom, ElanUser userTo)
         {
             var invitation = new FriendsInvitation

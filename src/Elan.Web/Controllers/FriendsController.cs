@@ -101,6 +101,15 @@ namespace Elan.Web.Controllers
         }
 
         [HttpPost]
+        public async Task CancelInvitation([FromBody]string userId)
+        {
+            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
+            var user = await _userService.GetUserById(userId);
+
+            await _friendsInvitationService.CancelInvitation(currentUser, user);
+        }
+
+        [HttpPost]
         public async Task RemoveFriend([FromBody]string userId)
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);

@@ -12,5 +12,6 @@ namespace Elan.Friends.Contracts
         Task<bool> IsInvitedByUser(ElanUser invitedUser, ElanUser invitingUser);
         Task<FriendsInvitation> AcceptInvitation(ElanUser acceptingUser, ElanUser invitingUser);
         Task DeclineInvitation(ElanUser decliningUser, ElanUser invitingUser);
+        Task CancelInvitation(ElanUser cancelingUser, ElanUser invitedUser);
     }
 }
