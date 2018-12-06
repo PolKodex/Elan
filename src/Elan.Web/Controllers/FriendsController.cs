@@ -97,7 +97,7 @@ namespace Elan.Web.Controllers
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
             var user = await _userService.GetUserById(userId);
 
-            await _friendsInvitationService.DeclineInvitation(user, currentUser);
+            await _friendsInvitationService.DeclineInvitation(currentUser, user);
         }
 
         [HttpPost]
@@ -122,7 +122,7 @@ namespace Elan.Web.Controllers
         public async Task<JsonResult> GetInvitationsForUser()
         {
             var user = await _userService.GetUserByName(HttpContext.User.Identity.Name);
-            var invitations = await _friendsInvitationService.GetNotAcceptedFriendsInvitationsForUser(user);
+            var invitations = await _friendsInvitationService.GetPendingInvitationsForUser(user);
 
             var result = invitations.Select(i => new FriendsInvitationViewModel(i));
 

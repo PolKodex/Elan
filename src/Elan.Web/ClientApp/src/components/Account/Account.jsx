@@ -83,7 +83,7 @@ export default class Account extends Component {
     }
 
     getMainPicture = () => {
-        return this.state.user.mainImage == null
+        return !this.state.user.mainImage
             ? require('./../../assets/default_avatar.jpg')
             : this.state.user.mainImage.rawValue;
     }
@@ -211,16 +211,21 @@ export default class Account extends Component {
     }
 
     removeFriend = () => {
-        friendsApi.removeFriend(this.state.userId).then(() => this.setState({ isFriend: false }));
+        friendsApi.removeFriend(this.state.userId).then(() => window.location.reload());
     }
 
     acceptInvitation = () => {
-        friendsApi.acceptInvitation(this.state.userId).then(() => this.setState({ isFriend: true}));
+        friendsApi.acceptInvitation(this.state.userId).then(() => window.location.reload());
     }
 
     declineInvitation = () => {
         friendsApi.declineInvitation(this.state.userId).then(() => this.setState({ invitedMe: false }));
     }
+
+    cancelInvitation = () => {
+        friendsApi.cancelInvitation(this.state.userId).then(() => this.setState({ invitedByMe: false }));
+    }
+
 
     renderEditButton = () => {
         if (this.state.userId === undefined || 
