@@ -39,10 +39,13 @@ namespace Elan.Notifications.Services
             return notification;
         }
 
-        public async Task<List<Notification>> GetActiveNotificationsForUser(ElanUser user)
+        public async Task<List<Notification>> GetActiveNotificationsForUser(ElanUser user, int skip = 0, int take = 10)
         {
             var notifications = await _dataService.GetSet<Notification>()
+                .Include(n => n.TargetUser)
                 .Where(n => n.TargetUser.Id == user.Id && n.IsDeleted != true)
+                .Skip(skip * take)
+                .Take(take)
                 .ToListAsync();
 
             return notifications;
@@ -51,6 +54,7 @@ namespace Elan.Notifications.Services
         public async Task<string> GetNumberOfUnreadNotificationsForUser(ElanUser user)
         {
             var notifications = await _dataService.GetSet<Notification>()
+                .Include(n => n.TargetUser)
                 .Where(n => n.TargetUser.Id == user.Id && n.IsDeleted != true && n.IsRead != true)
                 .ToListAsync();
 

@@ -9,7 +9,7 @@ export default class ChatTopBar extends Component {
         this.state = {
             filterUsers: props.users
         };
-        console.log(props);
+
         this.users = props.users;
     }
 
@@ -26,7 +26,6 @@ export default class ChatTopBar extends Component {
 
 
     render() {
-
         let searchResult = this.state.filterUsers.map((user, index) => (<ChatSearchRow user={user} key={index} onSelect={this.props.activeUserChanged} />))
 
         return (

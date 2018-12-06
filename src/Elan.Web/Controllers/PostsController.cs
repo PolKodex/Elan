@@ -150,7 +150,7 @@ namespace Elan.Web.Controllers
         private async Task PushNumberOfNotifications(ElanUser user)
         {
             var connectionID = NotificationHub.GetConnectionID(user.UserName);
-            var notificationsCount = _notificationService.GetNumberOfUnreadNotificationsForUser(user);
+            var notificationsCount = await _notificationService.GetNumberOfUnreadNotificationsForUser(user);
 
             if (connectionID != null)
             {
