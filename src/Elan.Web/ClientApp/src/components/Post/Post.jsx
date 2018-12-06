@@ -58,7 +58,7 @@ export default class Post extends Component {
         let pictureSource = this.props.pictureSource;
 
         if (!pictureSource) {
-            pictureSource = "../../assets/default_avatar.jpg";
+            pictureSource = require('./../../assets/default_avatar.jpg');
         }
 
         return (
