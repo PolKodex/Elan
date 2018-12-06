@@ -43,8 +43,10 @@ export default class Post extends Component {
     }
 
     toggleReaction = () => {
-        postsApi.setReaction(this.props.id);
-        this.setState({reactionsCount: this.state.reactionsCount + 1})
+        postsApi
+            .setReaction(this.props.id)
+            .then((count) => this.setState({ reactionsCount: count }));
+
     }
 
     render() {

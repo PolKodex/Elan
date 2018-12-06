@@ -459,6 +459,8 @@ export default class Account extends Component {
                 toUserId={item.targetUserId}
                 content={item.content}
                 reactions={item.reactions}
+                reactionsCount={item.reactionsCount}
+                commentsCount={item.commentsCount}
                 key={index}
                 date={item.createdOn} />);
 

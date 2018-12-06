@@ -87,7 +87,7 @@ namespace Elan.Web.Controllers
         }
 
         [HttpPost]
-        public async Task SetReaction([FromBody]SetPostReactionViewModel model)
+        public async Task<int> SetReaction([FromBody]SetPostReactionViewModel model)
         {
             model.User = await _userService.GetUserByName(HttpContext.User.Identity.Name);
 
@@ -97,10 +97,11 @@ namespace Elan.Web.Controllers
 
             if (post.Reactions.FirstOrDefault(x => x.UserId == model.User.Id) == null)
             {
-                return;
+                return post.Reactions?.GroupBy(x => x.Type)
+                           .Sum(x => x.Count()) ?? 0;
             }
 
-            await PushNumberOfPostReactions(model);
+            //await PushNumberOfPostReactions(model);
 
             if (model.User.Id != post.CreatedBy.Id)
             {
@@ -120,6 +121,8 @@ namespace Elan.Web.Controllers
 
                 await PushNumberOfNotifications(post.TargetUser);
             }
+            return post.Reactions?.GroupBy(x => x.Type)
+                                   .Sum(x => x.Count()) ?? 0;
         }
 
         [HttpDelete]
