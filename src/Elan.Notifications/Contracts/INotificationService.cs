@@ -10,7 +10,7 @@ namespace Elan.Notifications.Contracts
     public interface INotificationService
     {
         Task<Notification> CreateNotification(string message, NotificationType notificationType, ElanUser userTo, string notificationSourceId);
-        Task<List<Notification>> GetActiveNotificationsForUser(ElanUser user);
+        Task<List<Notification>> GetActiveNotificationsForUser(ElanUser user, int skip, int take);
         Task<string> GetNumberOfUnreadNotificationsForUser(ElanUser user);
         Task<Notification> MarkAsRead(string id);
         Task<Notification> MarkAsDeleted(string id);

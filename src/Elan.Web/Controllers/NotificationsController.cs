@@ -33,11 +33,11 @@ namespace Elan.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetNotifications()
+        public async Task<JsonResult> GetNotifications(int skip = 0, int take = 10)
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
 
-            var notifications = await _notificationService.GetActiveNotificationsForUser(currentUser);
+            var notifications = await _notificationService.GetActiveNotificationsForUser(currentUser, skip, take);
 
             var result = notifications.Select(n => new NotificationViewModel(n));
 
