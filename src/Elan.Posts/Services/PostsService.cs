@@ -145,6 +145,8 @@ namespace Elan.Posts.Services
                     .Where(m => m.BasePostId == null)
                     .Where(m => m.CreatedBy.Id == user.Id || m.TargetUser.Id == user.Id)
                     .Where(m =>
+                        user.Id == currentUser.Id 
+                        ||
                         m.VisibilitySetting == PrivacySetting.Everyone
                         ||
                         (
