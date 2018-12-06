@@ -226,3 +226,7 @@ body > .container {
 .faded {
     opacity: 0.3;
 }
+
+.red-color {
+    color: red;
+}

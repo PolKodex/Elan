@@ -41,7 +41,8 @@ export default class Account extends Component {
     getData = () => {
         let userId = jwtUtils.getUserId(this.state);
         accountApi.getUser(userId)
-            .then(function(response) {
+            .then(function (response) {
+                console.log(response.data.isPrivate);
                 this.setState({
                     user: response.data,
                     firstNameEdit: response.data.firstName,
@@ -218,7 +219,9 @@ export default class Account extends Component {
     }
 
     renderAddToFriendsButton = () => {
-        if (this.state.userId !== undefined && this.state.userId.trim() !== '' && !this.state.friendsList.map(f => f.id).includes(jwtUtils.decodeJwt(localStorage.getItem('token')).jti)) {
+        if (this.state.userId !== undefined &&
+            this.state.userId.trim() !== '' &&          
+            !this.state.friendsList.map(f => f.id).includes(jwtUtils.decodeJwt(localStorage.getItem('token')).jti)) {
             return (
                 <button className="btn btn-secondary" onClick={() => this.addToFriends()}>Dodaj do znajomych</button>
             );
@@ -426,13 +429,13 @@ export default class Account extends Component {
                             </h3>
 
                             {!this.state.user.isPrivate && this.state.user.description && <p className="lead">„{this.state.user.description}”</p>}
-                            {this.state.user.isPrivate && <p className="lead" style="color: red;">{this.state.user.description}</p>}
+                            {this.state.user.isPrivate && <p className="lead red-color">To konto jest prywatne.</p>}
                             {this.renderAddToFriendsButton()}
                         </div>
                     </div>
                 </div>
 
-                <div className="card account-box">
+                {!this.state.isPrivate && <div className="card account-box">
                     <div className="card-header card-sm">
                         <span className="link" onClick={() => this.friendsListClick()}>Znajomi ({this.state.friendsList.length})</span>
                     </div>
@@ -444,9 +447,9 @@ export default class Account extends Component {
                             {friendThumbnailsSecondRow}
                         </div>
                     </div>
-                </div>
+                </div>}
 
-                <div className="card account-box">
+                {!this.state.isPrivate && <div className="card account-box">
                     <div className="card-header card-sm">
                         <span className="link" onClick={() => this.pictureListClick()}>Zdjęcia ({this.state.picturesList.length})</span>
                     </div>
@@ -458,7 +461,7 @@ export default class Account extends Component {
                             {pictureThumbnailsSecondRow}
                         </div>
                     </div>
-                </div>
+                </div>}
 
                 {userPosts}
 

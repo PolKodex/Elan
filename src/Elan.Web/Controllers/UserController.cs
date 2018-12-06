@@ -104,7 +104,7 @@ namespace Elan.Web.Controllers
             var result = new ViewModels.Users.UserProfileViewModel(user);
 
             var userPrivacySetting = user.Settings.FirstOrDefault(x => x.Setting == UserSetting.ProfileVisibility);
-            if (userPrivacySetting != null)
+            if (userPrivacySetting != null && userId != currentUser.Id.ToString())
             {
                 if (userPrivacySetting.PrivacySetting == PrivacySetting.Friends)
                 {

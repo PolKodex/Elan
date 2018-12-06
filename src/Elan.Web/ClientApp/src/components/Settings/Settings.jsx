@@ -48,20 +48,18 @@ export default class Settings extends Component {
         return (
             <div className="form-group">
                 <div className="settings-item">
-                    <label>Search settings:</label>
+                    <label>Kto widzi moj profil:</label>
                     <select className="form-control" value={this.state.searchSettings.privacySetting} onChange={this.handleChangeSearch}>
-                      <option value="0">Everyone</option>
-                      <option value="1">Friends</option>
-                      <option value="2">Connections</option>
+                      <option value="0">Wszyscy</option>
+                      <option value="1">Znajomi</option>
                     </select>
                 </div>
 
                 <div className="settings-item">
-                    <label>Content settings:</label>
+                    <label>Kto widzi moje posty:</label>
                     <select className="form-control" value={this.state.contentSettings.privacySetting} onChange={this.handleChangeContent}>
-                      <option value="0">Everyone</option>
-                      <option value="1">Friends</option>
-                      <option value="2">Connections</option>
+                      <option value="0">Wszyscy</option>
+                      <option value="1">Znajomi</option>
                     </select>
                 </div>
                 <button type="submit" className="btn btn-primary" onClick={this.saveSettings}>Save</button>
