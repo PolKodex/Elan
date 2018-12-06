@@ -8,5 +8,6 @@ namespace Elan.Users.Contracts
         Task<ElanUser> GetUserById(string userId);
         Task<ElanUser> GetUserByName(string userName);
         Task<ElanUser> GetUserByNameWithSettings(string userName);
+        Task<ElanUser> GetUserByIdWithSettings(string id);
     }
 }

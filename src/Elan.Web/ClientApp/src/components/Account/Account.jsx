@@ -41,29 +41,32 @@ export default class Account extends Component {
     getData = () => {
         let userId = jwtUtils.getUserId(this.state);
         accountApi.getUser(userId)
-            .then(function (response) {
+            .then(function(response) {
                 this.setState({
                     user: response.data,
                     firstNameEdit: response.data.firstName,
                     lastNameEdit: response.data.lastName,
                     descriptionEdit: response.data.description,
-                    ageEdit: response.data.age
-                })
-            }.bind(this));
+                    ageEdit: response.data.age,
+                    isPrivate: response.data.isPrivate
+                });
 
-        friendsApi.getFriends(userId)
-            .then(function (response) {
-                this.setState({ friendsList: response.data });
-            }.bind(this));
+                if (!response.data.isPrivate) {
+                    friendsApi.getFriends(userId)
+                        .then(function(response) {
+                            this.setState({ friendsList: response.data });
+                        }.bind(this));
 
-        accountApi.getUserPictures(userId)
-            .then(function (response) {
-                this.setState({ picturesList: response.data });
-            }.bind(this));
+                    accountApi.getUserPictures(userId)
+                        .then(function(response) {
+                            this.setState({ picturesList: response.data });
+                        }.bind(this));
 
-        accountApi.getUserPosts(userId, 0, 10)
-            .then(function (response) {
-                this.setState({ userPostsList: response.data });
+                    accountApi.getUserPosts(userId, 0, 10)
+                        .then(function(response) {
+                            this.setState({ userPostsList: response.data });
+                        }.bind(this));
+                }
             }.bind(this));
     }
 
@@ -421,7 +424,9 @@ export default class Account extends Component {
                                 {this.state.user.firstName} {this.state.user.lastName} 
                                 {this.renderEditButton()}
                             </h3>
-                            <p className="lead">„{this.state.user.description}”</p>
+
+                            {!this.state.user.isPrivate && this.state.user.description && <p className="lead">„{this.state.user.description}”</p>}
+                            {this.state.user.isPrivate && <p className="lead" style="color: red;">{this.state.user.description}</p>}
                             {this.renderAddToFriendsButton()}
                         </div>
                     </div>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Elan.Account.Contracts;
 using Elan.Account.Models;
+using Elan.Common.Enums;
 using Elan.Users.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -98,11 +99,24 @@ namespace Elan.Web.Controllers
         [HttpGet]
         public async Task<ViewModels.Users.UserProfileViewModel> GetUserProfile(string userId)
         {
-            var user = await _userService.GetUserById(userId);
-            var mainImage = await _userImageService.GetMainImage(user);
-
+            var user = await _userService.GetUserByIdWithSettings(userId);
+            var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
             var result = new ViewModels.Users.UserProfileViewModel(user);
-            
+
+            var userPrivacySetting = user.Settings.FirstOrDefault(x => x.Setting == UserSetting.ProfileVisibility);
+            if (userPrivacySetting != null)
+            {
+                if (userPrivacySetting.PrivacySetting == PrivacySetting.Friends)
+                {
+                    if (!user.Friends.Any(x => x.FirstUserId == currentUser.Id || x.SecondUserId == currentUser.Id))
+                    {
+                        result.IsPrivate = true;
+                    }
+                }
+            }
+
+            var mainImage = await _userImageService.GetMainImage(user);
+      
             if (mainImage != null)
             {
                 result.MainImage = new ViewModels.Users.UserImageViewModel(mainImage);

@@ -9,6 +9,7 @@ namespace Elan.Web.ViewModels.Users
         public string LastName { get; set; }
         public string Description { get; set; }
         public int? Age { get; set; }
+        public bool IsPrivate { get; set; }
         public UserImageViewModel MainImage { get; set; }
 
         public UserProfileViewModel(ElanUser user)

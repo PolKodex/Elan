@@ -60,7 +60,7 @@ namespace Elan.Account.Services
             var searchSetting = new ElanUserSetting
             {
                 UserId = newUser.Id,
-                Setting = UserSetting.ShowInSearchResult,
+                Setting = UserSetting.ProfileVisibility,
                 PrivacySetting = PrivacySetting.Everyone
             };
             _dataService.GetSet<ElanUserSetting>().Add(searchSetting);
