@@ -6,6 +6,7 @@ import * as userApi from '../../api/UserApi';
 import * as friendsApi from '../../api/FriendsApi';
 import * as jwtUtils from '../../utils/JwtUtils';
 import './Account.css';
+import { runInThisContext } from 'vm';
 
 export default class Account extends Component {
     constructor(props) {
@@ -233,6 +234,26 @@ export default class Account extends Component {
             this.state.userId === jwtUtils.decodeJwt(localStorage.getItem('token')).jti) {
             return (
                 <a className="link faded edit" onClick={() => this.editUserClick()} title="Edytuj profil"><i className="fas fa-edit"></i></a>
+            );
+        }
+    }
+
+    renderProfilePicture = () => {
+        if (this.state.userId === undefined || 
+            (this.state.userId !== undefined && this.state.userId.trim() === "") || 
+            this.state.userId === jwtUtils.decodeJwt(localStorage.getItem('token')).jti) {
+            return (
+                <img className="align-self-start mr-3 link"
+                    src={this.getMainPicture()}
+                    alt=""
+                    onClick={() => this.mainImageClick()} />
+            );
+        }
+        else {
+            return (
+                <img className="align-self-start mr-3"
+                    src={this.getMainPicture()}
+                    alt="" />
             );
         }
     }
@@ -468,10 +489,7 @@ export default class Account extends Component {
             <div>
                 <div className="account-introduction">
                     <div className="media avatar">
-                        <img className="align-self-start mr-3 link"
-                            src={this.getMainPicture()}
-                            alt=""
-                            onClick={() => this.mainImageClick()} />
+                        {this.renderProfilePicture()}
 
                         <div className="media-body">
                             <h3>
