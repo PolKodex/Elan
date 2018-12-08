@@ -6,7 +6,7 @@ export default class PictureThumbnail extends Component {
         return (
             <div className="col-md-3 image-box">
                 <a href={this.props.targetUrl} className="thumbnail">
-                    <img src={this.props.pictureSource} data-toggle="tooltip" data-placement="bottom" title={this.props.title} alt="" />
+                    <img src={this.props.pictureSource} data-toggle="tooltip" data-placement="bottom" title={this.props.title} alt="" width="100%" />
                 </a>
             </div>
         );

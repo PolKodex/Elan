@@ -27,10 +27,11 @@ export default class Account extends Component {
             firstNameEdit: '',
             lastNameEdit: '',
             descriptionEdit: '',
-            ageEdit: 13
+            ageEdit: 13,
+            owner: false
         }
-
     }
+    
     componentDidMount() {
         this.getData();
     }
@@ -72,6 +73,13 @@ export default class Account extends Component {
                         }.bind(this));
                 }
             }.bind(this));
+
+        this.setState(
+            {
+                owner: this.state.userId === undefined || 
+                (this.state.userId !== undefined && this.state.userId.trim() === "") || 
+                this.state.userId === jwtUtils.decodeJwt(localStorage.getItem('token')).jti}
+        );
     }
 
     //move to utils? yes pls
@@ -228,9 +236,7 @@ export default class Account extends Component {
 
 
     renderEditButton = () => {
-        if (this.state.userId === undefined || 
-            (this.state.userId !== undefined && this.state.userId.trim() === "") || 
-            this.state.userId === jwtUtils.decodeJwt(localStorage.getItem('token')).jti) {
+        if (this.state.owner) {
             return (
                 <a className="link faded edit" onClick={() => this.editUserClick()} title="Edytuj profil"><i className="fas fa-edit"></i></a>
             );
@@ -238,9 +244,7 @@ export default class Account extends Component {
     }
 
     renderProfilePicture = () => {
-        if (this.state.userId === undefined || 
-            (this.state.userId !== undefined && this.state.userId.trim() === "") || 
-            this.state.userId === jwtUtils.decodeJwt(localStorage.getItem('token')).jti) {
+        if (this.state.owner) {
             return (
                 <img className="align-self-start mr-3 link"
                     src={this.getMainPicture()}
@@ -258,20 +262,19 @@ export default class Account extends Component {
     }
 
     renderFriendButtons = () => {
-        if (this.state.userId !== undefined &&
-            this.state.userId.trim() !== '') {
+        if (!this.state.owner) {
             if (this.state.isFriend) {
                 return (
                     <button className="btn btn-danger" onClick={() => this.removeFriend()}>
                         Usun ze znajomych
-                        </button>
+                    </button>
                 );
             }
             else if (this.state.invitedByMe) {
                 return (
                     <button className="btn btn-secondary" onClick={() => this.cancelInvitation()}>
                         Anuluj zaproszenie
-                        </button>
+                    </button>
                 );
             }
             else if (this.state.invitedMe) {
@@ -279,17 +282,17 @@ export default class Account extends Component {
                     <div>
                         <button className="btn btn-success" onClick={() => this.acceptInvitation()}>
                             Akceptuj zaproszenie
-                            </button>
+                        </button>
                         <button className="btn btn-danger" onClick={() => this.declineInvitation()}>
                             Odrzuc zaproszenie
-                            </button>
+                        </button>
                     </div>
                 );
             } else {
                 return (
                     <button className="btn btn-secondary" onClick={() => this.inviteToFriends()}>
                         Dodaj do znajomych
-                        </button>
+                    </button>
                 );
             }
 

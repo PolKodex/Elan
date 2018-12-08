@@ -34,11 +34,6 @@ export default class Wall extends Component {
         this.setState({ postContent: event.target.value });
     }
 
-    handleSubmit = () => {
-
-        //do some crazy register things 
-    }
-
     post = () => {
         savePost(this.state.postContent)
             .then(() => {

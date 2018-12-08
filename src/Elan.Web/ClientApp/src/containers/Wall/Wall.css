@@ -7,3 +7,8 @@
 .card-body button {
 	margin-top: 5px !important;
 }
+
+.post textarea {
+	min-height: 50px;
+	max-height: 250px;
+}

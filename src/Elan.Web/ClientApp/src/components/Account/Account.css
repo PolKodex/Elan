@@ -12,3 +12,11 @@
     margin: 0 auto;
     max-height: 250px;
 }
+
+.image-box .thumbnail {
+    height: calc(100% - 20px);
+}
+
+.image-box .thumbnail img {
+    vertical-align: middle;
+}
