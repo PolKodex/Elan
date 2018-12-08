@@ -95,8 +95,7 @@ export default class Account extends Component {
                 var user = this.state.user; 
                 var picturesList = this.state.picturesList;
 
-                user.mainImage.rawValue = response.rawValue;
-                user.mainImage.id = response.id;
+                user.mainImage = response;
                 picturesList.push(response);
                 this.setState({
                     mainPictureUpload: response.rawValue,
