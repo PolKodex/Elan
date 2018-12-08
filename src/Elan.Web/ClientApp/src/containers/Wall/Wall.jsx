@@ -9,6 +9,7 @@ export default class Wall extends Component {
 
         this.state = {
             postContent: '',
+            selectedPostPrivacy: 0,
             posts: []
         }
     }
@@ -34,12 +35,20 @@ export default class Wall extends Component {
         this.setState({ postContent: event.target.value });
     }
 
+    changePostPrivacy = (event) => {
+        this.setState({ selectedPostPrivacy: event.target.value });
+    }
+
     post = () => {
-        savePost(this.state.postContent)
-            .then(() => {
-                this.setState({ postContent: "" })
-                this.getPosts();
-            });
+        if (this.state.postContent.trim() === "") {
+            window.alert('Nie można wysłać pustego posta. Przykro nam :(');
+        } else {
+            savePost(this.state.postContent, this.state.selectedPostPrivacy)
+                .then(() => {
+                    this.setState({ postContent: "" })
+                    this.getPosts();
+                });
+        }
     };
 
     render() {
@@ -68,7 +77,17 @@ export default class Wall extends Component {
                         </div>
                         <div className="card-body">
                             <textarea className="form-control" rows="5" value={this.state.postContent} onChange={this.postContentChange}  ></textarea>
-                            <button className="btn btn-sm btn-success my-2 my-sm-0" onClick={this.post}>POST</button>
+                            <div className="row controls">
+                                <div className="col-9">
+                                    <select className="form-control form-control-sm" onChange={this.changePostPrivacy}>
+                                        <option value="0">Każdego</option>
+                                        <option value="1">Znajomi</option>
+                                    </select>
+                                </div>
+                                <div className="col-3">
+                                    <button className="btn btn-sm btn-success my-2 my-sm-0" onClick={this.post}>Wyślij</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -5,10 +5,14 @@
 }
 
 .card-body button {
-	margin-top: 5px !important;
+	margin-top: 2px !important;
 }
 
 .post textarea {
 	min-height: 50px;
 	max-height: 250px;
+}
+
+.post .controls {
+	margin-top: 5px;
 }
