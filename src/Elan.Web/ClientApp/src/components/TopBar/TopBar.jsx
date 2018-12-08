@@ -34,11 +34,14 @@ class TopBar extends Component {
       localStorage.removeItem('token');
       window.location.reload();
   }
-
+    getImage(image) {
+        return !image
+            ? require("../../assets/default_avatar.jpg")
+            : image;
+    }
   render() {
-
     let users = this.state.users.map((item, index) => (<button className="search-result" onClick={() => this.onUserClick(item.id)}>
-        <img src={require("../../assets/default_avatar.jpg")} alt="" />
+        <img src={this.getImage(item.imageRawValue)} alt="" />
         <span>{item.firstName + " " + item.lastName}</span>
         </button>));
 
