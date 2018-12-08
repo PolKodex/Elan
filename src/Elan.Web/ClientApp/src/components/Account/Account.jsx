@@ -24,6 +24,7 @@ export default class Account extends Component {
             showFriendsListModal: false,
             showPictureListModal: false,
             showEditUserModal: false,
+            showValidationModal: false,
             firstNameEdit: '',
             lastNameEdit: '',
             descriptionEdit: '',
@@ -165,6 +166,10 @@ export default class Account extends Component {
         this.setState({ editUserClick: !this.state.editUserClick });
     }
 
+    validationModalToggle = () => {
+        this.setState({ showValidationModal: !this.state.showValidationModal })
+    }
+
     renderPicturesThumbnails = () => {
         return this.state.picturesList.map((item, index) =>
             this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/photos/', item.title));
@@ -195,23 +200,29 @@ export default class Account extends Component {
     }
 
     editUser = () => {
-        userApi
-            .updateUser(
-                this.state.user.id,
-                this.state.firstNameEdit,
-                this.state.lastNameEdit,
-                this.state.descriptionEdit,
-                this.state.ageEdit)
-            .then(function (response) {
-                this.setState({
-                    user: response,
-                    firstNameEdit: response.firstName,
-                    lastNameEdit: response.lastName,
-                    descriptionEdit: response.description,
-                    ageEdit: response.age,
-                    editUserClick: false
-                });
-            }.bind(this));
+        if (this.state.ageEdit < 0) {
+            this.setState({
+                showValidationModal: true
+            });
+        } else {
+            userApi
+                .updateUser(
+                    this.state.user.id,
+                    this.state.firstNameEdit,
+                    this.state.lastNameEdit,
+                    this.state.descriptionEdit,
+                    this.state.ageEdit)
+                .then(function (response) {
+                    this.setState({
+                        user: response,
+                        firstNameEdit: response.firstName,
+                        lastNameEdit: response.lastName,
+                        descriptionEdit: response.description,
+                        ageEdit: response.age,
+                        editUserClick: false
+                    });
+                }.bind(this));
+        }
     }
 
     inviteToFriends = () => {
@@ -302,6 +313,27 @@ export default class Account extends Component {
     renderUploadImageThumbnail = () => {
         if (this.state.mainPictureUpload !== null && this.state.mainPictureUpload !== '') {
             return (<img className="upload-image thumbnail" src={this.state.mainPictureUpload} alt="" />);
+        }
+    }
+
+    renderValidationModal() {
+        if (this.state.showValidationModal) {
+            return (
+                <div className="modal show" tabIndex="-1" role="dialog">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-body">
+                                <form>
+                                    <img className="upload-image thumbnail" src={require('./../../assets/validation.jpg')} />
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => this.validationModalToggle()}>Wróć i popraw dane</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
         }
     }
 
@@ -540,6 +572,7 @@ export default class Account extends Component {
                 {this.renderFriendsListModal()}
                 {this.renderPictureListModal()}
                 {this.renderEditUserModal()}
+                {this.renderValidationModal()}
             </div>
         );
     }
