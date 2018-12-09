@@ -70,7 +70,6 @@ export default class Post extends Component {
     }
 
     getPictureSource = (pictureSource) => {
-        console.log(pictureSource);
         if (!pictureSource) {
             return require('./../../assets/default_avatar.jpg');
         }

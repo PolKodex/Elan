@@ -64,7 +64,7 @@ class TopBar extends Component {
                         <Link to="/settings" className="nav-link"><i className="fas fa-cog"></i> Ustawienia</Link>
                     </li>
                     <li className="nav-item">
-                        <a href="#" onClick={() => this.logout()} className="nav-link"><i class="fas fa-sign-out-alt"></i> Wyloguj się</a>
+                        <a href="#" onClick={() => this.logout()} className="nav-link"><i className="fas fa-sign-out-alt"></i> Wyloguj się</a>
                     </li>
                 </ul>
                 <div className="nav-right">
