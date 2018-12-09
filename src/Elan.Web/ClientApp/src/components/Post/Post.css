@@ -15,3 +15,16 @@
 .modal-open {
     overflow: scroll;
 }
+
+.post-comments textarea {
+	resize: none;
+}
+
+.post-comment img {
+    height: 30px;
+    margin-top: 13px;
+}
+
+.post-comment a {
+	color: #000000;
+}

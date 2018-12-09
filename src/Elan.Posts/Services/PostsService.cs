@@ -89,26 +89,16 @@ namespace Elan.Posts.Services
                     .Include(m => m.TargetUser)
                     .Where(m => m.BasePostId == null)
                     .Where(m =>
-                        m.CreatedBy.Id == user.Id
-                            ||
+                        m.CreatedBy.Id == user.Id ||
+                        m.VisibilitySetting == PrivacySetting.Everyone ||
                         (
-                            (m.VisibilitySetting == PrivacySetting.Friends ||
-                             m.VisibilitySetting == PrivacySetting.Connections)
-                            && (m.CreatedBy.FirstUserFriends.Any(x => x.SecondUserId == user.Id)
-                                ||
-                                m.CreatedBy.SecondUserFriends.Any(x => x.FirstUserId == user.Id))
+                            (m.VisibilitySetting == PrivacySetting.Friends) && 
+                            (
+                                m.CreatedBy.FirstUserFriends.Any(x => x.SecondUserId == user.Id) ||
+                                m.CreatedBy.SecondUserFriends.Any(x => x.FirstUserId == user.Id)
+                            )
                         )
-                        ||
-                        (
-                            m.VisibilitySetting == PrivacySetting.Connections
-                            && (m.CreatedBy.FirstUserFriends.Any(x =>
-                                    x.SecondUser.FirstUserFriends.Any(y => y.SecondUserId == user.Id) ||
-                                    x.SecondUser.SecondUserFriends.Any(y => y.FirstUserId == user.Id))
-                                ||
-                                m.CreatedBy.SecondUserFriends.Any(x =>
-                                    x.FirstUser.FirstUserFriends.Any(y => y.SecondUserId == user.Id) ||
-                                    x.FirstUser.SecondUserFriends.Any(y => y.FirstUserId == user.Id)))
-                        )
+
                     )
                     .OrderByDescending(m => m.CreatedOn)
                     .Skip(skip * take)
@@ -148,27 +138,14 @@ namespace Elan.Posts.Services
                     .Where(m => m.BasePostId == null)
                     .Where(m => m.CreatedBy.Id == user.Id || m.TargetUser.Id == user.Id)
                     .Where(m =>
-                        user.Id == currentUser.Id 
-                        ||
-                        m.VisibilitySetting == PrivacySetting.Everyone
-                        ||
+                        user.Id == currentUser.Id ||
+                        m.VisibilitySetting == PrivacySetting.Everyone ||
                         (
-                            (m.VisibilitySetting == PrivacySetting.Friends ||
-                             m.VisibilitySetting == PrivacySetting.Connections)
-                            && (m.CreatedBy.FirstUserFriends.Any(x => x.SecondUserId == currentUser.Id)
-                                ||
-                                m.CreatedBy.SecondUserFriends.Any(x => x.FirstUserId == currentUser.Id))
-                        )
-                        ||
-                        (
-                            m.VisibilitySetting == PrivacySetting.Connections
-                            && (m.CreatedBy.FirstUserFriends.Any(x =>
-                                    x.SecondUser.FirstUserFriends.Any(y => y.SecondUserId == currentUser.Id) ||
-                                    x.SecondUser.SecondUserFriends.Any(y => y.FirstUserId == currentUser.Id))
-                                ||
-                                m.CreatedBy.SecondUserFriends.Any(x =>
-                                    x.FirstUser.FirstUserFriends.Any(y => y.SecondUserId == currentUser.Id) ||
-                                    x.FirstUser.SecondUserFriends.Any(y => y.FirstUserId == currentUser.Id)))
+                            (m.VisibilitySetting == PrivacySetting.Friends) && 
+                            (
+                                m.CreatedBy.FirstUserFriends.Any(x => x.SecondUserId == currentUser.Id) ||
+                                m.CreatedBy.SecondUserFriends.Any(x => x.FirstUserId == currentUser.Id)
+                            )
                         )
                     )
                     .OrderByDescending(m => m.CreatedOn)
@@ -245,6 +222,7 @@ namespace Elan.Posts.Services
                 .GetSet<Post>()
                 .Include(x => x.Reactions)
                 .Include(x => x.CreatedBy)
+                .ThenInclude(m => m.Images)
                 .Where(x => x.BasePostId == postId)
                 .OrderByDescending(m => m.CreatedOn)
                 .Skip(skip * take)

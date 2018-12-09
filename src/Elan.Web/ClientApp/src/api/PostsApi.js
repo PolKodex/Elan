@@ -1,11 +1,12 @@
 const axios = require('axios');
 
-export const savePost = async (content) => {
+export const savePost = async (content, privacySetting) => {
     var api = "/api/Posts/CreatePost";
 
     return await axios.post(api,
         {
-            content: content
+            content: content,
+            privacySetting: privacySetting
         }, 
         {
             headers: {

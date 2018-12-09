@@ -61,16 +61,25 @@ export default class Post extends Component {
 
     }
 
+    toggleCommentReaction = (id) => {
+        postsApi
+            .setReaction(id)
+            .then((count) => 
+                this.loadComments()
+            );
+    }
+
+    getPictureSource = (pictureSource) => {
+        if (!pictureSource) {
+            return require('./../../assets/default_avatar.jpg');
+        }
+        return pictureSource;
+    }
+
     render() {
         let authorName = '';
         if (this.props.author !== undefined && this.props.author.trim() !== "") {
             authorName = this.props.author;
-        }
-
-        let pictureSource = this.props.pictureSource;
-
-        if (!pictureSource) {
-            pictureSource = require('./../../assets/default_avatar.jpg');
         }
 
         return (
@@ -79,7 +88,7 @@ export default class Post extends Component {
                     <div className="card-header card-sm">
                         <div className="user-info">
                             <div className="avatar-post">
-                                 <img src={pictureSource} alt="" />
+                                 <img src={this.getPictureSource(this.props.pictureSource)} alt="" />
                             </div>
                             <div className="user-post">
                                 <a href={ "/account/" + this.props.userId }><strong>{ authorName }</strong></a> 
@@ -105,20 +114,28 @@ export default class Post extends Component {
 
     renderCommentRow() {
         return this.state.comments.map((p,index) => (
-            <a href="#" className="list-group-item list-group-item-action flex-column align-items-start" key={index}>
-                <div className="d-flex w-100 justify-content-between">
-                    <h5 className="mb-1"><strong>{p.createdBy}</strong></h5>
-                    <small>{dateUtils.getFormattedDate(p.createdOn)}</small>
+            <span className="list-group-item list-group-item-action flex-column align-items-start post-comment" key={index}>
+                <div className="row">
+                    <div className="col-1">
+                        <img src={this.getPictureSource(p.authorMainImageRawValue)} className="rounded float-left" alt="..."/>
+                    </div>
+                    <div className="col-11">
+                        <div className="d-flex w-100 justify-content-between">
+                            <a href={"/account/" + p.userId}><h5 className="mb-1"><strong>{p.createdBy}</strong></h5></a>
+                            <small>{dateUtils.getFormattedDate(p.createdOn)}</small>
+                        </div>
+                        <p className="mb-1">{p.content}</p>
+                        <small className="faded"><a className="link" onClick={() => this.toggleCommentReaction(p.id)}><i className="fas fa-beer"></i> Piwa ({p.reactionsCount})</a></small>
+                    </div>
                 </div>
-                <p className="mb-1">{p.content}</p>
-            </a>)
+            </span>)
         );
     }
 
     renderCommentsModal() {
         if (this.state.commentsOpened) {
             return (
-                <div className="modal show" tabIndex="-1" role="dialog">
+                <div className="modal show post-comments" tabIndex="-1" role="dialog">
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -128,7 +145,7 @@ export default class Post extends Component {
                                 { this.renderCommentRow() }
                             </div>
                             <div className="modal-footer flex-column">
-                                <a href="#" className="list-group-item list-group-item-action flex-column align-items-start">
+                                <a className="list-group-item list-group-item-action flex-column align-items-start">
                                     <textarea   rows="3" 
                                                 className="form-control" 
                                                 onChange={this.newCommentChange} 
