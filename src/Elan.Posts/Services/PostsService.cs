@@ -90,7 +90,6 @@ namespace Elan.Posts.Services
                     .Where(m => m.BasePostId == null)
                     .Where(m =>
                         m.CreatedBy.Id == user.Id ||
-                        m.VisibilitySetting == PrivacySetting.Everyone ||
                         (
                             (m.VisibilitySetting == PrivacySetting.Friends) && 
                             (

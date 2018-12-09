@@ -22,9 +22,16 @@
 
 .post-comment img {
     height: 30px;
-    margin-top: 13px;
+	margin-top: 13px;
+	max-width: 30px;
+    object-fit: cover;
+    overflow: hidden;
 }
 
 .post-comment a {
 	color: #000000;
+}
+
+.faded {
+	opacity: 0.8;
 }
