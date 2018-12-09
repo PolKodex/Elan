@@ -88,7 +88,7 @@ export default class Account extends Component {
         return <PictureThumbnail
             key={index}
             pictureSource={pictureSource}
-            targetUrl={baseUrl + id}
+            targetUrl={baseUrl.trim() !== '' ? baseUrl + id : ''}
             title={title} />;
     }
 
@@ -137,7 +137,7 @@ export default class Account extends Component {
         for (let i = 0; i < this.state.friendsList.length; i++) {
             list.push(
                 <li class="list-group-item">
-                    <a href={'app/account/' + this.state.friendsList[i].id}>
+                    <a href={'account/' + this.state.friendsList[i].id}>
                         {this.state.friendsList[i].userName}
                     </a>
                 </li>
@@ -500,9 +500,9 @@ export default class Account extends Component {
             this.getPictureThumbnail(index, item.id, this.getPictureSource(item.avatarBase64), '/account/', item.userName));
 
         let pictureThumbnailsFirstRow = this.state.picturesList.slice(0, 4).map((item, index) =>
-            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/photos/', item.title));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '', item.title));
         let pictureThumbnailsSecondRow = this.state.picturesList.slice(4, 8).map((item, index) =>
-            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/photos/', item.title));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '', item.title));
 
         let userPosts = this.state.userPostsList.map((item, index) =>
             <Post

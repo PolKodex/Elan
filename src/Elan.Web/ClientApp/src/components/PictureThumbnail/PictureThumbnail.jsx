@@ -14,12 +14,26 @@ export default class PictureThumbnail extends Component {
         this.setState({showBigPictureModal: !this.state.showBigPictureModal})
     }
 
-    render() {
-        return (
-            <div className="col-md-3 image-box">
+    renderThumbnailLink = () => {
+        if (this.props.targetUrl.trim() !== '') {
+            return (
+                <a href={this.props.targetUrl} className="thumbnail">
+                    <img src={this.props.pictureSource} data-toggle="tooltip" data-placement="bottom" title={this.props.title} alt="" width="100%" />
+                </a>
+            )
+        } else {
+            return (
                 <a onClick={() => this.bigPictureModalToggle()} className="thumbnail link">
                     <img src={this.props.pictureSource} data-toggle="tooltip" data-placement="bottom" title={this.props.title} alt="" width="100%" />
                 </a>
+            )
+        }
+    }
+
+    render() {
+        return (
+            <div className="col-md-3 image-box">
+                {this.renderThumbnailLink()}
                 {this.renderBigPictureModal()}
             </div>
         );
