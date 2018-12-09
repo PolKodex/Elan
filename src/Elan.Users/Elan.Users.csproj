@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0005" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Elan.Data\Elan.Data.csproj" />
   </ItemGroup>
 
