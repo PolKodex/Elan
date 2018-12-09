@@ -6,3 +6,7 @@
 .card-text img {
 	max-width: 100%;
 }
+
+.post-comment textarea {
+	resize: none;
+}

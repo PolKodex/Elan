@@ -49,6 +49,20 @@ export default class Post extends Component {
 
     }
 
+    toggleCommentReaction = (id) => {
+        postsApi
+            .setReaction(id)
+            .then((count) => postsApi
+            .getComments(this.props.id, 0, 10)
+                .then(function(response) {
+                    this.setState({ 
+                        comments: response,
+                        commentsCount: response.length,
+                    });
+                }.bind(this))
+            );
+    }
+
     render() {
         let authorName = '';
         if (this.props.author !== undefined && this.props.author.trim() !== "") {
@@ -93,12 +107,13 @@ export default class Post extends Component {
 
     renderCommentRow() {
         return this.state.comments.map(p => (
-            <a href="#" className="list-group-item list-group-item-action flex-column align-items-start">
+            <a className="list-group-item list-group-item-action flex-column align-items-start">
                 <div className="d-flex w-100 justify-content-between">
                     <h5 className="mb-1"><strong>{p.createdBy}</strong></h5>
                     <small>{dateUtils.getFormattedDate(p.createdOn)}</small>
                 </div>
                 <p className="mb-1">{p.content}</p>
+                <small className="faded"><a className="link" onClick={() => this.toggleCommentReaction(p.id)}><i className="fas fa-beer"></i> Piwa ({p.reactionsCount})</a></small>
             </a>)
         );
     }
@@ -106,7 +121,7 @@ export default class Post extends Component {
     renderCommentsModal() {
         if (this.state.commentsOpened) {
             return (
-                <div className="modal show" tabIndex="-1" role="dialog">
+                <div className="modal show post-comment" tabIndex="-1" role="dialog">
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -114,7 +129,7 @@ export default class Post extends Component {
                             </div>
                             <div className="modal-body">
                                 { this.renderCommentRow() }
-                                <a href="#" className="list-group-item list-group-item-action flex-column align-items-start">
+                                <a className="list-group-item list-group-item-action flex-column align-items-start">
                                     <textarea   rows="3" 
                                                 className="form-control" 
                                                 onChange={this.newCommentChange} 
