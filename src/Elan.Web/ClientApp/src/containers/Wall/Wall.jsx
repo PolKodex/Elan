@@ -80,8 +80,8 @@ export default class Wall extends Component {
                             <div className="row controls">
                                 <div className="col-9">
                                     <select className="form-control form-control-sm" onChange={this.changePostPrivacy}>
-                                        <option value="0">Każdego</option>
-                                        <option value="1">Znajomi</option>
+                                        <option value="0">Widoczne dla znajomych</option>
+                                        <option value="1">Widoczny dla znajomych</option>
                                     </select>
                                 </div>
                                 <div className="col-3">
