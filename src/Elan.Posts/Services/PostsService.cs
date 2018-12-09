@@ -222,6 +222,7 @@ namespace Elan.Posts.Services
                 .GetSet<Post>()
                 .Include(x => x.Reactions)
                 .Include(x => x.CreatedBy)
+                .ThenInclude(m => m.Images)
                 .Where(x => x.BasePostId == postId)
                 .OrderByDescending(m => m.CreatedOn)
                 .Skip(skip * take)
