@@ -54,7 +54,7 @@ class TopBar extends Component {
             <div className="top-bar">
                 <Link to="/" className="navbar-brand" href="#"><span className="brand-color">EL</span>AN</Link>
                 <ul className="">
-                    <li className="nav-item active">
+                    <li className="nav-item">
                         <Link to="/" className="nav-link"><i className="fas fa-home"></i> Strona główna <span className="sr-only">(current)</span></Link>
                     </li>
                     <li className="nav-item">
@@ -62,6 +62,9 @@ class TopBar extends Component {
                     </li>
                     <li className="nav-item">
                         <Link to="/settings" className="nav-link"><i className="fas fa-cog"></i> Ustawienia</Link>
+                    </li>
+                    <li className="nav-item">
+                        <a href="#" onClick={() => this.logout()} className="nav-link"><i class="fas fa-sign-out-alt"></i> Wyloguj się</a>
                     </li>
                 </ul>
                 <div className="nav-right">
@@ -72,7 +75,6 @@ class TopBar extends Component {
                        </div>
                     </div>
                     <Notifications />
-                    <button className="btn btn-secondary" onClick={() => this.logout()}>Wyloguj się</button>
                 </div>
             </div>
         </div>
