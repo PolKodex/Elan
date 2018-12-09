@@ -21,21 +21,33 @@ export default class Post extends Component {
         this.setState({ newComment: event.target.value });
     }
 
-    commentsModalToggle = () => {
-        postsApi
-            .getComments(this.props.id, 0, 10)
+    loadComments = () => {
+        postsApi.getComments(this.props.id, 0, 10)
             .then(function(response) {
+                let sortFunc = (a, b) => new Date(a.createdOn) - new Date(b.createdOn);
+                response.sort(sortFunc);
                 this.setState({ 
                     comments: response,
-                    commentsCount: response.length,
-                    commentsOpened: !this.state.commentsOpened 
+                    commentsCount: response.length
                  });
-            }.bind(this));
+            }.bind(this));       
+    }
+
+    commentsModalToggle = () => {
+        this.setState({commentsOpened: !this.state.commentsOpened });
+        this.loadComments();
     }
 
     commentPost = () => {
-        postsApi.commentPost(this.state.newComment, this.props.id);
-        this.setState({ newComment: '' });
+        if(!this.state.newComment.trim()) {
+            return;
+        }
+
+        postsApi.commentPost(this.state.newComment, this.props.id).then(() => {
+            this.setState({ newComment: '' });
+            this.loadComments();       
+        });
+
     }
 
     addReaction = () => {
@@ -52,14 +64,8 @@ export default class Post extends Component {
     toggleCommentReaction = (id) => {
         postsApi
             .setReaction(id)
-            .then((count) => postsApi
-            .getComments(this.props.id, 0, 10)
-                .then(function(response) {
-                    this.setState({ 
-                        comments: response,
-                        commentsCount: response.length,
-                    });
-                }.bind(this))
+            .then((count) => 
+                this.loadComments()
             );
     }
 
@@ -106,8 +112,8 @@ export default class Post extends Component {
     }
 
     renderCommentRow() {
-        return this.state.comments.map(p => (
-            <a className="list-group-item list-group-item-action flex-column align-items-start">
+        return this.state.comments.map((p,index) => (
+            <a className="list-group-item list-group-item-action flex-column align-items-start" key={index}>
                 <div className="d-flex w-100 justify-content-between">
                     <h5 className="mb-1"><strong>{p.createdBy}</strong></h5>
                     <small>{dateUtils.getFormattedDate(p.createdOn)}</small>
@@ -129,16 +135,18 @@ export default class Post extends Component {
                             </div>
                             <div className="modal-body">
                                 { this.renderCommentRow() }
+                            </div>
+                            <div className="modal-footer flex-column">
                                 <a className="list-group-item list-group-item-action flex-column align-items-start">
                                     <textarea   rows="3" 
                                                 className="form-control" 
                                                 onChange={this.newCommentChange} 
-                                                value={this.newComment}/>
+                                                value={this.state.newComment}/>
                                 </a>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-info" onClick={() => this.commentPost()}>Skomentuj</button>
-                                <button type="button" className="btn btn-secondary" onClick={() => this.commentsModalToggle()}>Zamknij</button>
+                                <div style={{marginTop: 5}}>
+                                    <button type="button" className="btn btn-info" onClick={() => this.commentPost()}>Skomentuj</button>
+                                    <button type="button" className="btn btn-secondary" onClick={() => this.commentsModalToggle()}>Zamknij</button>
+                                </div>
                             </div>
                         </div>
                     </div>

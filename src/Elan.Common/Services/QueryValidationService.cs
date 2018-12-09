@@ -11,6 +11,11 @@ namespace Elan.Common.Services
                 return false;
             }
 
+            if (query.Length < 3)
+            {
+                return false;
+            }
+
             return true;
         }
     }

@@ -63,7 +63,7 @@ export default class Wall extends Component {
                 reactions={item.reactions}
                 reactionsCount={item.reactionsCount}
                 commentsCount={item.commentsCount}
-                key={index}
+                key={this.state.posts.length - index}
                 date={item.createdOn} />)
 
         return (

@@ -7,6 +7,15 @@
 	max-width: 100%;
 }
 
+.modal-body {
+    max-height: calc(100vh - 312px);
+    overflow-y: scroll;
+}
+
+.modal-open {
+    overflow: scroll;
+}
+
 .post-comment textarea {
 	resize: none;
 }
