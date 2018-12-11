@@ -13,12 +13,18 @@ export default class Post extends Component {
             newComment: '',
             comments: [],
             commentsCount: props.commentsCount,
-            reactionsCount: props.reactionsCount
-        }
+            reactionsCount: props.reactionsCount,
+            canComment: false
+        };
     }
     
     newCommentChange = (event) => {
-        this.setState({ newComment: event.target.value });
+        var canComment = false;
+        if (event.target.value.length > 0) {
+            canComment = true;
+        }
+
+        this.setState({ newComment: event.target.value, canComment });
     }
 
     loadComments = () => {
@@ -42,9 +48,9 @@ export default class Post extends Component {
         if(!this.state.newComment.trim()) {
             return;
         }
-
+        this.setState({ canComment: false });
         postsApi.commentPost(this.state.newComment, this.props.id).then(() => {
-            this.setState({ newComment: '' });
+            this.setState({ newComment: '', canComment: false });
             this.loadComments();       
         });
 
@@ -152,7 +158,7 @@ export default class Post extends Component {
                                                 value={this.state.newComment}/>
                                 </a>
                                 <div style={{marginTop: 5}}>
-                                    <button type="button" className="btn btn-info" onClick={() => this.commentPost()}>Skomentuj</button>
+                                    <button type="button" className="btn btn-info" disabled={!this.state.canComment} onClick={() => this.commentPost()}>Skomentuj</button>
                                     <button type="button" className="btn btn-secondary" onClick={() => this.commentsModalToggle()}>Zamknij</button>
                                 </div>
                             </div>

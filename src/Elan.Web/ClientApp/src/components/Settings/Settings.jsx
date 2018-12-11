@@ -67,7 +67,7 @@ export default class Settings extends Component {
                 </div>
                 {!this.state.isBusy && <button type="submit" className="btn btn-primary" disabled={this.state.isSaved} onClick={this.saveSettings}>Zapisz</button>}
                 {this.state.isBusy && <div className="cssload-container">
-                                          <div className="cssload-whirlpool"></div>
+                                          <div className="cssload-whirlpool" />
                                       </div>}
                 {this.state.isSaved && <span> Zapisano! </span>}
             </div>
