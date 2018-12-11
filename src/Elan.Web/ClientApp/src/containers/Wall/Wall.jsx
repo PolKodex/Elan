@@ -10,7 +10,8 @@ export default class Wall extends Component {
         this.state = {
             postContent: '',
             selectedPostPrivacy: 0,
-            posts: []
+            posts: [],
+            canPost: false
         };
     }
 
@@ -32,7 +33,11 @@ export default class Wall extends Component {
     }
 
     postContentChange = (event) => {
-        this.setState({ postContent: event.target.value });
+        var canPost = false;
+        if (event.target.value.length > 0) {
+            canPost = true;
+        }
+        this.setState({ postContent: event.target.value, canPost });
     }
 
     changePostPrivacy = (event) => {
@@ -40,15 +45,12 @@ export default class Wall extends Component {
     }
 
     post = () => {
-        if (this.state.postContent.trim() === "") {
-            window.alert('Nie można wysłać pustego posta. Przykro nam :(');
-        } else {
-            savePost(this.state.postContent, this.state.selectedPostPrivacy)
-                .then(() => {
-                    this.setState({ postContent: "" });
-                    this.getPosts();
-                });
-        }
+        this.setState({ canPost: false });
+        savePost(this.state.postContent, this.state.selectedPostPrivacy)
+            .then(() => {
+                this.setState({ postContent: "" });
+                this.getPosts();
+            });
     };
 
     render() {
@@ -86,7 +88,7 @@ export default class Wall extends Component {
                                     </select>
                                 </div>
                                 <div className="col-3">
-                                    <button className="btn btn-sm btn-success my-2 my-sm-0" onClick={this.post}>Wyślij</button>
+                                    <button className="btn btn-sm btn-success my-2 my-sm-0" onClick={this.post} disabled={!this.state.canPost}>Wyślij</button>
                                 </div>
                             </div>
                         </div>
