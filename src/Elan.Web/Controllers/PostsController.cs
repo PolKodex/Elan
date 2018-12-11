@@ -66,7 +66,7 @@ namespace Elan.Web.Controllers
         {
             var currentUser = await _userService.GetUserByNameWithSettings(HttpContext.User.Identity.Name);
 
-            var posts = await _postsService.GetLatestPostsAsync(currentUser, skip, take);
+            var posts = await _postsService.GetLatestPostsAsync(currentUser, skip, take, out int count);
 
             var result = posts.Select(m => new ViewModels.Posts.PostViewModel(m));
 
