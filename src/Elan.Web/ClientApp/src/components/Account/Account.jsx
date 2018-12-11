@@ -29,7 +29,10 @@ export default class Account extends Component {
             lastNameEdit: '',
             descriptionEdit: '',
             ageEdit: 13,
-            owner: false
+            owner: false,
+            firstNameValid: false,
+            lastNameValid: false,
+            ageValid: false
         }
     }
     
@@ -51,6 +54,9 @@ export default class Account extends Component {
                     lastNameEdit: response.data.lastName,
                     descriptionEdit: response.data.description,
                     ageEdit: response.data.age,
+                    ageValid: true,
+                    firstNameValid: true,
+                    lastNameValid: true,
                     isPrivate: response.data.isPrivate,
                     isFriend: response.data.isFriend,
                     invitedByMe: response.data.invitedByMe,
@@ -163,6 +169,13 @@ export default class Account extends Component {
     }
 
     editUserClick = () => {
+        if (this.state.editUserClick) {
+            this.setState({
+                firstNameEdit: this.state.user.firstName,
+                lastNameEdit: this.state.user.lastName,
+                ageEdit: this.state.user.age
+            });
+        }
         this.setState({ editUserClick: !this.state.editUserClick });
     }
 
@@ -184,10 +197,24 @@ export default class Account extends Component {
     }
 
     firstNameChange = (event) => {
+        if (!event.target.value.trim()) {
+            this.setState({ firstNameValid: false });
+            this.setState({ firstNameMessage: "Imię jest wymagane" });
+        } else {
+            this.setState({ firstNameValid: true });
+            this.setState({ firstNameMessage: "" });
+        }
         this.setState({ firstNameEdit: event.target.value });
     }
 
     lastNameChange = (event) => {
+        if (!event.target.value.trim()) {
+            this.setState({ lastNameValid: false });
+            this.setState({ lastNameMessage: "Nazwisko jest wymagane" });
+        } else {
+            this.setState({ lastNameValid: true });
+            this.setState({ lastNameMessage: "" });
+        }
         this.setState({ lastNameEdit: event.target.value });
     }
 
@@ -196,6 +223,14 @@ export default class Account extends Component {
     }
 
     ageChange = (event) => {
+        const re = /^[0-9\b]+$/;
+        if (event.target.value.trim() && (!re.test(event.target.value) || event.target.value < 13 || event.target.value>150)) {
+            this.setState({ ageValid: false });
+            this.setState({ ageMessage: "Niepoprawna wartość" });
+        } else {
+            this.setState({ ageValid: true });
+            this.setState({ ageMessage: "" });
+        }
         this.setState({ ageEdit: event.target.value });
     }
 
@@ -432,6 +467,7 @@ export default class Account extends Component {
         if (this.state.ageEdit) {
             age = this.state.ageEdit;
         }
+        let isValid = this.state.firstNameValid && this.state.lastNameValid && this.state.ageValid;
 
         if (this.state.editUserClick) {
             return (
@@ -450,6 +486,7 @@ export default class Account extends Component {
                                         className="form-control"
                                         value={firstName}
                                         onChange={this.firstNameChange} />
+                                    <small className="form-text text-danger">{this.state.firstNameMessage}</small>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="edit-last-name">Nazwisko</label>
@@ -459,6 +496,7 @@ export default class Account extends Component {
                                         className="form-control"
                                         value={lastName}
                                         onChange={this.lastNameChange} />
+                                    <small className="form-text text-danger">{this.state.lastNameMessage}</small>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="edit-description">Opis</label>
@@ -472,17 +510,17 @@ export default class Account extends Component {
                                 <div className="form-group">
                                     <label htmlFor="edit-age">Wiek</label>
                                     <input id="edit-age"
-                                        type="number"
+                                        type="text"
+                                        pattern="[0-9]*"
                                         placeholder="Wiek"
-                                        min="13"
-                                        max="150"
                                         className="form-control"
                                         value={age}
                                         onChange={this.ageChange} />
+                                    <small className="form-text text-danger">{this.state.ageMessage}</small>
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={() => this.editUser()}>Zapisz</button>
+                                <button type="button" className="btn btn-primary" onClick={() => this.editUser()} disabled={!isValid}>Zapisz</button>
                                 <button type="button" className="btn btn-secondary" onClick={() => this.editUserClick()}>Zamknij</button>
                             </div>
                         </div>
