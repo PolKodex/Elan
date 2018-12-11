@@ -120,7 +120,7 @@ namespace Elan.Posts.Services
 
             if (user.Friends.All(x => x.FirstUserId != currentUser.Id && x.SecondUserId != currentUser.Id))
             {
-                userPostsQuery = postsSet
+                userPostsQuery = userPostsQuery
                     .Where(x => x.VisibilitySetting == PrivacySetting.Everyone);
             }
 
