@@ -22,9 +22,7 @@ namespace Elan.Web.Controllers
         private readonly IUserSearchService _userSearchService;
         private readonly IUserProfileService _userProfileService;
         private readonly IUserImageService _userImageService;
-
         private readonly IFriendsInvitationService _friendsInvitationService;
-
 
         public UserController(
             IUserSettingsService userSettingsService,
@@ -74,12 +72,12 @@ namespace Elan.Web.Controllers
         }
 
         [HttpPut]
-        public async Task ChangeSetting([FromBody]UserSettingViewModel setting)
+        public async Task ChangeSettings([FromBody]List<UserSettingViewModel> settings)
         {
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
-            await _userSettingsService.ChangeSetting(currentUser, setting);
+            await _userSettingsService.ChangeSettings(currentUser, settings);
         }
-
+        
         [HttpPut]
         public async Task<ViewModels.Users.UserProfileViewModel> UpdateProfile([FromBody]UserProfileViewModel model)
         {

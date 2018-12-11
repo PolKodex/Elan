@@ -9,6 +9,7 @@ using Elan.Account.Models;
 using Elan.Common.Extensions;
 using Elan.Data.Contracts;
 using Microsoft.EntityFrameworkCore;
+using ElanUserSetting = Elan.Data.Models.Account.ElanUserSetting;
 
 namespace Elan.Account.Services
 {
@@ -76,15 +77,21 @@ namespace Elan.Account.Services
             await _dataService.SaveDbAsync();
         }
 
-        public async Task ChangeSetting(ElanUser user, UserSettingViewModel setting)
+        public async Task ChangeSettings(ElanUser user, List<UserSettingViewModel> settings)
         {
-            var userSetting = new ElanUserSetting
+            var settingsSet = _dataService.GetSet<ElanUserSetting>();
+
+            foreach (var setting in settings)
             {
-                UserId = user.Id,
-                Setting = setting.Setting,
-                PrivacySetting = setting.PrivacySetting
-            };
-            _dataService.GetSet<ElanUserSetting>().Update(userSetting);
+                var userSetting = new ElanUserSetting
+                {
+                    UserId = user.Id,
+                    Setting = setting.Setting,
+                    PrivacySetting = setting.PrivacySetting
+                };
+                settingsSet.Update(userSetting);
+            }
+
             await _dataService.SaveDbAsync();
         }
     }

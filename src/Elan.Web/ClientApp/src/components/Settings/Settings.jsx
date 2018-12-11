@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Settings.css';
-import { getSettings, saveSetting } from '../../api/UserApi';
+import { getSettings, saveSettings } from '../../api/UserApi';
 
 export default class Settings extends Component {
 
@@ -8,8 +8,10 @@ export default class Settings extends Component {
         super(props);
         this.state = {
             searchSettings: {},
-            contentSettings: {}
-        }
+            contentSettings: {},
+            isBusy: false,
+            isSaved: false
+    };
     }
 
     componentDidMount(){
@@ -29,19 +31,20 @@ export default class Settings extends Component {
     handleChangeSearch = (e) => {
         let searchSettings = this.state.searchSettings;
         searchSettings.privacySetting = e.target.value;
-        this.setState({searchSettings: searchSettings})
-
+        this.setState({ searchSettings: searchSettings, isSaved: false });
+       
     }
 
     handleChangeContent = (e) => {
         let contentSettings = this.state.contentSettings;
         contentSettings.privacySetting = e.target.value;
-        this.setState({contentSettings: contentSettings});
+        this.setState({contentSettings: contentSettings, isSaved: false});
     }
 
     saveSettings = () => {
-        saveSetting(this.state.searchSettings);
-        saveSetting(this.state.contentSettings);
+        this.setState({ isBusy: true });
+        saveSettings([this.state.searchSettings, this.state.contentSettings])
+            .then(() => this.setState({ isBusy: false, isSaved: true }));
     }
 
     render() {
@@ -62,7 +65,11 @@ export default class Settings extends Component {
                       <option value="1">Znajomi</option>
                     </select>
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={this.saveSettings}>Save</button>
+                {!this.state.isBusy && <button type="submit" className="btn btn-primary" disabled={this.state.isSaved} onClick={this.saveSettings}>Zapisz</button>}
+                {this.state.isBusy && <div className="cssload-container">
+                                          <div className="cssload-whirlpool"></div>
+                                      </div>}
+                {this.state.isSaved && <span> Zapisano! </span>}
             </div>
         );
     }

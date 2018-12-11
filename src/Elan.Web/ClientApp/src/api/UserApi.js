@@ -7,8 +7,8 @@ export const findUsers = async (query) => {
     var api = baseUrl + 'FindUsers';
 
     return await axios.get(api,
-        {   
-        	params: {
+        {
+            params: {
                 query: query
             },
             headers: {
@@ -28,7 +28,7 @@ export const updateUser = async (id, firstName, lastName, description, age) => {
             Description: description,
             Age: age
         },
-        {   
+        {
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -92,22 +92,20 @@ export const getSettings = async () => {
     var api = baseUrl + 'GetSettings';
 
     return await axios.get(api,
-        {   
+        {
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         }).then((response) => response.data);
 };
 
-export const saveSetting = async (setting) => {
-    var api = baseUrl + 'ChangeSetting';
-        return axios.put(api, setting,
+export const saveSettings = async (settings) => {
+    var api = baseUrl + 'ChangeSettings';
+    return axios.put(api,
+        settings,
         {
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
-        })
-        .then(function (response) {
-            return response.data;
         });
 }
