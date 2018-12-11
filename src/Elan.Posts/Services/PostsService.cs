@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Elan.Common.Enums;
+﻿using Elan.Common.Enums;
 using Elan.Data.Contracts;
 using Elan.Data.Models.Account;
+using Elan.Data.Models.Friends;
 using Elan.Data.Models.Posts;
 using Elan.Posts.Contracts;
 using Elan.Posts.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Elan.Posts.Services
 {
@@ -69,48 +70,30 @@ namespace Elan.Posts.Services
         public async Task<List<Post>> GetLatestPostsAsync(ElanUser user, int skip = 0, int take = 10)
         {
             var postsSet = _dataService.GetSet<Post>();
-            var posts =
-                await postsSet
-                    .Include(m => m.Reactions)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.FirstUserFriends)
-                    .ThenInclude(m => m.SecondUser.FirstUserFriends)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.FirstUserFriends)
-                    .ThenInclude(m => m.SecondUser.SecondUserFriends)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.SecondUserFriends)
-                    .ThenInclude(m => m.FirstUser.FirstUserFriends)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.SecondUserFriends)
-                    .ThenInclude(m => m.FirstUser.SecondUserFriends)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.Images)
-                    .Include(m => m.TargetUser)
-                    .Where(m => m.BasePostId == null)
-                    .Where(m =>
-                        m.CreatedBy.Id == user.Id ||
-                        (
-                            (m.VisibilitySetting == PrivacySetting.Friends) && 
-                            (
-                                m.CreatedBy.FirstUserFriends.Any(x => x.SecondUserId == user.Id) ||
-                                m.CreatedBy.SecondUserFriends.Any(x => x.FirstUserId == user.Id)
-                            )
-                        )
 
-                    )
-                    .OrderByDescending(m => m.CreatedOn)
-                    .Skip(skip * take)
-                    .Take(take)
-                    .OrderBy(m => m.CreatedOn)
-                    .ToListAsync();
+            var userFriends = await _dataService.GetSet<FriendsRelation>()
+                                .Where(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id)
+                                .Select(x => x.FirstUserId == user.Id ? x.SecondUserId : x.FirstUserId)
+                                .ToListAsync();
+            userFriends.Add(user.Id);
 
-            foreach (var post in posts)
+            var userFriendsSet = new HashSet<Guid>(userFriends);
+
+            var userPosts = await postsSet
+                                .Where(x => userFriendsSet.Contains(x.CreatedById))             
+                                .OrderByDescending(m => m.CreatedOn)
+                                .Skip(skip * take)
+                                .Take(take)
+                                .Include(m => m.CreatedBy)
+                                .Include(m => m.Reactions)
+                                .ToListAsync();
+
+            foreach (var post in userPosts)
             {
                 post.CommentsCount = postsSet.Count(x => x.BasePostId == post.Id);
             }
 
-            return posts;
+            return userPosts;
         }
 
         public async Task<List<Post>> GetPostsForUserAsync(ElanUser user, ElanUser currentUser, int skip, int take)
@@ -140,7 +123,7 @@ namespace Elan.Posts.Services
                         user.Id == currentUser.Id ||
                         m.VisibilitySetting == PrivacySetting.Everyone ||
                         (
-                            (m.VisibilitySetting == PrivacySetting.Friends) && 
+                            (m.VisibilitySetting == PrivacySetting.Friends) &&
                             (
                                 m.CreatedBy.FirstUserFriends.Any(x => x.SecondUserId == currentUser.Id) ||
                                 m.CreatedBy.SecondUserFriends.Any(x => x.FirstUserId == currentUser.Id)

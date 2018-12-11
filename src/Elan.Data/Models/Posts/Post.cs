@@ -9,6 +9,8 @@ namespace Elan.Data.Models.Posts
     public class Post
     {
         public int Id { get; set; }
+        public Guid CreatedById { get; set; }
+        public Guid? TargetUserId { get; set; }
         public int? BasePostId { get; set; }
         public string Content { get; set; }
         public DateTime CreatedOn { get; set; }
