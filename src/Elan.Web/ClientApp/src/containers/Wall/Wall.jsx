@@ -13,7 +13,7 @@ export default class Wall extends Component {
             posts: [],
             canPost: false,
             canLoad: true,
-            page: 0,
+            page: 1,
             totalCount: 0
         };
     }
@@ -113,7 +113,7 @@ export default class Wall extends Component {
                     </div>
                 </div>
                 {posts}
-                {(this.state.page + 1) * 10 < this.state.totalCount && <button className="btn btn-primary" onClick={this.loadOlderPosts} disabled={!this.state.canLoad}>Doczytaj starsze..</button>}
+                {this.state.page * 10 < this.state.totalCount && <button className="btn btn-primary" onClick={this.loadOlderPosts} disabled={!this.state.canLoad}>Doczytaj starsze..</button>}
             </div>
         );
     }
