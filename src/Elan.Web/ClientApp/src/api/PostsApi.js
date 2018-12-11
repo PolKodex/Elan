@@ -15,11 +15,15 @@ export const savePost = async (content, privacySetting) => {
         }).then((response) => response.data);
 };
 
-export const getLatestPosts = async () => {
+export const getLatestPosts = async (skip, take) => {
     var api = "/api/Posts/GetLatestPosts";
 
     return await axios.get(api,
         {
+            params: {
+                skip: skip,
+                take: take
+            },
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }

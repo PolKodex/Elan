@@ -11,7 +11,10 @@ export default class Wall extends Component {
             postContent: '',
             selectedPostPrivacy: 0,
             posts: [],
-            canPost: false
+            canPost: false,
+            canLoad: true,
+            page: 0,
+            totalCount: 0
         };
     }
 
@@ -25,10 +28,10 @@ export default class Wall extends Component {
     }
 
     getPosts = () => {
-        getLatestPosts().then((posts) => {
+        getLatestPosts(0, 10).then((postListing) => {
             let sortFunc = (a, b) => new Date(b.createdOn) - new Date(a.createdOn);
-            posts.sort(sortFunc);
-            this.setState({ posts });
+            postListing.posts.sort(sortFunc);
+            this.setState({ posts: postListing.posts, totalCount: postListing.totalCount });
         });
     }
 
@@ -51,6 +54,21 @@ export default class Wall extends Component {
                 this.setState({ postContent: "" });
                 this.getPosts();
             });
+    };
+
+    loadOlderPosts = () => {
+        this.setState({ canLoad: false });
+        getLatestPosts(this.state.page, 10).then((postListing) => {
+            let sortFunc = (a, b) => new Date(b.createdOn) - new Date(a.createdOn);
+            postListing.posts.sort(sortFunc);
+            this.setState(
+                {
+                    posts: this.state.posts.concat(postListing.posts),
+                    totalCount: postListing.totalCount,
+                    page: this.state.page + 1,
+                    canLoad: true
+                });
+        });
     };
 
     render() {
@@ -95,6 +113,7 @@ export default class Wall extends Component {
                     </div>
                 </div>
                 {posts}
+                {(this.state.page + 1) * 10 < this.state.totalCount && <button className="btn btn-primary" onClick={this.loadOlderPosts} disabled={!this.state.canLoad}>Doczytaj starsze..</button>}
             </div>
         );
     }
