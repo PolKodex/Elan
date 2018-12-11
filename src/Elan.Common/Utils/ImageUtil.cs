@@ -9,7 +9,7 @@ namespace Elan.Common.Utils
 {
     public static class ImageUtil
     {
-        public static string Resize(string rawImage, int width, int height)
+        public static string Resize(string rawImage, int width, int height = 0)
         {
             int commaIndex = rawImage.IndexOf(',', StringComparison.Ordinal);
             var imagePrefix = rawImage.Substring(0, commaIndex + 1);
@@ -18,6 +18,15 @@ namespace Elan.Common.Utils
             IImageFormat format;
             using (var image = Image.Load(imageBytes, out format))
             {
+                if (width > image.Width)
+                {
+                    width = image.Width;
+                }
+                else if (height == 0)
+                {
+                    height = (int)(width * ((decimal)image.Height / image.Width));
+                }
+
                 image.Mutate(x => x
                     .Resize(width, height));
 

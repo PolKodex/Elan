@@ -193,7 +193,7 @@ export default class Account extends Component {
 
     renderPicturesThumbnails = () => {
         return this.state.picturesList.map((item, index) =>
-            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '/photos/', item.title));
+            this.getPictureThumbnail(index, item.id, this.getPictureSource(item.rawValue), '', item.title));
     }
 
     getPictureSource = (source) => {
@@ -462,7 +462,9 @@ export default class Account extends Component {
                                 <h5 className="modal-title">Wszystkie zdjęcia</h5>
                             </div>
                             <div className="modal-body">
-                                {this.renderPicturesThumbnails()}
+                                <div className="row">
+                                    {this.renderPicturesThumbnails()}
+                                </div>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={() => this.pictureListClick()}>Zamknij</button>
