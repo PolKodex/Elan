@@ -131,7 +131,7 @@ export default class Post extends Component {
                             <small>{dateUtils.getFormattedDate(p.createdOn)}</small>
                         </div>
                         <p className="mb-1">{p.content}</p>
-                        <small className="faded"><a className="link" onClick={() => this.toggleCommentReaction(p.id)}><i className="fas fa-beer"></i> Piwa ({p.reactionsCount})</a></small>
+                        <small className="faded"><a className="link comment-link" onClick={() => this.toggleCommentReaction(p.id)}><i className="fas fa-beer"></i> Piwa ({p.reactionsCount})</a></small>
                     </div>
                 </div>
             </span>)

@@ -30,6 +30,15 @@
 
 .post-comment a {
 	color: #000000;
+
+}
+
+.comment-link {
+    pointer-events: visible;
+}
+
+.post-comment {
+    pointer-events: none;
 }
 
 .faded {
