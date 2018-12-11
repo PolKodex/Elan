@@ -22,5 +22,7 @@ namespace Elan.Data.Models.Posts
         public virtual ICollection<PostReaction> Reactions { get; set; }
         [NotMapped]
         public int CommentsCount { get; set; }
+        [NotMapped]
+        public ElanUserImage UserImage { get; set; }
     }
 }
