@@ -1,4 +1,5 @@
 ﻿using System;
+using Elan.Common.Utils;
 using Elan.Data.Models.Account;
 
 namespace Elan.Web.ViewModels.Users
@@ -14,7 +15,7 @@ namespace Elan.Web.ViewModels.Users
         public UserImageViewModel(ElanUserImage image)
         {
             Id = image.Id.ToString();
-            RawValue = image.RawValue;
+            RawValue = ImageUtil.Resize(image.RawValue, 1024);
             UploadDate = image.UploadDate;
             LastUpdateDate = image.LastUpdateDate;
             IsMain = image.IsMain;

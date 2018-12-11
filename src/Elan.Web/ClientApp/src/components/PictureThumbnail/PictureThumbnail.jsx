@@ -42,7 +42,7 @@ export default class PictureThumbnail extends Component {
     renderBigPictureModal() {
         if (this.state.showBigPictureModal)
         return (
-            <div className="modal show" tabIndex="-1" role="dialog">
+            <div className="modal show modal-fixed" tabIndex="-1" role="dialog">
                 <div className="modal-dialog modal-lg" role="document">
                     <div className="modal-content">
                         <div className="modal-body">
