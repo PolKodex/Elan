@@ -34,7 +34,7 @@ namespace Elan.Account.Services
 
             if (model.IsMain)
             {
-                var currentMainImage = await userImageSet.FirstOrDefaultAsync(x => x.IsMain);
+                var currentMainImage = await userImageSet.FirstOrDefaultAsync(x => x.UserId == model.User.Id && x.IsMain);
                 if (currentMainImage != null)
                 {
                     currentMainImage.IsMain = false;
