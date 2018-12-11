@@ -66,9 +66,9 @@ namespace Elan.Web.Controllers
         {
             var currentUser = await _userService.GetUserByNameWithSettings(HttpContext.User.Identity.Name);
 
-            var posts = await _postsService.GetLatestPostsAsync(currentUser, skip, take);
+            var postListing = await _postsService.GetLatestPostsAsync(currentUser, skip, take);
 
-            var result = posts.Select(m => new ViewModels.Posts.PostViewModel(m));
+            var result = new ViewModels.Posts.PostListingViewModel(postListing);
 
             return Json(result);
         }
@@ -79,9 +79,9 @@ namespace Elan.Web.Controllers
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
             var user = await _userService.GetUserById(userId);
 
-            var posts = await _postsService.GetPostsForUserAsync(user, currentUser, skip, take);
+            var postListing = await _postsService.GetPostsForUserAsync(user, currentUser, skip, take);
 
-            var result = posts.Select(m => new ViewModels.Posts.PostViewModel(m));
+            var result = new ViewModels.Posts.PostListingViewModel(postListing);
 
             return Json(result);
         }
@@ -140,9 +140,9 @@ namespace Elan.Web.Controllers
         [HttpGet]
         public async Task<JsonResult> GetPostComments(int postId, int skip = 0, int take = 10)
         {
-            var comments = await _postsService.GetPostComments(postId, skip, take);
+            var commentsListing = await _postsService.GetPostComments(postId, skip, take);
 
-            var result = comments.Select(m => new ViewModels.Posts.PostViewModel(m));
+            var result = new ViewModels.Posts.PostListingViewModel(commentsListing);
 
             return Json(result);
         }

@@ -42,5 +42,5 @@ export const getUserPosts = async (userId, skip = 0, take = 10) => {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
-    return response;
+    return response.data;
 };

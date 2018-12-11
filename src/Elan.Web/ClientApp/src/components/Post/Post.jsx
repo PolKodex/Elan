@@ -2,7 +2,6 @@
 import './Post.css';
 import * as postsApi from '../../api/PostsApi';
 import * as dateUtils from '../../utils/DateUtils';
-import * as signalR from '@aspnet/signalr';
 
 export default class Post extends Component {
     constructor(props) {
@@ -14,7 +13,10 @@ export default class Post extends Component {
             comments: [],
             commentsCount: props.commentsCount,
             reactionsCount: props.reactionsCount,
-            canComment: false
+            canComment: false,
+            page: 1,
+            totalCount: 0,
+            canLoad: true
         };
     }
     
@@ -27,51 +29,59 @@ export default class Post extends Component {
         this.setState({ newComment: event.target.value, canComment });
     }
 
-    loadComments = () => {
-        postsApi.getComments(this.props.id, 0, 10)
+    loadComments = (page, count) => {
+        postsApi.getComments(this.props.id, page, count)
             .then(function(response) {
                 let sortFunc = (a, b) => new Date(a.createdOn) - new Date(b.createdOn);
-                response.sort(sortFunc);
+                response.posts.sort(sortFunc);
                 this.setState({ 
-                    comments: response,
-                    commentsCount: response.length
+                    comments: response.posts,
+                    commentsCount: response.totalCount
                  });
             }.bind(this));       
     }
 
+    loadOlderComments = () => {
+        postsApi.getComments(this.props.id, this.state.page, 10)
+            .then(function (response) {
+                let sortFunc = (a, b) => new Date(a.createdOn) - new Date(b.createdOn);
+                response.posts.sort(sortFunc);
+                this.setState({
+                    comments: response.posts.concat(this.state.comments),
+                    commentsCount: response.totalCount,
+                    page: this.state.page + 1
+                });
+            }.bind(this));  
+    }
+
     commentsModalToggle = () => {
         this.setState({commentsOpened: !this.state.commentsOpened });
-        this.loadComments();
+        this.loadComments(0, (this.state.page) * 10);
     }
 
     commentPost = () => {
         if(!this.state.newComment.trim()) {
             return;
         }
+
         this.setState({ canComment: false });
         postsApi.commentPost(this.state.newComment, this.props.id).then(() => {
             this.setState({ newComment: '', canComment: false });
-            this.loadComments();       
+            this.loadComments(0, (this.state.page) * 10);     
         });
-
-    }
-
-    addReaction = () => {
-
     }
 
     toggleReaction = () => {
         postsApi
             .setReaction(this.props.id)
             .then((count) => this.setState({ reactionsCount: count }));
-
     }
 
     toggleCommentReaction = (id) => {
         postsApi
             .setReaction(id)
-            .then((count) => 
-                this.loadComments()
+            .then(() => 
+                this.loadComments(0, (this.state.page) * 10)
             );
     }
 
@@ -148,6 +158,7 @@ export default class Post extends Component {
                                 <h5 className="modal-title">Komentarze</h5>
                             </div>
                             <div className="modal-body">
+                                {this.state.page * 10 < this.state.commentsCount && <button className="btn btn-primary" onClick={this.loadOlderComments} disabled={!this.state.canLoad}>Doczytaj starsze..</button>}
                                 { this.renderCommentRow() }
                             </div>
                             <div className="modal-footer flex-column">

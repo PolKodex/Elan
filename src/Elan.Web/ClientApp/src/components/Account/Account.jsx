@@ -6,7 +6,6 @@ import * as userApi from '../../api/UserApi';
 import * as friendsApi from '../../api/FriendsApi';
 import * as jwtUtils from '../../utils/JwtUtils';
 import './Account.css';
-import { runInThisContext } from 'vm';
 
 export default class Account extends Component {
     constructor(props) {
@@ -32,10 +31,13 @@ export default class Account extends Component {
             owner: false,
             firstNameValid: false,
             lastNameValid: false,
-            ageValid: false
-        }
+            ageValid: false,
+            canLoad: true,
+            page: 1,
+            totalCount: 0
+        };
     }
-    
+
     componentDidMount() {
         this.getData();
     }
@@ -65,29 +67,33 @@ export default class Account extends Component {
 
                 if (!response.data.isPrivate) {
                     friendsApi.getFriends(userId)
-                        .then(function(response) {
+                        .then(function (response) {
                             this.setState({ friendsList: response.data });
                         }.bind(this));
 
                     accountApi.getUserPictures(userId)
-                        .then(function(response) {
+                        .then(function (response) {
                             this.setState({ picturesList: response.data });
                         }.bind(this));
 
                     accountApi.getUserPosts(userId, 0, 10)
-                        .then(function (response) {
+                        .then(function (postListing) {
                             let sortFunc = (a, b) => new Date(b.createdOn) - new Date(a.createdOn);
-                            response.data.sort(sortFunc);
-                            this.setState({ userPostsList: response.data });
+                            postListing.posts.sort(sortFunc);
+                            this.setState({
+                                userPostsList: postListing.posts,
+                                totalCount: postListing.totalCount
+                            });
                         }.bind(this));
                 }
             }.bind(this));
 
         this.setState(
             {
-                owner: this.state.userId === undefined || 
-                (this.state.userId !== undefined && this.state.userId.trim() === "") || 
-                this.state.userId === jwtUtils.decodeJwt(localStorage.getItem('token')).jti}
+                owner: this.state.userId === undefined ||
+                    (this.state.userId !== undefined && this.state.userId.trim() === "") ||
+                    this.state.userId === jwtUtils.decodeJwt(localStorage.getItem('token')).jti
+            }
         );
     }
 
@@ -109,7 +115,7 @@ export default class Account extends Component {
     uploadImage = () => {
         userApi.uploadImage(this.state.mainPictureUpload, 1)
             .then(function (response) {
-                var user = this.state.user; 
+                var user = this.state.user;
                 var picturesList = this.state.picturesList;
 
                 user.mainImage = response;
@@ -198,6 +204,22 @@ export default class Account extends Component {
         return source;
     }
 
+    loadOlderPosts = () => {
+        this.setState({ canLoad: false });
+        accountApi.getUserPosts(this.state.userId, this.state.page, 10)
+            .then(function (postListing) {
+                let sortFunc = (a, b) => new Date(b.createdOn) - new Date(a.createdOn);
+                postListing.posts.sort(sortFunc);
+                this.setState(
+                    {
+                        userPostsList: this.state.userPostsList.concat(postListing.posts),
+                        totalCount: postListing.totalCount,
+                        page: this.state.page + 1,
+                        canLoad: true
+                    });
+            }.bind(this));
+    };
+
     firstNameChange = (event) => {
         if (!event.target.value.trim()) {
             this.setState({ firstNameValid: false });
@@ -226,7 +248,7 @@ export default class Account extends Component {
 
     ageChange = (event) => {
         const re = /^[0-9\b]+$/;
-        if (event.target.value.trim() && (!re.test(event.target.value) || event.target.value < 13 || event.target.value>150)) {
+        if (event.target.value.trim() && (!re.test(event.target.value) || event.target.value < 13 || event.target.value > 150)) {
             this.setState({ ageValid: false });
             this.setState({ ageMessage: "Niepoprawna wartość" });
         } else {
@@ -263,7 +285,7 @@ export default class Account extends Component {
     }
 
     inviteToFriends = () => {
-        friendsApi.inviteToFriends(this.state.userId).then(() => this.setState({invitedByMe: true}));
+        friendsApi.inviteToFriends(this.state.userId).then(() => this.setState({ invitedByMe: true }));
     }
 
     removeFriend = () => {
@@ -546,7 +568,7 @@ export default class Account extends Component {
 
         let userPosts = this.state.userPostsList.map((item, index) =>
             <Post
-                id = {item.id}
+                id={item.id}
                 userId={item.userId}
                 author={item.createdBy}
                 pictureSource={item.authorMainImageRawValue}
@@ -567,7 +589,7 @@ export default class Account extends Component {
 
                         <div className="media-body">
                             <h3>
-                                {this.state.user.firstName} {this.state.user.lastName} 
+                                {this.state.user.firstName} {this.state.user.lastName}
                                 {this.renderEditButton()}
                             </h3>
 
@@ -607,6 +629,7 @@ export default class Account extends Component {
                 </div>}
 
                 {userPosts}
+                {this.state.page * 10 < this.state.totalCount && <button className="btn btn-primary" onClick={this.loadOlderPosts} disabled={!this.state.canLoad}>Doczytaj starsze..</button>}
 
                 {this.renderMainPictureModal()}
                 {this.renderFriendsListModal()}

@@ -69,7 +69,7 @@ namespace Elan.Posts.Services
             return postComment;
         }
 
-        public async Task<List<Post>> GetLatestPostsAsync(ElanUser user, int skip = 0, int take = 10)
+        public async Task<PostListingViewModel> GetLatestPostsAsync(ElanUser user, int skip = 0, int take = 10)
         {
             var postsSet = _dataService.GetSet<Post>();
 
@@ -81,14 +81,17 @@ namespace Elan.Posts.Services
 
             var userFriendsSet = new HashSet<Guid>(userFriends);
 
-            var userPosts = await postsSet
-                                .Where(x => x.BasePostId == null && userFriendsSet.Contains(x.CreatedById))             
-                                .OrderByDescending(m => m.CreatedOn)
-                                .Skip(skip * take)
-                                .Take(take)
-                                .Include(m => m.CreatedBy)
-                                .Include(m => m.Reactions)
-                                .ToListAsync();
+            var userPostsQuery = postsSet
+                                .Where(x => x.BasePostId == null && userFriendsSet.Contains(x.CreatedById))
+                                .OrderByDescending(m => m.CreatedOn);
+
+
+            var totalCount = userPostsQuery.Count();
+            var userPosts = await userPostsQuery.Skip(skip * take)
+                               .Take(take)
+                               .Include(m => m.CreatedBy)
+                               .Include(m => m.Reactions)
+                               .ToListAsync();
 
             var filteredUsers = userFriendsSet.Where(x => userPosts.Any(y => y.CreatedById == x));
             var filteredUsersImages = await GetUserAvatarThumbnails(filteredUsers);
@@ -99,39 +102,52 @@ namespace Elan.Posts.Services
                 post.UserImage = filteredUsersImages[post.CreatedById];
             }
 
-            return userPosts;
+            var model = new PostListingViewModel
+            {
+                Posts = userPosts,
+                TotalCount = totalCount
+            };
+
+            return model;
         }
 
-        public async Task<List<Post>> GetPostsForUserAsync(ElanUser user, ElanUser currentUser, int skip, int take)
+        public async Task<PostListingViewModel> GetPostsForUserAsync(ElanUser user, ElanUser currentUser, int skip, int take)
         {
             var postsSet = _dataService.GetSet<Post>();
 
-            var userPosts = postsSet
+            var userPostsQuery = postsSet
                 .Where(x => x.BasePostId == null && x.CreatedById == user.Id);
 
             if (user.Friends.All(x => x.FirstUserId != currentUser.Id && x.SecondUserId != currentUser.Id))
             {
-                userPosts = postsSet
+                userPostsQuery = postsSet
                     .Where(x => x.VisibilitySetting == PrivacySetting.Everyone);
             }
 
-            var result = await userPosts.OrderByDescending(m => m.CreatedOn)
+            var totalCount = userPostsQuery.Count();
+            var posts = await userPostsQuery.OrderByDescending(m => m.CreatedOn)
                             .Skip(skip * take)
                             .Take(take)
                             .Include(m => m.CreatedBy)
                             .Include(m => m.Reactions)
                             .ToListAsync();
 
-            var users = result.Select(x => x.CreatedById).Distinct();
+            var users = posts.Select(x => x.CreatedById).Distinct();
             var authorsImages = await GetUserAvatarThumbnails(users);
 
-            foreach (var post in result)
+            foreach (var post in posts)
             {
                 post.CommentsCount = postsSet.Count(x => x.BasePostId == post.Id);
                 post.UserImage = authorsImages[post.CreatedById];
             }
 
-            return result;
+            var model = new PostListingViewModel
+            {
+                Posts = posts,
+                TotalCount = totalCount
+            };
+
+            return model;
         }
 
         public async Task DeletePost(int postId)
@@ -188,11 +204,14 @@ namespace Elan.Posts.Services
             return post;
         }
 
-        public async Task<List<Post>> GetPostComments(int postId, int skip = 0, int take = 10)
+        public async Task<PostListingViewModel> GetPostComments(int postId, int skip = 0, int take = 10)
         {
-            var result = await _dataService
+            var commentsQuery = _dataService
                 .GetSet<Post>()
-                .Where(x => x.BasePostId == postId)
+                .Where(x => x.BasePostId == postId);
+
+            var totalCount = commentsQuery.Count();
+            var comments = await commentsQuery
                 .OrderByDescending(m => m.CreatedOn)
                 .Skip(skip * take)
                 .Take(take)
@@ -200,15 +219,21 @@ namespace Elan.Posts.Services
                 .Include(x => x.CreatedBy)
                 .ToListAsync();
 
-            var users = result.Select(x => x.CreatedById).Distinct();
+            var users = comments.Select(x => x.CreatedById).Distinct();
             var authorsImages = await GetUserAvatarThumbnails(users);
 
-            foreach (var post in result)
+            foreach (var post in comments)
             {
                 post.UserImage = authorsImages[post.CreatedById];
             }
 
-            return result;
+            var model = new PostListingViewModel
+            {
+                Posts = comments,
+                TotalCount = totalCount
+            };
+
+            return model;
         }
         private async Task<Dictionary<Guid, ElanUserImage>> GetUserAvatarThumbnails(IEnumerable<Guid> users)
         {
