@@ -10,8 +10,9 @@ export default class Wall extends Component {
         this.state = {
             postContent: '',
             selectedPostPrivacy: 0,
-            posts: []
-        }
+            posts: [],
+            canPost: false
+        };
     }
 
     componentDidMount() {
@@ -32,7 +33,11 @@ export default class Wall extends Component {
     }
 
     postContentChange = (event) => {
-        this.setState({ postContent: event.target.value });
+        var canPost = false;
+        if (event.target.value.length > 0) {
+            canPost = true;
+        }
+        this.setState({ postContent: event.target.value, canPost });
     }
 
     changePostPrivacy = (event) => {
@@ -40,15 +45,12 @@ export default class Wall extends Component {
     }
 
     post = () => {
-        if (this.state.postContent.trim() === "") {
-            window.alert('Nie można wysłać pustego posta. Przykro nam :(');
-        } else {
-            savePost(this.state.postContent, this.state.selectedPostPrivacy)
-                .then(() => {
-                    this.setState({ postContent: "" })
-                    this.getPosts();
-                });
-        }
+        this.setState({ canPost: false });
+        savePost(this.state.postContent, this.state.selectedPostPrivacy)
+            .then(() => {
+                this.setState({ postContent: "" });
+                this.getPosts();
+            });
     };
 
     render() {
@@ -64,7 +66,8 @@ export default class Wall extends Component {
                 reactionsCount={item.reactionsCount}
                 commentsCount={item.commentsCount}
                 key={this.state.posts.length - index}
-                date={item.createdOn} />)
+                date={item.createdOn}
+            />);
 
         return (
             <div className="wall">
@@ -76,22 +79,21 @@ export default class Wall extends Component {
                             </div>
                         </div>
                         <div className="card-body">
-                            <textarea className="form-control" rows="5" value={this.state.postContent} onChange={this.postContentChange}  ></textarea>
+                            <textarea className="form-control" rows="5" value={this.state.postContent} onChange={this.postContentChange} />
                             <div className="row controls">
                                 <div className="col-9">
                                     <select className="form-control form-control-sm" onChange={this.changePostPrivacy}>
-                                        <option value="0">Widoczne dla znajomych</option>
+                                        <option value="0">Widoczny dla wszystkich</option>
                                         <option value="1">Widoczny dla znajomych</option>
                                     </select>
                                 </div>
                                 <div className="col-3">
-                                    <button className="btn btn-sm btn-success my-2 my-sm-0" onClick={this.post}>Wyślij</button>
+                                    <button className="btn btn-sm btn-success my-2 my-sm-0" onClick={this.post} disabled={!this.state.canPost}>Wyślij</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 {posts}
             </div>
         );

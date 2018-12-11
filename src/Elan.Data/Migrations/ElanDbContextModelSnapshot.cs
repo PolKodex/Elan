@@ -236,7 +236,7 @@ namespace Elan.Data.Migrations
 
                     b.Property<string>("Content");
 
-                    b.Property<Guid?>("CreatedById");
+                    b.Property<Guid>("CreatedById");
 
                     b.Property<DateTime>("CreatedOn");
 

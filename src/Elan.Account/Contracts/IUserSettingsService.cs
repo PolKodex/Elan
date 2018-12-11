@@ -10,7 +10,7 @@ namespace Elan.Account.Contracts
     {
         Task<List<UserSettingViewModel>> GetSettingsForUser(ElanUser user);
         Task AddSettings(ElanUser newUser);
-        Task ChangeSetting(ElanUser user, UserSettingViewModel setting);
+        Task ChangeSettings(ElanUser user, List<UserSettingViewModel> settings);
         Dictionary<int, string> GetUserSettingsDict();
         Dictionary<int, string> GetPrivacySettingsDict();
     }

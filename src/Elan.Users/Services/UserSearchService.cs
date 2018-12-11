@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Elan.Common.Utils;
 
 namespace Elan.Users.Services
 {
@@ -65,24 +66,7 @@ namespace Elan.Users.Services
 
             foreach (var searchResult in result.Where(x => !string.IsNullOrEmpty(x.ImageRawValue)))
             {
-                int commaIndex = searchResult.ImageRawValue.IndexOf(',', StringComparison.Ordinal);
-                var imagePrefix = searchResult.ImageRawValue.Substring(0, commaIndex+1);
-                var imageBase = searchResult.ImageRawValue.Substring(commaIndex+1, searchResult.ImageRawValue.Length-commaIndex-1);
-                byte[] imageBytes = Convert.FromBase64String(imageBase);
-                IImageFormat format;
-                using (var image = Image.Load(imageBytes, out format))
-                {
-                    image.Mutate(x => x
-                        .Resize(30, 30));
-
-                    using (var output = new MemoryStream())
-                    {
-                        image.Save(output, format);
-                        var resized = output.ToArray();
-                        searchResult.ImageRawValue = imagePrefix + Convert.ToBase64String(resized);
-                    }
-                }
-                
+                searchResult.ImageRawValue = ImageUtil.Resize(searchResult.ImageRawValue, 30, 30);                
             }
 
             return result;

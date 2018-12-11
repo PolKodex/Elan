@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Elan.Common.Enums;
+﻿using Elan.Common.Enums;
+using Elan.Common.Utils;
 using Elan.Data.Contracts;
 using Elan.Data.Models.Account;
+using Elan.Data.Models.Friends;
 using Elan.Data.Models.Posts;
 using Elan.Posts.Contracts;
 using Elan.Posts.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using ElanUserImage = Elan.Data.Models.Account.ElanUserImage;
 
 namespace Elan.Posts.Services
 {
@@ -69,96 +72,66 @@ namespace Elan.Posts.Services
         public async Task<List<Post>> GetLatestPostsAsync(ElanUser user, int skip = 0, int take = 10)
         {
             var postsSet = _dataService.GetSet<Post>();
-            var posts =
-                await postsSet
-                    .Include(m => m.Reactions)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.FirstUserFriends)
-                    .ThenInclude(m => m.SecondUser.FirstUserFriends)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.FirstUserFriends)
-                    .ThenInclude(m => m.SecondUser.SecondUserFriends)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.SecondUserFriends)
-                    .ThenInclude(m => m.FirstUser.FirstUserFriends)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.SecondUserFriends)
-                    .ThenInclude(m => m.FirstUser.SecondUserFriends)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.Images)
-                    .Include(m => m.TargetUser)
-                    .Where(m => m.BasePostId == null)
-                    .Where(m =>
-                        m.CreatedBy.Id == user.Id ||
-                        (
-                            (m.VisibilitySetting == PrivacySetting.Friends) && 
-                            (
-                                m.CreatedBy.FirstUserFriends.Any(x => x.SecondUserId == user.Id) ||
-                                m.CreatedBy.SecondUserFriends.Any(x => x.FirstUserId == user.Id)
-                            )
-                        )
 
-                    )
-                    .OrderByDescending(m => m.CreatedOn)
-                    .Skip(skip * take)
-                    .Take(take)
-                    .OrderBy(m => m.CreatedOn)
-                    .ToListAsync();
+            var userFriends = await _dataService.GetSet<FriendsRelation>()
+                                .Where(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id)
+                                .Select(x => x.FirstUserId == user.Id ? x.SecondUserId : x.FirstUserId)
+                                .ToListAsync();
+            userFriends.Add(user.Id);
 
-            foreach (var post in posts)
+            var userFriendsSet = new HashSet<Guid>(userFriends);
+
+            var userPosts = await postsSet
+                                .Where(x => x.BasePostId == null && userFriendsSet.Contains(x.CreatedById))             
+                                .OrderByDescending(m => m.CreatedOn)
+                                .Skip(skip * take)
+                                .Take(take)
+                                .Include(m => m.CreatedBy)
+                                .Include(m => m.Reactions)
+                                .ToListAsync();
+
+            var filteredUsers = userFriendsSet.Where(x => userPosts.Any(y => y.CreatedById == x));
+            var filteredUsersImages = await GetUserAvatarThumbnails(filteredUsers);
+
+            foreach (var post in userPosts)
             {
                 post.CommentsCount = postsSet.Count(x => x.BasePostId == post.Id);
+                post.UserImage = filteredUsersImages[post.CreatedById];
             }
 
-            return posts;
+            return userPosts;
         }
 
         public async Task<List<Post>> GetPostsForUserAsync(ElanUser user, ElanUser currentUser, int skip, int take)
         {
             var postsSet = _dataService.GetSet<Post>();
-            var posts =
-                await postsSet
-                    .Include(m => m.Reactions)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.FirstUserFriends)
-                    .ThenInclude(m => m.SecondUser.FirstUserFriends)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.FirstUserFriends)
-                    .ThenInclude(m => m.SecondUser.SecondUserFriends)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.SecondUserFriends)
-                    .ThenInclude(m => m.FirstUser.FirstUserFriends)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.SecondUserFriends)
-                    .ThenInclude(m => m.FirstUser.SecondUserFriends)
-                    .Include(m => m.CreatedBy)
-                    .ThenInclude(m => m.Images)
-                    .Include(m => m.TargetUser)
-                    .Where(m => m.BasePostId == null)
-                    .Where(m => m.CreatedBy.Id == user.Id || m.TargetUser.Id == user.Id)
-                    .Where(m =>
-                        user.Id == currentUser.Id ||
-                        m.VisibilitySetting == PrivacySetting.Everyone ||
-                        (
-                            (m.VisibilitySetting == PrivacySetting.Friends) && 
-                            (
-                                m.CreatedBy.FirstUserFriends.Any(x => x.SecondUserId == currentUser.Id) ||
-                                m.CreatedBy.SecondUserFriends.Any(x => x.FirstUserId == currentUser.Id)
-                            )
-                        )
-                    )
-                    .OrderByDescending(m => m.CreatedOn)
-                    .Skip(skip * take)
-                    .Take(take)
-                    .OrderBy(m => m.CreatedOn)
-                    .ToListAsync();
 
-            foreach (var post in posts)
+            var userPosts = postsSet
+                .Where(x => x.BasePostId == null && x.CreatedById == user.Id);
+
+            if (user.Friends.All(x => x.FirstUserId != currentUser.Id && x.SecondUserId != currentUser.Id))
             {
-                post.CommentsCount = postsSet.Count(x => x.BasePostId == post.Id);
+                userPosts = postsSet
+                    .Where(x => x.VisibilitySetting == PrivacySetting.Everyone);
             }
 
-            return posts;
+            var result = await userPosts.OrderByDescending(m => m.CreatedOn)
+                            .Skip(skip * take)
+                            .Take(take)
+                            .Include(m => m.CreatedBy)
+                            .Include(m => m.Reactions)
+                            .ToListAsync();
+
+            var users = result.Select(x => x.CreatedById).Distinct();
+            var authorsImages = await GetUserAvatarThumbnails(users);
+
+            foreach (var post in result)
+            {
+                post.CommentsCount = postsSet.Count(x => x.BasePostId == post.Id);
+                post.UserImage = authorsImages[post.CreatedById];
+            }
+
+            return result;
         }
 
         public async Task DeletePost(int postId)
@@ -219,16 +192,41 @@ namespace Elan.Posts.Services
         {
             var result = await _dataService
                 .GetSet<Post>()
-                .Include(x => x.Reactions)
-                .Include(x => x.CreatedBy)
-                .ThenInclude(m => m.Images)
                 .Where(x => x.BasePostId == postId)
                 .OrderByDescending(m => m.CreatedOn)
                 .Skip(skip * take)
                 .Take(take)
+                .Include(x => x.Reactions)
+                .Include(x => x.CreatedBy)
                 .ToListAsync();
 
+            var users = result.Select(x => x.CreatedById).Distinct();
+            var authorsImages = await GetUserAvatarThumbnails(users);
+
+            foreach (var post in result)
+            {
+                post.UserImage = authorsImages[post.CreatedById];
+            }
+
             return result;
+        }
+        private async Task<Dictionary<Guid, ElanUserImage>> GetUserAvatarThumbnails(IEnumerable<Guid> users)
+        {
+            var filteredUsersImages = new Dictionary<Guid, ElanUserImage>();
+            foreach (var friend in users)
+            {
+                var userMainImage = await _dataService.GetSet<ElanUserImage>()
+                    .FirstOrDefaultAsync(x => x.UserId == friend && x.IsMain);
+
+                if (userMainImage != null)
+                {
+                    userMainImage.RawValue = ImageUtil.Resize(userMainImage.RawValue, 30, 30);
+                }
+
+                filteredUsersImages.Add(friend, userMainImage);
+            }
+
+            return filteredUsersImages;
         }
     }
 }

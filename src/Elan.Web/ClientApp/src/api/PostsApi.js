@@ -7,11 +7,11 @@ export const savePost = async (content, privacySetting) => {
         {
             content: content,
             privacySetting: privacySetting
-        }, 
+        },
         {
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
+            }
         }).then((response) => response.data);
 };
 
@@ -25,7 +25,7 @@ export const getLatestPosts = async () => {
             }
         }).then((response) => response.data);
 
-}
+};
 
 export const commentPost = async (content, basePostId) => {
     var api = "/api/Posts/CreatePostComment";
@@ -40,14 +40,14 @@ export const commentPost = async (content, basePostId) => {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         }).then((response) => response.data);
-}
+};
 
 export const getComments = async (postId, skip, take) => {
     var api = "/api/Posts/GetPostComments";
 
     return await axios.get(api,
         {
-        	params: {
+            params: {
                 postId: postId,
                 skip: skip,
                 take: take
@@ -56,7 +56,7 @@ export const getComments = async (postId, skip, take) => {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         }).then((response) => response.data);
-}
+};
 
 export const setReaction = async (postId) => {
     var api = '/api/Posts/SetReaction';
@@ -71,4 +71,4 @@ export const setReaction = async (postId) => {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         }).then((response) => response.data);
-}
+};

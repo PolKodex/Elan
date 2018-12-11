@@ -69,7 +69,9 @@ export default class Account extends Component {
                         }.bind(this));
 
                     accountApi.getUserPosts(userId, 0, 10)
-                        .then(function(response) {
+                        .then(function (response) {
+                            let sortFunc = (a, b) => new Date(b.createdOn) - new Date(a.createdOn);
+                            response.data.sort(sortFunc);
                             this.setState({ userPostsList: response.data });
                         }.bind(this));
                 }

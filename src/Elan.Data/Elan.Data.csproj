@@ -15,6 +15,7 @@
     <Compile Remove="Migrations\20181206195616_notification_source.cs" />
     <Compile Remove="Migrations\20181206200850_notification_source.cs" />
     <Compile Remove="Migrations\20181206211320_friend_invitation_fix.cs" />
+    <Compile Remove="Migrations\20181211175623_test.cs" />
   </ItemGroup>
 
   <ItemGroup>

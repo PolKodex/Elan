@@ -11,7 +11,7 @@ export default class Notifications extends Component {
         super(props);
         this.state = {
             notifications: []
-        }
+        };
     }
 
     componentDidMount() {
@@ -71,11 +71,11 @@ export default class Notifications extends Component {
             }
         }
 
-        let notificationList = this.state.notifications.map((item, index) => (
+        let notificationList = this.state.notifications.map((item, index) => 
             <button key={item.id} className={item.isRead ? "notification-item" : "notification-item not-read"} onClick={() => this.onNotificationClick(item.id, index)}>
                 <span>{item.message}</span>
             </button>
-        ));
+        );
 
         let redirectTo = this.state.notificationRedirectTo;
 
@@ -83,7 +83,7 @@ export default class Notifications extends Component {
             <div className="notification-container">
                 <button className="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img src={require("../../assets/notification.png")} />
-                    {count !== 0 ? (<span className = "notification">{count}</span>) : ""}
+                    {count !== 0 ? <span className = "notification">{count}</span> : ""}
                 </button>
                 <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <div className="notifications-list">
