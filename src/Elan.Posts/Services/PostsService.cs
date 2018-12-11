@@ -1,4 +1,5 @@
 ﻿using Elan.Common.Enums;
+using Elan.Common.Utils;
 using Elan.Data.Contracts;
 using Elan.Data.Models.Account;
 using Elan.Data.Models.Friends;
@@ -10,8 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Elan.Common.Utils;
-using Microsoft.EntityFrameworkCore.Storage;
 using ElanUserImage = Elan.Data.Models.Account.ElanUserImage;
 
 namespace Elan.Posts.Services
@@ -92,19 +91,7 @@ namespace Elan.Posts.Services
                                 .ToListAsync();
 
             var filteredUsers = userFriendsSet.Where(x => userPosts.Any(y => y.CreatedById == x));
-            var filteredUsersImages = new Dictionary<Guid, ElanUserImage>();
-            foreach (var friend in filteredUsers)
-            {
-                var userMainImage = await _dataService.GetSet<ElanUserImage>()
-                    .FirstOrDefaultAsync(x => x.UserId == friend && x.IsMain);
-
-                if (userMainImage != null)
-                {
-                    userMainImage.RawValue = ImageUtil.Resize(userMainImage.RawValue, 30, 30);
-                }
-
-                filteredUsersImages.Add(friend, userMainImage);
-            }
+            var filteredUsersImages = await GetUserAvatarThumbnails(filteredUsers);
 
             foreach (var post in userPosts)
             {
@@ -120,7 +107,7 @@ namespace Elan.Posts.Services
             var postsSet = _dataService.GetSet<Post>();
 
             var userPosts = postsSet
-                .Where(x => x.CreatedById == user.Id);
+                .Where(x => x.BasePostId == null && x.CreatedById == user.Id);
 
             if (user.Friends.All(x => x.FirstUserId != currentUser.Id && x.SecondUserId != currentUser.Id))
             {
@@ -132,13 +119,16 @@ namespace Elan.Posts.Services
                             .Skip(skip * take)
                             .Take(take)
                             .Include(m => m.CreatedBy)
-                            .ThenInclude(m => m.Images)
                             .Include(m => m.Reactions)
                             .ToListAsync();
+
+            var users = result.Select(x => x.CreatedById).Distinct();
+            var authorsImages = await GetUserAvatarThumbnails(users);
 
             foreach (var post in result)
             {
                 post.CommentsCount = postsSet.Count(x => x.BasePostId == post.Id);
+                post.UserImage = authorsImages[post.CreatedById];
             }
 
             return result;
@@ -202,16 +192,41 @@ namespace Elan.Posts.Services
         {
             var result = await _dataService
                 .GetSet<Post>()
-                .Include(x => x.Reactions)
-                .Include(x => x.CreatedBy)
-                .ThenInclude(m => m.Images)
                 .Where(x => x.BasePostId == postId)
                 .OrderByDescending(m => m.CreatedOn)
                 .Skip(skip * take)
                 .Take(take)
+                .Include(x => x.Reactions)
+                .Include(x => x.CreatedBy)
                 .ToListAsync();
 
+            var users = result.Select(x => x.CreatedById).Distinct();
+            var authorsImages = await GetUserAvatarThumbnails(users);
+
+            foreach (var post in result)
+            {
+                post.UserImage = authorsImages[post.CreatedById];
+            }
+
             return result;
+        }
+        private async Task<Dictionary<Guid, ElanUserImage>> GetUserAvatarThumbnails(IEnumerable<Guid> users)
+        {
+            var filteredUsersImages = new Dictionary<Guid, ElanUserImage>();
+            foreach (var friend in users)
+            {
+                var userMainImage = await _dataService.GetSet<ElanUserImage>()
+                    .FirstOrDefaultAsync(x => x.UserId == friend && x.IsMain);
+
+                if (userMainImage != null)
+                {
+                    userMainImage.RawValue = ImageUtil.Resize(userMainImage.RawValue, 30, 30);
+                }
+
+                filteredUsersImages.Add(friend, userMainImage);
+            }
+
+            return filteredUsersImages;
         }
     }
 }
