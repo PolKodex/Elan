@@ -10,8 +10,9 @@ export default class Notifications extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            notifications: []
-        };
+            notifications: [],
+            notificationRedirectTo: ''
+    };
     }
 
     componentDidMount() {
@@ -39,6 +40,11 @@ export default class Notifications extends Component {
         this.connection.on('NotificationsCount', this.onNotification);
         this.connection.onclose(() => setTimeout(startSignalRConnection(this.connection), 5000));
     }
+    componentDidUpdate() {
+        if (this.state.notificationRedirectTo) {
+            this.setState({ notificationRedirectTo: '' }); 
+        }
+    }
 
     onNotification = (count) => {
         this.checkNotifications();
@@ -59,7 +65,7 @@ export default class Notifications extends Component {
         this.setState({ notifications: data });
         setNotificationAsRead(id);
         if (data[index].notificationType === 0 || data[index].notificationType === 1) {
-            this.setState({ notificationRedirectTo: '/account/' + data[index].sourceId });
+            this.setState({ notificationRedirectTo: '/account/' + data[index].sourceId+'/' });
         }
   }
 
