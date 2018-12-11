@@ -16,7 +16,7 @@ export default class Settings extends Component {
 
     componentDidMount(){
         getSettings().then((settings) => {
-            if(settings.length == 2) {
+            if(settings.length === 2) {
                 for(let i=0; i < 2; i++){
                     if(settings[i].setting === 0){
                         this.setState({searchSettings: settings[i]});

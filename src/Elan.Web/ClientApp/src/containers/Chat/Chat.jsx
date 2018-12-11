@@ -66,6 +66,13 @@ export default class Chat extends Component {
         this.connection.onclose(() => setTimeout(startSignalRConnection(this.connection), 5000));
     }
 
+    componentDidUpdate() {
+        if (this.shouldScrollChat === true) {
+            this.shouldScrollChat = false;
+            this.scrollChatToBottom();
+        }
+    }
+
     onMessageReceived(message) {
         message = JSON.parse(message);
         var decodedToken = jwtUtils.decodeJwt(localStorage.getItem('token'));
@@ -104,26 +111,21 @@ export default class Chat extends Component {
                 });
             }
         }
-        this.setState({ messages },() => {this.shouldScrollChat = true;});
+        this.setState({ messages }, () => { this.shouldScrollChat = true; });
     }
 
-    componentDidUpdate() {
-        if(this.shouldScrollChat === true){
-            this.shouldScrollChat = false;
-            this.scrollChatToBottom();
-        }
-    }
+
 
     sendMessage() {
         //check if empty message
-        if(!this.state.activeUser) {
+        if (!this.state.activeUser) {
             return;
         }
         this.connection.invoke("SendMessage", this.state.activeUser.id, this.state.message).catch(err => console.error(err.toString()));
         this.setState({
             message: ""
-        }, () => {this.shouldScrollChat = true;});
-        
+        }, () => { this.shouldScrollChat = true; });
+
     }
 
     scrollChatToBottom = () => {
@@ -166,21 +168,23 @@ export default class Chat extends Component {
             });
         }
 
-        this.setState({chatDisabled: false});
+        this.setState({ chatDisabled: false });
 
     }
 
     handleKeyPress = (e) => {
-        if(e.key === 'Enter') {
+        if (e.key === 'Enter') {
             this.sendMessage();
         }
     };
 
     render() {
-        let messages = this.state.visibleMessages.map((msg, index) => <ChatMessage isToMe={msg.isToMe} 
-                                                                                   content={msg.content} 
-                                                                                   date={msg.date}
-                                                                                   key={index} />);
+        let messages = this.state.visibleMessages.map((msg, index) =>
+            <ChatMessage isToMe={msg.isToMe}
+                content={msg.content}
+                date={msg.date}
+                key={index}
+            />);
 
         return (
             <div className="chat-wrapper">
@@ -192,11 +196,12 @@ export default class Chat extends Component {
                         </div>
                     </div>
                     <div className="chat-bottom">
-                        <input type="text" className="form-control" value={this.state.message} 
-                        onKeyPress={this.handleKeyPress.bind(this)}
-                        onChange={this.updateInputValue.bind(this)} 
-                        disabled = {(this.state.chatDisabled)? "disabled" : ""}/>
-                        <button className="btn btn-outline-success" onClick={this.sendMessage.bind(this)} disabled = {(this.state.chatDisabled)? "disabled" : ""}>Wyślij</button>
+                        <input type="text" className="form-control" value={this.state.message}
+                            onKeyPress={this.handleKeyPress.bind(this)}
+                            onChange={this.updateInputValue.bind(this)}
+                            disabled={this.state.chatDisabled ? "disabled" : ""}
+                        />
+                        <button className="btn btn-outline-success" onClick={this.sendMessage.bind(this)} disabled={this.state.chatDisabled ? "disabled" : ""}>Wyślij</button>
                     </div>
                 </div>
             </div>

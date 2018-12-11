@@ -11,7 +11,7 @@ export default class Wall extends Component {
             postContent: '',
             selectedPostPrivacy: 0,
             posts: []
-        }
+        };
     }
 
     componentDidMount() {
@@ -45,7 +45,7 @@ export default class Wall extends Component {
         } else {
             savePost(this.state.postContent, this.state.selectedPostPrivacy)
                 .then(() => {
-                    this.setState({ postContent: "" })
+                    this.setState({ postContent: "" });
                     this.getPosts();
                 });
         }
@@ -64,7 +64,8 @@ export default class Wall extends Component {
                 reactionsCount={item.reactionsCount}
                 commentsCount={item.commentsCount}
                 key={this.state.posts.length - index}
-                date={item.createdOn} />)
+                date={item.createdOn}
+            />);
 
         return (
             <div className="wall">
@@ -76,7 +77,7 @@ export default class Wall extends Component {
                             </div>
                         </div>
                         <div className="card-body">
-                            <textarea className="form-control" rows="5" value={this.state.postContent} onChange={this.postContentChange}  ></textarea>
+                            <textarea className="form-control" rows="5" value={this.state.postContent} onChange={this.postContentChange} />
                             <div className="row controls">
                                 <div className="col-9">
                                     <select className="form-control form-control-sm" onChange={this.changePostPrivacy}>
@@ -91,7 +92,6 @@ export default class Wall extends Component {
                         </div>
                     </div>
                 </div>
-
                 {posts}
             </div>
         );

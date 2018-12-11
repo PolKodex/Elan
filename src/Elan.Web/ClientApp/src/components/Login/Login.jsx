@@ -15,7 +15,7 @@ export default class Login extends Component {
             password: '',
             message: '',
             redirect: authService.userIsAuthenticated()
-        }
+        };
     }
 
     loginChange = (event) => {
@@ -49,9 +49,7 @@ export default class Login extends Component {
         return (
             <div className="container login-page">
                 <div className="row login-logo">
-                    <div className="">
-
-                    </div>
+                    <div className="" />
                 </div>
 
                 <div className="row login-main">
@@ -61,7 +59,7 @@ export default class Login extends Component {
                                 Logowanie do portalu <strong><span className="brand-color">EL</span>AN</strong>
                             </div>
                             <div className="card-body">
-                                <form onSubmit={ this.handleSubmit }>
+                                <form onSubmit={this.handleSubmit}>
                                     <div className="form-group">
                                         <label htmlFor="login-email">Login</label>
                                         <input 
@@ -69,8 +67,9 @@ export default class Login extends Component {
                                             placeholder="Email" 
                                             id="login-email" 
                                             className="form-control" 
-                                            value={ this.state.login } 
-                                            onChange={ this.loginChange } />
+                                            value={this.state.login} 
+                                            onChange={this.loginChange}
+                                        />
                                     </div>
 
                                     <div className="form-group">
@@ -80,8 +79,9 @@ export default class Login extends Component {
                                             placeholder="Hasło" 
                                             id="login-password" 
                                             className="form-control" 
-                                            value={ this.state.password } 
-                                            onChange={ this.passwordChange }  />
+                                            value={this.state.password} 
+                                            onChange={this.passwordChange}
+                                        />
                                     </div>
 
                                     <small className="form-text text-danger">{ this.state.message }</small>

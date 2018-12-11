@@ -1,5 +1,3 @@
-import { debug } from 'util';
-
 const axios = require('axios');
 const baseUrl = '/api/User/';
 
@@ -41,7 +39,7 @@ export const uploadImage = async (imageBase64, isMain) => {
     return axios.post(api,
         {
             ImageBase64: imageBase64,
-            IsMain: isMain,
+            IsMain: isMain
         },
         {
             headers: {
@@ -59,7 +57,7 @@ export const updateImage = async (imageBase64, isMain) => {
     return axios.put(api,
         {
             ImageBase64: imageBase64,
-            IsMain: isMain,
+            IsMain: isMain
         },
         {
             headers: {
@@ -76,7 +74,7 @@ export const deleteImage = async (id) => {
 
     return axios.delete(api,
         {
-            imageId: id,
+            imageId: id
         },
         {
             headers: {
@@ -108,4 +106,4 @@ export const saveSettings = async (settings) => {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
-}
+};
