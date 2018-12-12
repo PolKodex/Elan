@@ -21,7 +21,10 @@ export default class Chat extends Component {
             visibleMessages: [],
             message: "",
             users: [],
-            chatDisabled: true
+            chatDisabled: true,
+            canLoad: true,
+            page: 1,
+            totalCount: 0
         };
 
         this.shouldScrollChat = false;
@@ -78,44 +81,49 @@ export default class Chat extends Component {
         message = JSON.parse(message);
         var decodedToken = jwtUtils.decodeJwt(localStorage.getItem('token'));
         var messages = this.state.messages;
+        var listing = {};
         if (message.ToUserId === decodedToken.jti) {
             if (!messages[message.FromUserId]) {
-                messages[message.FromUserId] = chatApi.getMessages(message.FromUserId).map(m => {
-                    return {
-                        isToMe: m.IsToMe,
-                        content: m.Content,
-                        date: m.SentOn
-                    };
-                });
+                chatApi.getMessages(message.FromUserId)
+                    .then(function(listing) {
+                        messages[message.FromUserId] = {
+                            totalCount: listing.totalCount,
+                            messages: listing.messages
+                        };
+                        this.setState({ messages });
+                    }.bind(this));
+
             } else {
-                messages[message.FromUserId].push({
+                messages[message.FromUserId].messages.push({
                     isToMe: true,
                     content: message.Content,
-                    date: message.SentOn
+                    sentOn: message.SentOn
                 });
+                messages[message.FromUserId].totalCount++;
             }
 
         } else {
             if (!messages[message.ToUserId]) {
-                messages[message.ToUserId] = chatApi.getMessages(message.ToUserId).map(m => {
-                    return {
-                        isToMe: m.IsToMe,
-                        content: m.Content,
-                        date: m.SentOn
-                    };
-                });
+                listing = chatApi.getMessages(message.ToUserId);
+                messages[message.ToUserId] = {
+                    totalCount: listing.totalCount,
+                    messages: listing.messages
+                };
             } else {
-                messages[message.ToUserId].push({
+                messages[message.ToUserId].messages.push({
                     isToMe: false,
                     content: message.Content,
-                    date: message.SentOn
+                    sentOn: message.SentOn
                 });
+                messages[message.ToUserId].totalCount++;
             }
         }
-        this.setState({ messages }, () => { this.shouldScrollChat = true; });
+        if (this.state.activeUser && message.ToUserId === this.state.activeUser.id) {
+            this.setState({ messages }, () => { this.shouldScrollChat = true; });
+        } else {
+            this.setState({ messages });
+        }
     }
-
-
 
     sendMessage() {
         if (!this.state.activeUser) {
@@ -128,7 +136,6 @@ export default class Chat extends Component {
         this.setState({
             message: ""
         }, () => { this.shouldScrollChat = true; });
-
     }
 
     scrollChatToBottom = () => {
@@ -136,7 +143,7 @@ export default class Chat extends Component {
         let height = this.messagesRef.current.clientHeight;
         let maxScrollTop = sHeight - height;
         this.messagesRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
-    }
+    };
 
 
     updateInputValue(event) {
@@ -150,30 +157,45 @@ export default class Chat extends Component {
         if (!messages[user.id]) {
             chatApi.getMessages(user.id)
                 .then(function (data) {
-                    messages[user.id] = data.map(m => {
-                        return {
-                            isToMe: m.isToMe,
-                            content: m.content,
-                            date: m.sentOn
-                        };
-                    });
+                    messages[user.id] = {
+                        messages: data.messages,
+                        totalCount: data.totalCount
+                    };
                     this.setState({
                         messages,
-                        visibleMessages: messages[user.id],
+                        visibleMessages: messages[user.id].messages,
+                        totalCount: messages[user.id].totalCount,
                         activeUser: user
                     });
                 }.bind(this));
         } else {
             this.setState({
                 messages,
-                visibleMessages: messages[user.id],
+                visibleMessages: messages[user.id].messages,
+                totalCount: messages[user.id].totalCount,
                 activeUser: user
             });
         }
 
         this.setState({ chatDisabled: false });
+    };
 
-    }
+    loadOlderMessages = () => {
+        chatApi.getMessages(this.state.activeUser.id, this.state.page, 10)
+            .then(function (response) {
+                let sortFunc = (a, b) => new Date(a.createdOn) - new Date(b.createdOn);
+                response.messages.sort(sortFunc);
+                var messages = this.state.messages;
+                messages[this.state.activeUser.id].messages =
+                    response.messages.concat(messages[this.state.activeUser.id].messages);
+                this.setState({
+                    messages,
+                    visibleMessages: messages[this.state.activeUser.id].messages,
+                    commentsCount: response.totalCount,
+                    page: this.state.page + 1
+                });
+            }.bind(this));
+    };
 
     handleKeyPress = (e) => {
         if (e.key === 'Enter') {
@@ -185,7 +207,7 @@ export default class Chat extends Component {
         let messages = this.state.visibleMessages.map((msg, index) =>
             <ChatMessage isToMe={msg.isToMe}
                 content={msg.content}
-                date={msg.date}
+                date={msg.sentOn}
                 key={index}
             />);
 
@@ -195,6 +217,7 @@ export default class Chat extends Component {
                     <ChatTopBar users={this.state.users} activeUser={this.state.activeUser} activeUserChanged={this.onUserChange} />
                     <div className="messages-wrapper" ref={this.messagesRef}>
                         <div className="chat-messages">
+                            {this.state.page * 10 < this.state.totalCount && <button className="btn btn-primary" onClick={this.loadOlderMessages} disabled={!this.state.canLoad}>Doczytaj starsze..</button>}
                             {messages}
                         </div>
                     </div>

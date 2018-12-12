@@ -6,6 +6,8 @@ namespace Elan.Data.Models.Chat
     public class ChatMessage
     {
         public Guid Id { get; set; }
+        public Guid UserFromId { get; set; }
+        public Guid UserToId { get; set; }
         public virtual ElanUser UserFrom { get; set; }
         public virtual ElanUser UserTo { get; set; }
         public string Content { get; set; }
