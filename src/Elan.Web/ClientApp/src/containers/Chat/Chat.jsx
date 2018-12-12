@@ -83,11 +83,15 @@ export default class Chat extends Component {
         var listing = {};
         if (message.ToUserId === decodedToken.jti) {
             if (!messages[message.FromUserId]) {
-                listing = chatApi.getMessages(message.FromUserId);
-                messages[message.FromUserId] = {
-                    totalCount: listing.totalCount,
-                    messages: listing.messages
-                };
+                chatApi.getMessages(message.FromUserId)
+                    .then(function(listing) {
+                        messages[message.FromUserId] = {
+                            totalCount: listing.totalCount,
+                            messages: listing.messages
+                        };
+                        this.setState({ messages });
+                    }.bind(this));
+
             } else {
                 messages[message.FromUserId].messages.push({
                     isToMe: true,
@@ -171,7 +175,6 @@ export default class Chat extends Component {
         }
 
         this.setState({ chatDisabled: false });
-
     };
 
     loadOlderMessages = () => {
@@ -198,7 +201,6 @@ export default class Chat extends Component {
     };
 
     render() {
-        console.log(this.state.visibleMessages);
         let messages = this.state.visibleMessages.map((msg, index) =>
             <ChatMessage isToMe={msg.isToMe}
                 content={msg.content}
