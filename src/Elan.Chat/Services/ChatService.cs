@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Elan.Chat.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Elan.Chat.Services
@@ -35,22 +36,30 @@ namespace Elan.Chat.Services
             return chatMessage;
         }
 
-        public async Task<List<ChatMessage>> GetMessagesAsync(ElanUser user1, ElanUser user2, int skip = 0, int take = 10)
+        public async Task<ChatListing> GetMessagesAsync(ElanUser user1, ElanUser user2, int skip = 0, int take = 10)
         {
+            var messagesQuery = _dataService
+                .GetSet<ChatMessage>()
+                .Where(m => (m.UserFromId == user1.Id && m.UserToId == user2.Id) ||
+                            (m.UserFromId == user2.Id && m.UserToId == user1.Id));
+
+            var totalCount = messagesQuery.Count();
+
             var messages =
-                await _dataService
-                    .GetSet<ChatMessage>()
-                    .Include(m => m.UserFrom)
-                    .Include(m => m.UserTo)
-                    .Where(m => (m.UserFrom.Id == user1.Id && m.UserTo.Id == user2.Id) ||
-                                (m.UserFrom.Id == user2.Id && m.UserTo.Id == user1.Id))
+                await messagesQuery
                     .OrderByDescending(m => m.SentOn)
                     .Skip(skip * take)
                     .Take(take)
                     .OrderBy(m => m.SentOn)
                     .ToListAsync();
 
-            return messages;
+            var model = new ChatListing
+            {
+                TotalCount = totalCount,
+                Messages = messages
+            };
+
+            return model;
         }
     }
 }

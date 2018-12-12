@@ -26,9 +26,9 @@ namespace Elan.Web.Controllers
             var user = await _userService.GetUserById(userId);
             var currentUser = await _userService.GetUserByName(HttpContext.User.Identity.Name);
 
-            var messages = await _chatService.GetMessagesAsync(user, currentUser, skip, take);
+            var chatListing = await _chatService.GetMessagesAsync(user, currentUser, skip, take);
 
-            var result = messages.Select(m => new ChatMessageViewModel(m, currentUser.Id.ToString()));
+            var result = new ChatListingViewModel(chatListing, currentUser.Id.ToString());
 
             return Json(result);
         }
