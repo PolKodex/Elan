@@ -117,8 +117,10 @@ export default class Chat extends Component {
 
 
     sendMessage() {
-        //check if empty message
         if (!this.state.activeUser) {
+            return;
+        }
+        if (this.state.message.length < 1) {
             return;
         }
         this.connection.invoke("SendMessage", this.state.activeUser.id, this.state.message).catch(err => console.error(err.toString()));

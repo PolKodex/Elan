@@ -24,6 +24,12 @@ export default class ChatTopBar extends Component {
         this.filterUsers(e.target.value);
     }
 
+    getPictureSource = (pictureSource) => {
+        if (!pictureSource) {
+            return require('./../../assets/default_avatar.jpg');
+        }
+        return pictureSource;
+    }
 
     render() {
         let searchResult = this.state.filterUsers.map((user, index) => (<ChatSearchRow user={user} key={index} onSelect={this.props.activeUserChanged} />))

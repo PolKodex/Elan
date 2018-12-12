@@ -2,12 +2,19 @@
 import './ChatSearchRow.css';
 
 export default class ChatSearchRow extends Component {
-  render() {
+    getPictureSource = (pictureSource) => {
+        if (!pictureSource) {
+            return require('./../../assets/default_avatar.jpg');
+        }
+        return pictureSource;
+    }
+
+    render() {
     return (
-      <button className="btn btn-light btn-row">
-        <div className="chat-search-row dropdown-item" onClick={() => this.props.onSelect(this.props.user)}>
-            <div className="user-info">
-                <div className="avatar-post">
+        <button className="btn btn-light btn-row">
+            <div className="chat-search-row dropdown-item" onClick={() => this.props.onSelect(this.props.user)}>
+                <div className="user-info">
+                    <div className="avatar-post">
                         <img src={require("../../assets/default_avatar.jpg")} alt=""/>
                     </div>
                     <div className="user-post">
@@ -15,7 +22,7 @@ export default class ChatSearchRow extends Component {
                     </div>
                 </div>
             </div>
-      </button>
+        </button>
     );
-  }
+    }
 }
