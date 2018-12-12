@@ -115,6 +115,8 @@ export default class Chat extends Component {
         }
         if (this.state.activeUser && message.ToUserId === this.state.activeUser.id) {
             this.setState({ messages }, () => { this.shouldScrollChat = true; });
+        } else {
+            this.setState({ messages });
         }
     }
 
