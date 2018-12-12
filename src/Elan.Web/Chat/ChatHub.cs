@@ -40,9 +40,11 @@ namespace Elan.Web.Chat
             var userFrom = await _userService.GetUserByName(Context.User.Identity.Name);
             var userTo = await _userService.GetUserById(toUserId);
 
-            await _notificationService.CreateNotification("User " + userFrom.GetDisplayName() + " has send a message to you", NotificationType.InvitationAccepted, userTo, userFrom.Id.ToString());
-
-            await PushNumberOfNotifications(userTo);
+            if(!(await _notificationService.HasUnreadChatNotificationWithUSer(userTo, userFrom)))
+            {
+                await _notificationService.CreateNotification("User " + userFrom.GetDisplayName() + " has send a message to you", NotificationType.NewChatMessage, userTo, userFrom.Id.ToString());
+                await PushNumberOfNotifications(userTo);
+            }
 
             try
             {

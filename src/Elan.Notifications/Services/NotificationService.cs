@@ -86,5 +86,18 @@ namespace Elan.Notifications.Services
 
             return notification;
         }
+
+        public async Task<bool> HasUnreadChatNotificationWithUSer(ElanUser targetUser, ElanUser sourceUser)
+        {
+            var notifications = await _dataService.GetSet<Notification>()
+                .Include(n => n.TargetUser)
+                .Where(n => n.TargetUser.Id == targetUser.Id && 
+                       n.IsDeleted != true && n.IsRead != true && 
+                       n.SourceId == sourceUser.Id.ToString() && 
+                       n.Type == NotificationType.NewChatMessage)
+                .ToListAsync();
+
+            return notifications.Count>0;
+        }
     }
 }
