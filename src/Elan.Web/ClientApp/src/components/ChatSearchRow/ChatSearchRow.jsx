@@ -15,7 +15,7 @@ export default class ChatSearchRow extends Component {
             <div className="chat-search-row dropdown-item" onClick={() => this.props.onSelect(this.props.user)}>
                 <div className="user-info">
                     <div className="avatar-post">
-                        <img src={require("../../assets/default_avatar.jpg")} alt=""/>
+                        <img src={this.getPictureSource(this.props.user.avatar)} alt="" />
                     </div>
                     <div className="user-post">
                         <strong>{this.props.user.name}</strong><br/>

@@ -35,7 +35,8 @@ export default class Chat extends Component {
                 response.data.map(f => {
                     return {
                         id: f.id,
-                        name: f.userName
+                        name: f.userName,
+                        avatar: f.avatarBase64
                     };
                 }).forEach(u => users.push(u));
 
