@@ -4,6 +4,7 @@
     {
         FriendsInvitation = 0,
         InvitationAccepted = 1,
-        NewReaction = 2
+        NewReaction = 2,
+        NewChatMessage = 3
     }
 }

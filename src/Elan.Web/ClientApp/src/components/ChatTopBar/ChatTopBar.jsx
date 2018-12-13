@@ -17,13 +17,19 @@ export default class ChatTopBar extends Component {
     filterUsers = (value) => {
         let users = this.users.filter((user) => user.name.indexOf(value) !== -1);
         this.setState({ filterUsers: users });
-        console.log("CHANGE!");
     }
 
     onFilterChanged = (e) => {
         this.filterUsers(e.target.value);
     }
 
+    getPictureSource = (activeUser) => {
+        if (!activeUser || !activeUser.avatar) {
+            return require('./../../assets/default_avatar.jpg');
+        } 
+
+        return activeUser.avatar;
+    }
 
     render() {
         let searchResult = this.state.filterUsers.map((user, index) => (<ChatSearchRow user={user} key={index} onSelect={this.props.activeUserChanged} />))
@@ -34,7 +40,7 @@ export default class ChatTopBar extends Component {
                     <div className="dropdown">
                         <button className="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <div className="avatar-post">
-                                <img src={require("../../assets/default_avatar.jpg")} alt="" />
+                                <img src={this.getPictureSource(this.props.activeUser)} alt="" />
                             </div>
                             <div className="user-post">
                                 <strong>{this.props.activeUser ? this.props.activeUser.name : 'User not selected'}</strong><br />

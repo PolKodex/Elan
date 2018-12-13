@@ -64,7 +64,7 @@ export default class Login extends Component {
                                         <label htmlFor="login-email">Login</label>
                                         <input 
                                             type="text" 
-                                            placeholder="Email" 
+                                            placeholder="Login" 
                                             id="login-email" 
                                             className="form-control" 
                                             value={this.state.login} 

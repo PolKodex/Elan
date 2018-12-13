@@ -1,13 +1,12 @@
 ﻿using Elan.Chat.Contracts;
+using Elan.Chat.Models;
 using Elan.Data.Contracts;
 using Elan.Data.Models.Account;
 using Elan.Data.Models.Chat;
+using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Elan.Chat.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Elan.Chat.Services
 {

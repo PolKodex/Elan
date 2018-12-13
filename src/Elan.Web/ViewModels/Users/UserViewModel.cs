@@ -1,4 +1,5 @@
-﻿using Elan.Data.Models.Account;
+﻿using Elan.Common.Utils;
+using Elan.Data.Models.Account;
 
 namespace Elan.Web.ViewModels.Users
 {
@@ -12,7 +13,7 @@ namespace Elan.Web.ViewModels.Users
         {
             Id = user.Id.ToString();
             UserName = user.GetDisplayName();
-            AvatarBase64 = user.GetAvatar()?.RawValue;
+            AvatarBase64 = ImageUtil.Resize(user.GetAvatar()?.RawValue, 30, 30);
         }
     }
 }

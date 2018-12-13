@@ -11,6 +11,11 @@ namespace Elan.Common.Utils
     {
         public static string Resize(string rawImage, int width, int height = 0)
         {
+            if (string.IsNullOrWhiteSpace(rawImage))
+            {
+                return rawImage;
+            }
+
             int commaIndex = rawImage.IndexOf(',', StringComparison.Ordinal);
             var imagePrefix = rawImage.Substring(0, commaIndex + 1);
             var imageBase = rawImage.Substring(commaIndex + 1, rawImage.Length - commaIndex - 1);
