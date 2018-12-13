@@ -51,14 +51,14 @@ namespace Elan.Notifications.Services
             return notifications;
         }
 
-        public async Task<string> GetNumberOfUnreadNotificationsForUser(ElanUser user)
+        public async Task<int> GetNumberOfUnreadNotificationsForUser(ElanUser user)
         {
-            var notifications = await _dataService.GetSet<Notification>()
+            var notificationsCount = await _dataService.GetSet<Notification>()
                 .Include(n => n.TargetUser)
                 .Where(n => n.TargetUser.Id == user.Id && n.IsDeleted != true && n.IsRead != true)
-                .ToListAsync();
+                .CountAsync();
 
-            return notifications.Count.ToString();
+            return notificationsCount;
         }
 
         public async Task<Notification> MarkAsDeleted(string id)
@@ -87,17 +87,16 @@ namespace Elan.Notifications.Services
             return notification;
         }
 
-        public async Task<bool> HasUnreadChatNotificationWithUSer(ElanUser targetUser, ElanUser sourceUser)
+        public async Task<bool> HasUnreadChatNotificationWithUser(ElanUser targetUser, ElanUser sourceUser)
         {
-            var notifications = await _dataService.GetSet<Notification>()
+            var hasNotifications = await _dataService.GetSet<Notification>()
                 .Include(n => n.TargetUser)
-                .Where(n => n.TargetUser.Id == targetUser.Id && 
-                       n.IsDeleted != true && n.IsRead != true && 
-                       n.SourceId == sourceUser.Id.ToString() && 
-                       n.Type == NotificationType.NewChatMessage)
-                .ToListAsync();
+                .AnyAsync(n => n.TargetUser.Id == targetUser.Id &&
+                               n.IsDeleted == false && n.IsRead == false &&
+                               n.SourceId == sourceUser.Id.ToString() &&
+                               n.Type == NotificationType.NewChatMessage);
 
-            return notifications.Count>0;
+            return hasNotifications;
         }
     }
 }
