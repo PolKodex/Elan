@@ -25,11 +25,10 @@ export default class ChatTopBar extends Component {
     }
 
     getPictureSource = (activeUser) => {
-        if (!activeUser) {
+        if (!activeUser || !activeUser.avatar) {
             return require('./../../assets/default_avatar.jpg');
-        } else if (!activeUser.avatar) {
-            return require('./../../assets/default_avatar.jpg');
-        }
+        } 
+
         return activeUser.avatar;
     }
 

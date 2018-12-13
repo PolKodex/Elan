@@ -40,12 +40,6 @@ namespace Elan.Web.Chat
             var userFrom = await _userService.GetUserByName(Context.User.Identity.Name);
             var userTo = await _userService.GetUserById(toUserId);
 
-            if(!(await _notificationService.HasUnreadChatNotificationWithUser(userTo, userFrom)))
-            {
-                await _notificationService.CreateNotification("User " + userFrom.GetDisplayName() + " has send a message to you", NotificationType.NewChatMessage, userTo, userFrom.Id.ToString());
-                await PushNumberOfNotifications(userTo);
-            }
-
             try
             {
                 var chatMessage = await _chatService.SaveMessage(userFrom, userTo, message);
@@ -59,6 +53,13 @@ namespace Elan.Web.Chat
                 }
 
                 await Clients.Caller.SendAsync("ReceiveMessage", JsonConvert.SerializeObject(chatMessageViewModel));
+
+                var hasNotifications = await _notificationService.HasUnreadChatNotificationWithUser(userTo, userFrom);
+                if (!hasNotifications)
+                {
+                    await _notificationService.CreateNotification("User " + userFrom.GetDisplayName() + " has send a message to you", NotificationType.NewChatMessage, userTo, userFrom.Id.ToString());
+                    await PushNumberOfNotifications(userTo);
+                }
             }
             catch
             {

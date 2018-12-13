@@ -129,9 +129,11 @@ export default class Chat extends Component {
         if (!this.state.activeUser) {
             return;
         }
-        if (this.state.message.length < 1) {
+
+        if (this.state.message.length === 0) {
             return;
         }
+
         this.connection.invoke("SendMessage", this.state.activeUser.id, this.state.message).catch(err => console.error(err.toString()));
         this.setState({
             message: ""
@@ -227,7 +229,7 @@ export default class Chat extends Component {
                             onChange={this.updateInputValue.bind(this)}
                             disabled={this.state.chatDisabled ? "disabled" : ""}
                         />
-                        <button className="btn btn-outline-success" onClick={this.sendMessage.bind(this)} disabled={this.state.chatDisabled ? "disabled" : ""}>Wyślij</button>
+                        <button className="btn btn-outline-success" onClick={this.sendMessage.bind(this)} disabled={this.state.chatDisabled || this.state.message.length === 0 ? "disabled" : ""}>Wyślij</button>
                     </div>
                 </div>
             </div>
