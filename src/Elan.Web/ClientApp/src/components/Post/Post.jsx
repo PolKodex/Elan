@@ -104,7 +104,7 @@ export default class Post extends Component {
     }
 
     rednerDeleteButton = () => {
-        if (this.isAuthor) {
+        if (this.isAuthor()) {
             return (
                 <div className="float-right">
                     <a className="link" onClick={() => this.deleteConfirmModalToggle()}><i className="fas fa-trash-alt"></i></a>

@@ -1,5 +1,5 @@
 ﻿export const getUserId = (state) => {
-    if (state.userId === undefined || state.userId.trim() === "") {
+    if (state === undefined || state.userId === undefined || state.userId.trim() === "") {
         return decodeJwt(localStorage.getItem('token')).jti;
     }
     return state.userId;
