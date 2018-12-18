@@ -40,6 +40,10 @@ export default class Wall extends Component {
         if (event.target.value.length > 0) {
             canPost = true;
         }
+
+        if (event.target.value.length > 400) {
+            event.target.value = event.target.value.substring(0, 400)
+        }
         this.setState({ postContent: event.target.value, canPost });
     }
 

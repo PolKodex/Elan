@@ -18,7 +18,8 @@ export default class Post extends Component {
             page: 1,
             totalCount: 0,
             canLoad: true,
-            showDeleteConfirmModal: false
+            showDeleteConfirmModal: false,
+            deleted: false
         };
     }
     
@@ -141,6 +142,7 @@ export default class Post extends Component {
             .deletePost(this.props.id)
             .then(response => {
                 this.deleteConfirmModalToggle();
+                this.setState({ deleted: true })
             });
     }
 
@@ -148,6 +150,10 @@ export default class Post extends Component {
         let authorName = '';
         if (this.props.author !== undefined && this.props.author.trim() !== "") {
             authorName = this.props.author;
+        }
+
+        if (this.state.deleted) {
+            return null;
         }
 
         return (
