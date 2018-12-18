@@ -40,6 +40,10 @@ export default class Wall extends Component {
         if (event.target.value.length > 0) {
             canPost = true;
         }
+
+        if (event.target.value.length > 400) {
+            event.target.value = event.target.value.substring(0, 400)
+        }
         this.setState({ postContent: event.target.value, canPost });
     }
 
@@ -113,7 +117,7 @@ export default class Wall extends Component {
                     </div>
                 </div>
                 {posts}
-                {this.state.page * 10 < this.state.totalCount && <button className="btn btn-primary" onClick={this.loadOlderPosts} disabled={!this.state.canLoad}>Doczytaj starsze..</button>}
+                {this.state.page * 10 < this.state.totalCount && <button className="btn btn-link" onClick={this.loadOlderPosts} disabled={!this.state.canLoad}>Pokaż więcej</button>}
             </div>
         );
     }

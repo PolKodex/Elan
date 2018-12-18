@@ -2,6 +2,7 @@
 import './Post.css';
 import * as postsApi from '../../api/PostsApi';
 import * as dateUtils from '../../utils/DateUtils';
+import { getUserId } from '../../utils/JwtUtils';
 
 export default class Post extends Component {
     constructor(props) {
@@ -16,7 +17,9 @@ export default class Post extends Component {
             canComment: false,
             page: 1,
             totalCount: 0,
-            canLoad: true
+            canLoad: true,
+            showDeleteConfirmModal: false,
+            deleted: false
         };
     }
     
@@ -92,10 +95,65 @@ export default class Post extends Component {
         return pictureSource;
     }
 
+    isAuthor = () => {
+        if (getUserId(undefined) === this.props.userId) {
+            return true;
+        }
+
+        return false;
+    }
+
+    rednerDeleteButton = () => {
+        if (this.isAuthor()) {
+            return (
+                <div className="float-right">
+                    <a className="link" onClick={() => this.deleteConfirmModalToggle()}><i className="fas fa-trash-alt"></i></a>
+                </div>
+            );
+        }
+    }
+
+    deleteConfirmModalToggle = () => {
+        this.setState({ showDeleteConfirmModal: !this.state.showDeleteConfirmModal })
+    }
+
+    renderDeleteConfirmModal = () => {
+        if (this.state.showDeleteConfirmModal){
+            return (
+                <div className="modal show delete-post" tabIndex="-1" role="dialog">
+                    <div className="modal-dialog modal-sm" role="document">
+                        <div className="modal-content">
+                            <div className="modal-body">
+                                Czy na pewno chcesz usunąć ten post?
+                            </div>
+                            <div className="modal-footer">
+                                <button className="btn btn-secondary" onClick={() => this.deleteConfirmModalToggle()}>Nie</button>
+                                <button className="btn btn-success" onClick={() => this.deletePost()}>Tak</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    }
+
+    deletePost = () => {
+        postsApi
+            .deletePost(this.props.id)
+            .then(response => {
+                this.deleteConfirmModalToggle();
+                this.setState({ deleted: true })
+            });
+    }
+
     render() {
         let authorName = '';
         if (this.props.author !== undefined && this.props.author.trim() !== "") {
             authorName = this.props.author;
+        }
+
+        if (this.state.deleted) {
+            return null;
         }
 
         return (
@@ -106,6 +164,7 @@ export default class Post extends Component {
                             <div className="avatar-post">
                                  <img src={this.getPictureSource(this.props.pictureSource)} alt="" />
                             </div>
+                            {this.rednerDeleteButton()}
                             <div className="user-post">
                                 <a href={ "/account/" + this.props.userId }><strong>{ authorName }</strong></a> 
                                 {this.props.to && this.props.to !== authorName && <span> do <a href={"/account/" + this.props.toUserId}><strong>{this.props.to}</strong></a></span> }
@@ -124,6 +183,7 @@ export default class Post extends Component {
                 </div>
 
                 {this.renderCommentsModal()}
+                {this.renderDeleteConfirmModal()}
             </div>
         );
     }
@@ -158,7 +218,9 @@ export default class Post extends Component {
                                 <h5 className="modal-title">Komentarze</h5>
                             </div>
                             <div className="modal-body">
-                                {this.state.page * 10 < this.state.commentsCount && <button className="btn btn-primary" onClick={this.loadOlderComments} disabled={!this.state.canLoad}>Doczytaj starsze..</button>}
+                                <div className="text-center">
+                                    {this.state.page * 10 < this.state.commentsCount && <button className="btn btn-link" onClick={this.loadOlderComments} disabled={!this.state.canLoad}>Pokaż więcej</button>}
+                                </div>
                                 { this.renderCommentRow() }
                             </div>
                             <div className="modal-footer flex-column">
