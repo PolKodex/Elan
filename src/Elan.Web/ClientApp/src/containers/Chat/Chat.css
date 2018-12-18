@@ -17,8 +17,8 @@
 	padding: 10px;
 }
 
-.chat-messages {
-
+.chat-messages > .btn {
+    margin-top: 5px;
 }
 
 .chat-bottom .btn-outline-success {

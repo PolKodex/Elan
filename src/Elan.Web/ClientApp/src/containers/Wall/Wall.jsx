@@ -117,7 +117,7 @@ export default class Wall extends Component {
                     </div>
                 </div>
                 {posts}
-                {this.state.page * 10 < this.state.totalCount && <button className="btn btn-primary" onClick={this.loadOlderPosts} disabled={!this.state.canLoad}>Doczytaj starsze..</button>}
+                {this.state.page * 10 < this.state.totalCount && <button className="btn btn-link" onClick={this.loadOlderPosts} disabled={!this.state.canLoad}>Pokaż więcej</button>}
             </div>
         );
     }

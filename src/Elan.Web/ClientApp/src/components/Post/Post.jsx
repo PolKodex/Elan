@@ -218,7 +218,9 @@ export default class Post extends Component {
                                 <h5 className="modal-title">Komentarze</h5>
                             </div>
                             <div className="modal-body">
-                                {this.state.page * 10 < this.state.commentsCount && <button className="btn btn-primary" onClick={this.loadOlderComments} disabled={!this.state.canLoad}>Doczytaj starsze..</button>}
+                                <div className="text-center">
+                                    {this.state.page * 10 < this.state.commentsCount && <button className="btn btn-link" onClick={this.loadOlderComments} disabled={!this.state.canLoad}>Pokaż więcej</button>}
+                                </div>
                                 { this.renderCommentRow() }
                             </div>
                             <div className="modal-footer flex-column">

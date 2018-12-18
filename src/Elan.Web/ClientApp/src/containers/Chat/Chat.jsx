@@ -222,8 +222,8 @@ export default class Chat extends Component {
                 <div className="chat">
                     <ChatTopBar users={this.state.users} activeUser={this.state.activeUser} activeUserChanged={this.onUserChange} />
                     <div className="messages-wrapper" ref={this.messagesRef}>
-                        <div className="chat-messages">
-                            {this.state.page * 10 < this.state.totalCount && <button className="btn btn-primary" onClick={this.loadOlderMessages} disabled={!this.state.canLoad}>Doczytaj starsze..</button>}
+                        <div className="chat-messages text-center">
+                            {this.state.page * 10 < this.state.totalCount && <button className="btn btn-link" onClick={this.loadOlderMessages} disabled={!this.state.canLoad}>Pokaż więcej</button>}
                             {messages}
                         </div>
                     </div>

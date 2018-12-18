@@ -631,7 +631,9 @@ export default class Account extends Component {
                 </div>}
 
                 {userPosts}
-                {this.state.page * 10 < this.state.totalCount && <button className="btn btn-primary" onClick={this.loadOlderPosts} disabled={!this.state.canLoad}>Doczytaj starsze..</button>}
+                <div className="text-center">
+                    {this.state.page * 10 < this.state.totalCount && <button className="btn btn-link" onClick={this.loadOlderPosts} disabled={!this.state.canLoad}>Pokaż więcej</button>}
+                </div>
 
                 {this.renderMainPictureModal()}
                 {this.renderFriendsListModal()}
