@@ -580,7 +580,7 @@ export default class Account extends Component {
                 reactions={item.reactions}
                 reactionsCount={item.reactionsCount}
                 commentsCount={item.commentsCount}
-                key={index}
+                key={item.id}
                 date={item.createdOn} />);
 
         return (
