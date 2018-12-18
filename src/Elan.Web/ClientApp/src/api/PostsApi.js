@@ -31,6 +31,20 @@ export const getLatestPosts = async (skip, take) => {
 
 };
 
+export const deletePost = async (postId) => {
+    var api = "/api/Posts/DeletePost";
+
+    return await axios.delete(api,
+        {
+            params: {
+                postId: postId
+            },
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }).then((response) => response.data );
+}
+
 export const commentPost = async (content, basePostId) => {
     var api = "/api/Posts/CreatePostComment";
 
