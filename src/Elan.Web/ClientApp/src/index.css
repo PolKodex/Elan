@@ -190,7 +190,6 @@ body > .container {
 /* width */
 ::-webkit-scrollbar {
     width: 10px;
-    display: none;
 }
 
 /* Track */
@@ -230,3 +229,4 @@ body > .container {
 .red-color {
     color: red;
 }
+

@@ -149,6 +149,10 @@ export default class Chat extends Component {
 
 
     updateInputValue(event) {
+        if (event.target.value.length > 400) {
+            event.target.value = event.target.value.substring(0, 400)
+        }
+
         this.setState({
             message: event.target.value
         });
