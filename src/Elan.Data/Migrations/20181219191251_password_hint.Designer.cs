@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Elan.Data.Migrations
 {
     [DbContext(typeof(ElanDbContext))]
-    [Migration("20181219163456_password_hint")]
+    [Migration("20181219191251_password_hint")]
     partial class password_hint
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
