@@ -7,5 +7,7 @@ namespace Elan.Account.Contracts
     {
         Task ValidateRegisterViewModel(RegisterViewModel model);
         Task ValidateSignInViewModel(SignInViewModel model);
+        Task ValidatePasswordHintQuestion(string userName);
+        Task ValidateChangePasswordViewModel(ChangePasswordViewModel model);
     }
 }

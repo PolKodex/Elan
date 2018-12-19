@@ -7,5 +7,7 @@ namespace Elan.Account.Contracts
     {
         Task<string> Register(RegisterViewModel model);
         Task<string> SignIn(SignInViewModel model);
+        Task<string> GetPasswordHintQuestion(string userName);
+        Task<string> ChangePassword(ChangePasswordViewModel model);
     }
 }

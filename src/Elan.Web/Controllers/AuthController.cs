@@ -45,5 +45,35 @@ namespace Elan.Web.Controllers
                 return Json(ex.Message);
             }
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetPasswordHintQuestion(string userName)
+        {
+            try
+            {
+                var question = await _authService.GetPasswordHintQuestion(userName);
+                return Json(question);
+            }
+            catch (PasswordHintException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> ChangePassword([FromBody] ChangePasswordViewModel model)
+        {
+            try
+            {
+                var token = await _authService.ChangePassword(model);
+                return Json(token);
+            }
+            catch (PasswordHintException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(ex.Message);
+            }
+        }
     }
 }

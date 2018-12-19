@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import Post from '../../components/Post/Post';
 import { savePost, getLatestPosts } from '../../api/PostsApi';
+import { getSettings } from '../../api/UserApi';
 import './Wall.css';
 
 export default class Wall extends Component {
@@ -20,6 +21,7 @@ export default class Wall extends Component {
 
     componentDidMount() {
         this.getPosts();
+        this.getSettings();
     }
 
     componentWillUnmount() {
@@ -32,6 +34,19 @@ export default class Wall extends Component {
             let sortFunc = (a, b) => new Date(b.createdOn) - new Date(a.createdOn);
             postListing.posts.sort(sortFunc);
             this.setState({ posts: postListing.posts, totalCount: postListing.totalCount });
+        });
+    }
+
+    getSettings = () => {
+        getSettings().then((settings) => {
+            if (settings.length === 2) {
+                for (let i = 0; i < 2; i++) {
+                    if (settings[i].setting === 1) {
+                        console.log(settings[i]);
+                        this.setState({ selectedPostPrivacy: settings[i].privacySetting });
+                    }
+                }
+            }
         });
     }
 
@@ -104,7 +119,7 @@ export default class Wall extends Component {
                             <textarea className="form-control" rows="5" value={this.state.postContent} onChange={this.postContentChange} />
                             <div className="row controls">
                                 <div className="col-9">
-                                    <select className="form-control form-control-sm" onChange={this.changePostPrivacy}>
+                                    <select className="form-control form-control-sm" value={this.state.selectedPostPrivacy} onChange={this.changePostPrivacy}>
                                         <option value="0">Widoczny dla wszystkich</option>
                                         <option value="1">Widoczny dla znajomych</option>
                                     </select>

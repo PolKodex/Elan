@@ -48,6 +48,18 @@ namespace Elan.Account.Services
                 throw new RegistrationFailedException(
                     $"UserName cannot be null or empty!");
             }
+
+            if (string.IsNullOrEmpty(model.Question))
+            {
+                throw new RegistrationFailedException(
+                    $"Question cannot be null or empty!");
+            }
+
+            if (string.IsNullOrEmpty(model.Answer))
+            {
+                throw new RegistrationFailedException(
+                    $"Answer cannot be null or empty!");
+            }
         }
 
         public Task ValidateSignInViewModel(SignInViewModel model)
@@ -62,6 +74,40 @@ namespace Elan.Account.Services
             {
                 throw new SignInFailedException(
                     $"UserName cannot be null or empty!");
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public Task ValidatePasswordHintQuestion(string userName)
+        {
+            if (string.IsNullOrEmpty(userName))
+            {
+                throw new PasswordHintException(
+                    $"UserName cannot be null or empty!");
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public Task ValidateChangePasswordViewModel(ChangePasswordViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.Password))
+            {
+                throw new PasswordHintException(
+                    $"Password cannot be null or empty!");
+            }
+
+            if (string.IsNullOrEmpty(model.UserName))
+            {
+                throw new PasswordHintException(
+                    $"UserName cannot be null or empty!");
+            }
+
+            if (string.IsNullOrEmpty(model.Answer))
+            {
+                throw new PasswordHintException(
+                    $"Answer cannot be null or empty!");
             }
 
             return Task.CompletedTask;
