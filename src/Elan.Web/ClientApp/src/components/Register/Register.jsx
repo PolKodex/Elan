@@ -20,6 +20,10 @@ export default class Register extends Component {
             firstNameMessage: '',
             lastName: '',
             lastNameMessage: '',
+            question: '',
+            questionMessage: '',
+            answer: '',
+            answerMessage: '',
             message: '',
             redirect: false
         }
@@ -110,17 +114,41 @@ export default class Register extends Component {
 
         this.setState({ firstName: event.target.value });
     }
-    
+
     lastNameChange = (event) => {
-        if(!event.target.value.trim()) {
+        if (!event.target.value.trim()) {
             this.lastNameValid = false;
-            this.setState({lastNameMessage: "Naziwsko jest wymagane"});
+            this.setState({ lastNameMessage: "Nazwisko jest wymagane" });
         } else {
             this.lastNameValid = true;
-            this.setState({lastNameMessage: ""});
+            this.setState({ lastNameMessage: "" });
         }
 
         this.setState({ lastName: event.target.value });
+    }
+
+    questionChange = (event) => {
+        if(!event.target.value.trim()) {
+            this.questionValid = false;
+            this.setState({questionMessage: "Pytanie pomocnicze jest wymagane"});
+        } else {
+            this.questionValid = true;
+            this.setState({questionMessage: ""});
+        }
+
+        this.setState({ question: event.target.value });
+    }
+
+    answerChange = (event) => {
+        if (!event.target.value.trim()) {
+            this.answerValid = false;
+            this.setState({ answerMessage: "Odpowiedź do pytania pomocniczego jest wymagana" });
+        } else {
+            this.answerValid = true;
+            this.setState({ answerMessage: "" });
+        }
+
+        this.setState({ answer: event.target.value });
     }
 
     handleSubmit = (event) => {
@@ -129,7 +157,9 @@ export default class Register extends Component {
                 this.state.password, 
                 this.state.email, 
                 this.state.firstName, 
-                this.state.lastName)
+                this.state.lastName,
+                this.state.question,
+                this.state.answer)
             .then(function(token) {
                 localStorage.setItem('token', token);
                 this.setState({ redirect: true });
@@ -207,7 +237,7 @@ export default class Register extends Component {
     render() {
 
         let isValid = this.loginValid && this.passwordValid && this.confirmPasswordValid
-                      && this.emailValid && this.firstNameValid && this.lastNameValid;
+                      && this.emailValid && this.firstNameValid && this.lastNameValid && this.answerValid && this.questionValid;
 
         return (
             <div className="container login-page">
@@ -300,6 +330,31 @@ export default class Register extends Component {
                                             onChange={ this.lastNameChange }
                                             onBlur={ this.lastNameChange } />
                                         <small className="form-text text-danger">{ this.state.lastNameMessage }</small>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="register-question">Pytanie pomocnicze</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Pytanie pomocnicze"
+                                            id="register-question"
+                                            className="form-control"
+                                            value={this.state.question}
+                                            onChange={this.questionChange}
+                                            onBlur={this.questionChange} />
+                                        <small className="form-text text-danger">{this.state.questionMessage}</small>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="register-answer">Odpowiedź</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Odpowiedź do pytania pomocniczego"
+                                            id="register-answer"
+                                            className="form-control"
+                                            value={this.state.answer}
+                                            onChange={this.answerChange}
+                                            onBlur={this.answerChange} />
+                                        <small className="form-text text-danger">{this.state.answerMessage}</small>
                                     </div>
 
                                     <small className="form-text text-danger">{ this.state.message }</small>

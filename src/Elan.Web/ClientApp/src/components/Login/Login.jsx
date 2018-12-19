@@ -86,7 +86,7 @@ export default class Login extends Component {
 
                                     <small className="form-text text-danger">{ this.state.message }</small>
 
-                                    <a href="#" className="text-muted">Zapomniałem hasła</a>
+                                    <a href="/remindPassword" className="text-muted">Zapomniałem hasła</a>
                                     <input type="submit" className="btn btn-success float-right" value="Zaloguj się" />
                                 </form>
                             </div>

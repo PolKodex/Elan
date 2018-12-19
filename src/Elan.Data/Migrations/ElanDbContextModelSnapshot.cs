@@ -78,6 +78,10 @@ namespace Elan.Data.Migrations
 
                     b.Property<string>("PasswordHash");
 
+                    b.Property<string>("PasswordHintAnswer");
+
+                    b.Property<string>("PasswordHintQuestion");
+
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
@@ -146,9 +150,9 @@ namespace Elan.Data.Migrations
 
                     b.Property<DateTime>("SentOn");
 
-                    b.Property<Guid?>("UserFromId");
+                    b.Property<Guid>("UserFromId");
 
-                    b.Property<Guid?>("UserToId");
+                    b.Property<Guid>("UserToId");
 
                     b.HasKey("Id");
 
@@ -375,11 +379,13 @@ namespace Elan.Data.Migrations
                 {
                     b.HasOne("Elan.Data.Models.Account.ElanUser", "UserFrom")
                         .WithMany()
-                        .HasForeignKey("UserFromId");
+                        .HasForeignKey("UserFromId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Elan.Data.Models.Account.ElanUser", "UserTo")
                         .WithMany()
-                        .HasForeignKey("UserToId");
+                        .HasForeignKey("UserToId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Elan.Data.Models.Friends.FriendsInvitation", b =>

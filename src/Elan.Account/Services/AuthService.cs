@@ -47,7 +47,9 @@ namespace Elan.Account.Services
                 UserName = model.UserName,
                 Email = model.Email,
                 FirstName = model.FirstName,
-                LastName = model.LastName
+                LastName = model.LastName,
+                PasswordHintQuestion = model.Question,
+                PasswordHintAnswer = model.Answer
             };
             
             var result = await _userManager.CreateAsync(newUser, model.Password);
@@ -77,6 +79,46 @@ namespace Elan.Account.Services
             }
 
             var user = await _userManager.FindByNameAsync(model.UserName);
+            return GetToken(user);
+        }
+
+        public async Task<string> GetPasswordHintQuestion(string userName)
+        {
+            await _authValidationService.ValidatePasswordHintQuestion(userName);
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                throw new PasswordHintException($"Account with login: {userName} not found!");
+            }
+
+            return user.PasswordHintQuestion;
+        }
+
+        public async Task<string> ChangePassword(ChangePasswordViewModel model)
+        {
+            await _authValidationService.ValidateChangePasswordViewModel(model);
+
+            var user = await _userManager.FindByNameAsync(model.UserName);
+            if (user == null)
+            {
+                throw new PasswordHintException($"Account with login: {model.UserName} not found!");
+            }
+
+            if (user.PasswordHintAnswer != model.Answer)
+            {
+                throw new PasswordHintException("Incorrect answer!");
+            }
+
+            await _userManager.RemovePasswordAsync(user);
+
+            var result = await _userManager.AddPasswordAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                throw new PasswordHintException(
+                    $"An error occured while changing password: {result.Errors.Select(e => e.Description).Join(", ")}");
+            }
+            await _signInManager.SignInAsync(user, false);
+
             return GetToken(user);
         }
 

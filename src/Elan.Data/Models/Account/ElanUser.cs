@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Elan.Data.Models.Posts;
 
 namespace Elan.Data.Models.Account
@@ -14,6 +13,8 @@ namespace Elan.Data.Models.Account
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Description { get; set; }
+        public string PasswordHintQuestion { get; set; }
+        public string PasswordHintAnswer { get; set; }
         public int? Age { get; set; }
         public virtual ICollection<ElanUserImage> Images { get; set; }
         public virtual ICollection<Post> PostedByUser { get; set; }
