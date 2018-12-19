@@ -45,7 +45,7 @@ namespace Elan.Data.Migrations
                 column: "UserFromId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_ChatMessages_AspNetUsers_UserToId",
@@ -53,7 +53,7 @@ namespace Elan.Data.Migrations
                 column: "UserToId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
