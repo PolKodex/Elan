@@ -1,0 +1,46 @@
+.post {
+	width: 90%;
+	margin: 10px 0 10px 0;
+}
+
+.card-text img {
+	max-width: 100%;
+}
+
+.modal-body {
+    max-height: calc(100vh - 312px);
+    overflow-y: scroll;
+}
+
+.modal-open {
+    overflow: scroll;
+}
+
+.post-comments textarea {
+	resize: none;
+}
+
+.post-comment img {
+    height: 30px;
+	margin-top: 13px;
+	max-width: 30px;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+.post-comment a {
+	color: #000000;
+
+}
+
+.comment-link {
+    pointer-events: visible;
+}
+
+.post-comment {
+    pointer-events: none;
+}
+
+.faded {
+	opacity: 0.8;
+}

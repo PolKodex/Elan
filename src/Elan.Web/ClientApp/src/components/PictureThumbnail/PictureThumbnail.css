@@ -1,0 +1,10 @@
+.preview-image {
+    max-width: 100%;
+    margin: 0 auto;
+    height: auto !important;
+    max-height: 100% !important;
+}
+
+.modal-fixed {
+    left: -600px;
+}

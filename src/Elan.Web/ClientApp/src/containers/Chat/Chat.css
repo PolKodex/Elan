@@ -1,0 +1,33 @@
+.chat-wrapper {
+	height: 100%;
+}
+
+.chat {
+	border: 1px solid #cccccc;
+    background-color: #f7f7f7;
+    flex-grow: 1;
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    height: 100%;
+}
+
+.chat-bottom {
+	display: flex;
+	padding: 10px;
+}
+
+.chat-messages > .btn {
+    margin-top: 5px;
+}
+
+.chat-bottom .btn-outline-success {
+	border-color: #28a745;
+	margin-left: 5px;
+}
+
+.messages-wrapper {
+	max-height: 100%;
+    overflow-y: auto;
+    flex-grow: 1;
+}

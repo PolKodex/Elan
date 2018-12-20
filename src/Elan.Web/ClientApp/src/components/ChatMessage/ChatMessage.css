@@ -1,0 +1,35 @@
+.msg-container-to-me {
+	display: flex;
+	flex-direction: column;
+}
+
+.msg-container-from-me {
+	display: flex;
+	align-items: flex-end;
+	flex-direction: column;
+}
+
+.message-to-me {
+	background-color: #cfcfcf;
+
+}
+
+.message-from-me {
+	background-color: #afdbb5;
+	align-self: flex-end;
+}
+
+.msg {
+    border-radius: 3px;
+    padding: 5px 10px;
+    max-width: 70%;
+    word-wrap: break-word;
+    min-width: 70%;
+    margin: 5px 5px 0px 5px;
+}
+
+.msg-date {
+	color: gray;
+	font-size: 10px;
+	padding: 5px 10px;
+}
