@@ -15,7 +15,7 @@ export const findUsers = async (query) => {
         }).then((response) => response.data);
 };
 
-export const updateUser = async (id, firstName, lastName, description, age) => {
+export const updateUser = async (id, firstName, lastName, description, age, gender) => {
     var api = baseUrl + 'UpdateProfile';
 
     return await axios.put(api,
@@ -24,7 +24,8 @@ export const updateUser = async (id, firstName, lastName, description, age) => {
             FirstName: firstName,
             LastName: lastName,
             Description: description,
-            Age: age
+            Age: age,
+            Gender: gender
         },
         {
             headers: {

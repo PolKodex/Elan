@@ -31,6 +31,15 @@ namespace Elan.Account.Services
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
 
+            if (user.Gender != 0 && user.Gender != model.Gender)
+            {
+                throw new InvalidDataException("Gender cannot be changed.");
+            }
+            if (user.Gender == 0)
+            {
+                user.Gender = model.Gender;
+            }
+            
             await _dataService.SaveDbAsync();
             return user;
         }

@@ -28,6 +28,8 @@ export default class Account extends Component {
             lastNameEdit: '',
             descriptionEdit: '',
             ageEdit: 13,
+            genderEdit: 0,
+            genderSelected: false, 
             owner: false,
             firstNameValid: false,
             lastNameValid: false,
@@ -56,6 +58,8 @@ export default class Account extends Component {
                     lastNameEdit: response.data.lastName,
                     descriptionEdit: response.data.description,
                     ageEdit: response.data.age,
+                    genderEdit: response.data.gender,
+                    genderSelected: response.data.gender > 0,
                     ageValid: true,
                     firstNameValid: true,
                     lastNameValid: true,
@@ -246,6 +250,10 @@ export default class Account extends Component {
         this.setState({ descriptionEdit: event.target.value });
     }
 
+    genderChange = (event) => {
+        this.setState({ genderEdit: event.target.value });
+    }
+
     ageChange = (event) => {
         const re = /^[0-9\b]+$/;
         if (event.target.value.trim() && (!re.test(event.target.value) || event.target.value < 13 || event.target.value > 150)) {
@@ -270,7 +278,8 @@ export default class Account extends Component {
                     this.state.firstNameEdit,
                     this.state.lastNameEdit,
                     this.state.descriptionEdit,
-                    this.state.ageEdit)
+                    this.state.ageEdit,
+                    this.state.genderEdit)
                 .then(function (response) {
                     this.setState({
                         user: response,
@@ -278,6 +287,8 @@ export default class Account extends Component {
                         lastNameEdit: response.lastName,
                         descriptionEdit: response.description,
                         ageEdit: response.age,
+                        genderSelected: true,
+                        genderEdit : response.gender,
                         editUserClick: false
                     });
                 }.bind(this));
@@ -481,6 +492,8 @@ export default class Account extends Component {
         let lastName = "";
         let description = "";
         let age = "";
+        let gender = 0;
+        let genderSelected = false;
         if (this.state.firstNameEdit) {
             firstName = this.state.firstNameEdit;
         }
@@ -493,6 +506,15 @@ export default class Account extends Component {
         if (this.state.ageEdit) {
             age = this.state.ageEdit;
         }
+        if (this.state.genderEdit) {
+            gender = this.state.genderEdit;
+        } else {
+            gender = 1;
+        }
+        if (this.state.genderSelected) {
+            genderSelected = true;
+        }
+
         let isValid = this.state.firstNameValid && this.state.lastNameValid && this.state.ageValid;
 
         if (this.state.editUserClick) {
@@ -543,6 +565,13 @@ export default class Account extends Component {
                                         value={age}
                                         onChange={this.ageChange} />
                                     <small className="form-text text-danger">{this.state.ageMessage}</small>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="edit-age">Płeć</label>
+                                    <select className="form-control" value={gender} onChange={this.genderChange} disabled={genderSelected}>
+                                        <option value="1">Mężczyzna</option>
+                                        <option value="2">Kobieta</option>
+                                    </select>
                                 </div>
                             </div>
                             <div className="modal-footer">
