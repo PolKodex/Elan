@@ -53,7 +53,7 @@ class TopBar extends Component {
         return (
             <div className="top-bar-wrapper">
                 <div className="top-bar">
-                    <Link to="/" className="navbar-brand" href="#"><span className="brand-color">EL</span>AN</Link>
+                    <Link to="/" className="navbar-brand" href="#"><span className="brand-el">EL</span><span className="brand-an">AN</span></Link>
                     <ul className="">
                         <li className="nav-item">
                             <Link to="/" className="nav-link"><i className="fas fa-home"></i> Strona główna <span className="sr-only">(current)</span></Link>
