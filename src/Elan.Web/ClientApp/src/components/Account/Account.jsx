@@ -58,7 +58,7 @@ export default class Account extends Component {
                     lastNameEdit: response.data.lastName,
                     descriptionEdit: response.data.description,
                     ageEdit: response.data.age,
-                    genderEdit: response.data.gender,
+                    genderEdit: response.data.gender > 0 ? response.data.gender : 1,
                     genderSelected: response.data.gender > 0,
                     ageValid: true,
                     firstNameValid: true,
@@ -492,7 +492,7 @@ export default class Account extends Component {
         let lastName = "";
         let description = "";
         let age = "";
-        let gender = 0;
+        let gender = 1;
         let genderSelected = false;
         if (this.state.firstNameEdit) {
             firstName = this.state.firstNameEdit;
@@ -508,9 +508,9 @@ export default class Account extends Component {
         }
         if (this.state.genderEdit) {
             gender = this.state.genderEdit;
-        } else {
-            gender = 1;
         }
+        console.log("this.state.genderEdit", this.state.genderEdit);
+
         if (this.state.genderSelected) {
             genderSelected = true;
         }
