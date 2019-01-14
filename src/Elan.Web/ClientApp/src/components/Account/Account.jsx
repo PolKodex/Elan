@@ -509,7 +509,6 @@ export default class Account extends Component {
         if (this.state.genderEdit) {
             gender = this.state.genderEdit;
         }
-        console.log("this.state.genderEdit", this.state.genderEdit);
 
         if (this.state.genderSelected) {
             genderSelected = true;
