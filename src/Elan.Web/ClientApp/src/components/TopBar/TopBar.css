@@ -72,3 +72,8 @@
     float: left;
     margin-right: 15px;
 }
+
+.navbar-brand:hover {
+  transform: scale(1.2);
+  color: #28a745;
+}
