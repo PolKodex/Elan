@@ -13,7 +13,7 @@ export const signIn = async (username, password) => {
         });
 };
 
-export const register = async (userName, password, email, firstName, lastName, question, answer) => {
+export const register = async (userName, password, email, firstName, lastName, gender, question, answer) => {
     var api = "/api/Auth/Register";
 
     return axios.post(api,
@@ -24,7 +24,8 @@ export const register = async (userName, password, email, firstName, lastName, q
             FirstName: firstName,
             LastName: lastName,
             Question: question,
-            Answer: answer
+            Answer: answer,
+            Gender: gender
         })
         .then ((response) => {
             return response.data;

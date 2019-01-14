@@ -64,6 +64,8 @@ namespace Elan.Data.Migrations
 
                     b.Property<string>("FirstName");
 
+                    b.Property<int>("Gender");
+
                     b.Property<string>("LastName");
 
                     b.Property<bool>("LockoutEnabled");

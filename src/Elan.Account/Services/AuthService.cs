@@ -49,7 +49,8 @@ namespace Elan.Account.Services
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 PasswordHintQuestion = model.Question,
-                PasswordHintAnswer = model.Answer
+                PasswordHintAnswer = model.Answer,
+                Gender = model.Gender
             };
             
             var result = await _userManager.CreateAsync(newUser, model.Password);
