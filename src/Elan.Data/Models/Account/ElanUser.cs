@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using Elan.Common.Enums;
 using Elan.Data.Models.Posts;
 
 namespace Elan.Data.Models.Account
@@ -16,6 +17,7 @@ namespace Elan.Data.Models.Account
         public string PasswordHintQuestion { get; set; }
         public string PasswordHintAnswer { get; set; }
         public int? Age { get; set; }
+        public Gender Gender { get; set; }
         public virtual ICollection<ElanUserImage> Images { get; set; }
         public virtual ICollection<Post> PostedByUser { get; set; }
         public virtual ICollection<Post> PostedToUser { get; set; }
