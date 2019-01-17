@@ -1,4 +1,5 @@
-﻿using Elan.Data.Models.Account;
+﻿using Elan.Common.Enums;
+using Elan.Data.Models.Account;
 
 namespace Elan.Web.ViewModels.Users
 {
@@ -9,6 +10,7 @@ namespace Elan.Web.ViewModels.Users
         public string LastName { get; set; }
         public string Description { get; set; }
         public int? Age { get; set; }
+        public Gender Gender { get; set; }
         public bool IsPrivate { get; set; }
         public bool InvitedByMe { get; set; }
         public bool InvitedMe { get; set; }
@@ -22,6 +24,7 @@ namespace Elan.Web.ViewModels.Users
             LastName = user.LastName;
             Description = user.Description;
             Age = user.Age;
+            Gender = user.Gender;
         }
     }
 }

@@ -25,6 +25,7 @@ export default class Register extends Component {
             answer: '',
             answerMessage: '',
             message: '',
+            gender: 1,
             redirect: false
         }
     }
@@ -151,6 +152,10 @@ export default class Register extends Component {
         this.setState({ answer: event.target.value });
     }
 
+    genderChange = (event) => {
+        this.setState({ gender: event.target.value });
+    }
+
     handleSubmit = (event) => {
         auth.register(
                 this.state.login, 
@@ -158,6 +163,7 @@ export default class Register extends Component {
                 this.state.email, 
                 this.state.firstName, 
                 this.state.lastName,
+                this.state.gender,
                 this.state.question,
                 this.state.answer)
             .then(function(token) {
@@ -242,13 +248,7 @@ export default class Register extends Component {
         return (
             <div className="container login-page">
                 { this.renderRedirect() }
-                <div className="row login-logo">
-                    <div className="">
-
-                    </div>
-                </div>
-
-                <div className="row login-main">
+                <div className="row register-main">
                     <div className="offset-md-2 col-md-8 login-form">
                         <div className="card">
                             <div className="card-header">
@@ -331,7 +331,13 @@ export default class Register extends Component {
                                             onBlur={ this.lastNameChange } />
                                         <small className="form-text text-danger">{ this.state.lastNameMessage }</small>
                                     </div>
-
+                                    <div className="form-group">
+                                        <label htmlFor="register-gender">Płeć</label>
+                                        <select className="form-control" value={this.state.gender} onChange={this.genderChange}>
+                                            <option value="1">Mężczyzna</option>
+                                            <option value="2">Kobieta</option>
+                                        </select>
+                                    </div>
                                     <div className="form-group">
                                         <label htmlFor="register-question">Pytanie pomocnicze</label>
                                         <input

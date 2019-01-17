@@ -16,6 +16,7 @@
     <Compile Remove="Migrations\20181206200850_notification_source.cs" />
     <Compile Remove="Migrations\20181206211320_friend_invitation_fix.cs" />
     <Compile Remove="Migrations\20181211175623_test.cs" />
+    <Compile Remove="Migrations\20190113101244_add_gender_to_user.cs" />
   </ItemGroup>
 
   <ItemGroup>

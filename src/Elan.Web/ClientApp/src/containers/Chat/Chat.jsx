@@ -228,7 +228,9 @@ export default class Chat extends Component {
                         </div>
                     </div>
                     <div className="chat-bottom">
-                        <input type="text" className="form-control" value={this.state.message}
+                        <textarea type="text" rows="1" wrap="hard"
+                            className="form-control"
+                            value={this.state.message}
                             onKeyPress={this.handleKeyPress.bind(this)}
                             onChange={this.updateInputValue.bind(this)}
                             disabled={this.state.chatDisabled ? "disabled" : ""}

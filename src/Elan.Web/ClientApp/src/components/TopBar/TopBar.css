@@ -72,3 +72,18 @@
     float: left;
     margin-right: 15px;
 }
+
+.brand-el {
+    color: #28a745;
+}
+
+.brand-an {
+    color: #fff;
+}
+
+.navbar-brand:hover .brand-el {
+    color: #fff !important;
+}
+.navbar-brand:hover .brand-an {
+    color: #28a745 !important;
+}
