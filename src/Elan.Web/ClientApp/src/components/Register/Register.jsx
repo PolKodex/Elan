@@ -248,13 +248,7 @@ export default class Register extends Component {
         return (
             <div className="container login-page">
                 { this.renderRedirect() }
-                <div className="row login-logo">
-                    <div className="">
-
-                    </div>
-                </div>
-
-                <div className="row login-main">
+                <div className="row register-main">
                     <div className="offset-md-2 col-md-8 login-form">
                         <div className="card">
                             <div className="card-header">
